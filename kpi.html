@@ -1142,7 +1142,7 @@
 const STORAGE_KEY = 'netform-sales-kpi-v4';
 const SALES_LIVE_KPI_KEY = 'netform-sales-live-kpi-v1';
 const SALES_DASHBOARD_FILE_URL = './sales-dashboard.html';
-const DATA_SCHEMA_VERSION = 15;
+const DATA_SCHEMA_VERSION = 16;
 
 const INITIAL_DATA = {
   schemaVersion: DATA_SCHEMA_VERSION,
@@ -1152,7 +1152,6 @@ const INITIAL_DATA = {
     { id: 'tk3', name: '자재판매 매출관리', current: 0, target: 100, unit: '억', color: 'purple' }
   ],
   teamRepKpis: [
-    { id: 'trk1', name: '진성문의 분류율', formula: '진성문의·배드핏 분류 완료 건 / 배정 문의 전체 건', current: 0, target: 100, unit: '%' },
     { id: 'trk2', name: '배드핏 제외 계약 전환율', formula: '계약 전환 건 / 배드핏 제외 진성문의 건', current: 0, target: 10, unit: '%' },
     { id: 'trk3', name: '견적 후 7일/14일 후속확인율', formula: '견적 발송 후 7일 내 1차, 14일 내 2차 후속 확인 건 / 견적 발송 건', current: 0, target: 100, unit: '%' },
     { id: 'trk4', name: '릴레잇 활동 갱신률', formula: '30일 내 메모 작성 또는 스테이지 변경 건 / 진행 릴레잇 건', current: 0, target: 90, unit: '%' }
@@ -1333,6 +1332,10 @@ function withKpiMeta(kpi, cat, overrides = {}) {
   };
 }
 
+function isExcludedTeamRepKpi(kpi) {
+  return /진성문의\s*분류율/.test(String(kpi?.name || ''));
+}
+
 function normalizeState(data) {
   const base = cloneInitialData();
   const legacyMemberKpis = (data.schemaVersion || 0) < DATA_SCHEMA_VERSION;
@@ -1349,7 +1352,7 @@ function normalizeState(data) {
         unit: saved.unit || defaultKpi.unit
       };
     }),
-    teamRepKpis: (data.teamRepKpis && data.teamRepKpis.length ? data.teamRepKpis : base.teamRepKpis).map(k => withKpiMeta({
+    teamRepKpis: (data.teamRepKpis && data.teamRepKpis.length ? data.teamRepKpis : base.teamRepKpis).filter(k => !isExcludedTeamRepKpi(k)).map(k => withKpiMeta({
       ...k,
       current: toInteger(k.current, 0),
       target: toInteger(k.target, 100),
