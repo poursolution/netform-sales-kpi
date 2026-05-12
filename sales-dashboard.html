@@ -447,6 +447,52 @@
   .person-kpi-row-actions .edit{background:#eff6ff; color:#1d4ed8;}
   .person-kpi-row-actions .detail{background:#0f172a; color:white;}
   @media(max-width:900px){.lead-grid{grid-template-columns:repeat(2,1fr)}.lead-layout{grid-template-columns:1fr}.lead-settings input{min-width:100%;}.kpi-focus{grid-template-columns:1fr}.task-row{grid-template-columns:1fr}.task-owner{text-align:left}.person-kpi-grid{grid-template-columns:1fr}.person-kpi-list-row{grid-template-columns:1fr}.person-kpi-row-actions{justify-content:flex-start}}
+  .sales-page{display:flex; flex-direction:column; gap:18px;}
+  .sales-hero{background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 10px 28px rgba(15,23,42,0.05); overflow:hidden;}
+  .sales-hero-head{display:flex; justify-content:space-between; gap:18px; align-items:flex-start; padding:22px 24px 0;}
+  .sales-eyebrow{font-size:12px; font-weight:900; color:#2563eb; letter-spacing:.2px; margin-bottom:7px;}
+  .sales-title{font-size:22px; font-weight:900; color:#0f172a; letter-spacing:-.5px;}
+  .sales-desc{font-size:13px; color:#64748b; font-weight:650; margin-top:6px; line-height:1.5;}
+  .sales-sync{font-size:12px; color:#64748b; font-weight:750; padding:8px 12px; border-radius:999px; background:#f8fafc; border:1px solid #e2e8f0; white-space:nowrap;}
+  .sales-hero-grid{display:grid; grid-template-columns:minmax(300px,1.25fr) repeat(3,minmax(160px,.65fr)); gap:14px; padding:20px 24px 24px;}
+  .sales-total{background:#0f172a; color:#fff; border-radius:16px; padding:24px; min-height:154px; display:flex; flex-direction:column; justify-content:space-between;}
+  .sales-total .label{font-size:12px; color:#bfdbfe; font-weight:850;}
+  .sales-total .value{font-size:42px; font-weight:950; letter-spacing:-1.2px; line-height:1; margin:10px 0;}
+  .sales-total .sub{font-size:13px; color:#cbd5e1; font-weight:700;}
+  .sales-mini{background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:18px; min-height:154px; display:flex; flex-direction:column; justify-content:space-between;}
+  .sales-mini .label{font-size:12px; color:#64748b; font-weight:850;}
+  .sales-mini .value{font-size:28px; font-weight:950; color:#0f172a; letter-spacing:-.7px;}
+  .sales-mini .sub{font-size:12px; color:#64748b; font-weight:700; line-height:1.45;}
+  .evidence-layout{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(360px,.75fr); gap:18px; align-items:start;}
+  .evidence-panel{background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 8px 24px rgba(15,23,42,0.04); overflow:hidden;}
+  .evidence-head{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; padding:20px 22px 16px; border-bottom:1px solid #e2e8f0;}
+  .evidence-head .ttl{font-size:17px; font-weight:950; color:#0f172a; letter-spacing:-.25px;}
+  .evidence-head .sub{font-size:12px; color:#64748b; font-weight:700; margin-top:5px;}
+  .evidence-count{font-size:12px; color:#2563eb; font-weight:900; background:#eff6ff; padding:5px 10px; border-radius:999px; white-space:nowrap;}
+  .evidence-list{display:flex; flex-direction:column;}
+  .revenue-evidence-row{display:grid; grid-template-columns:150px 140px minmax(0,1fr) 76px; gap:16px; align-items:center; padding:16px 22px; border-bottom:1px solid #f1f5f9;}
+  .pt-evidence-row{display:grid; grid-template-columns:120px 94px minmax(0,1fr) 70px; gap:14px; align-items:center; padding:15px 18px; border-bottom:1px solid #f1f5f9;}
+  .revenue-evidence-row:last-child,.pt-evidence-row:last-child{border-bottom:0;}
+  .revenue-evidence-row:hover,.pt-evidence-row:hover{background:#f8fafc;}
+  .evidence-name{font-size:15px; font-weight:950; color:#0f172a;}
+  .evidence-role{font-size:11px; color:#94a3b8; font-weight:800; margin-top:4px;}
+  .evidence-number{font-size:19px; font-weight:950; color:#0f172a; letter-spacing:-.35px;}
+  .evidence-number.blue{color:#1d4ed8;}
+  .evidence-number.green{color:#047857;}
+  .evidence-sub{font-size:11px; color:#64748b; font-weight:750; margin-top:4px; line-height:1.35;}
+  .evidence-chipline{display:flex; flex-wrap:wrap; gap:6px;}
+  .evidence-chip{max-width:100%; border:1px solid #e2e8f0; background:#fff; color:#334155; border-radius:999px; padding:5px 9px; font-size:11px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .evidence-chip.win{background:#ecfdf5; border-color:#bbf7d0; color:#047857;}
+  .evidence-chip.loss{background:#fef2f2; border-color:#fecaca; color:#b91c1c;}
+  .evidence-chip.pending{background:#eff6ff; border-color:#bfdbfe; color:#1d4ed8;}
+  .evidence-empty{font-size:12px; color:#94a3b8; font-weight:750;}
+  .evidence-btn{border:1px solid #cbd5e1; background:#fff; color:#0f172a; border-radius:10px; padding:8px 10px; font-size:12px; font-weight:900; cursor:pointer;}
+  .evidence-btn:hover{background:#0f172a; border-color:#0f172a; color:#fff;}
+  .support-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  .support-grid .chart-card,.support-grid .ai-card{height:auto; min-height:280px;}
+  .support-grid .chart-container{height:220px;}
+  @media(max-width:1180px){.sales-hero-grid{grid-template-columns:1fr 1fr}.evidence-layout,.support-grid{grid-template-columns:1fr}.pt-evidence-row{grid-template-columns:150px 110px minmax(0,1fr) 76px;}}
+  @media(max-width:760px){.wrap{padding:16px}.sales-hero-head{flex-direction:column}.sales-hero-grid{grid-template-columns:1fr}.revenue-evidence-row,.pt-evidence-row{grid-template-columns:1fr}.evidence-btn{width:max-content}.sales-total .value{font-size:34px}}
   #loader{position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#0f172a; color:white; padding:12px 24px; border-radius:8px; font-weight:700; font-size:14px; z-index:9999; display:none; box-shadow:0 4px 12px rgba(0,0,0,0.3); align-items:center; gap:8px;}
 </style>
 </head>
@@ -474,57 +520,91 @@
   </div>
 
   <div id="viewMain">
-  <div class="period-row">
-    <span class="lbl">조회 기간</span>
-    <select class="select" id="yearSelect"></select>
-    <div class="chip-row" id="quarterTabs">
-      <button data-key="all">전체</button>
-      <button data-key="1">1Q</button>
-      <button data-key="2">2Q</button>
-      <button data-key="3">3Q</button>
-      <button data-key="4">4Q</button>
-    </div>
-    <div class="period-meta" id="periodMeta"></div>
-  </div>
-
-  <div class="grid-4">
-    <div class="kpi-card kpi-clickable" onclick="openKpiDetail('contract')"><div class="title">총 수주(계약)액 <span class="kpi-hint">🔍 클릭하여 산출 근거 보기</span></div><div class="value" id="kpiTotalFee">0원</div><div class="sub-value">실행 금액: <b id="kpiExecFee">0원</b></div></div>
-    <div class="kpi-card kpi-clickable" onclick="openKpiDetail('pipeline')"><div class="title">릴레잇 예상수주액 <span class="kpi-hint">🔍 클릭하여 산출 근거 보기</span></div><div class="value" style="color:var(--pri)" id="kpiTotalPipelineVal">0원</div><div class="sub-value">계약단계 이후 <b id="kpiTotalPipelineCnt">0</b>건 · 영업·관계 기회비용 <b id="kpiPipelineOppCost">0원</b></div></div>
-    <div class="kpi-card kpi-clickable" onclick="openKpiDetail('ptrate')"><div class="title">평균 PT 승률 (승무패) <span class="kpi-hint">🔍 클릭하여 산출 근거 보기</span></div><div class="value" id="kpiPtRate">0%</div><div class="sub-value" id="kpiPtDetail">0전 0승 0패 (0건 대기)</div></div>
-    <div class="kpi-card kpi-clickable" onclick="openKpiDetail('convrate')"><div class="title">견적 대비 계약 전환율 <span class="kpi-hint">🔍 클릭하여 산출 근거 보기</span></div><div class="value" id="kpiConvRate">0%</div><div class="sub-value" id="kpiConvDetail">견적 0건 / 계약 0건</div></div>
-  </div>
-
-  <div class="main-layout">
-    <div class="left-col">
-      <div class="chart-card">
-        <div class="title">월별 수주 및 파이프라인 흐름 (단위: 억원)</div>
-        <div class="chart-container"><canvas id="trendChart"></canvas></div>
+    <div class="period-row">
+      <span class="lbl">조회 기간</span>
+      <select class="select" id="yearSelect"></select>
+      <div class="chip-row" id="quarterTabs">
+        <button data-key="all">전체</button>
+        <button data-key="1">1Q</button>
+        <button data-key="2">2Q</button>
+        <button data-key="3">3Q</button>
+        <button data-key="4">4Q</button>
       </div>
-      <div class="table-card">
-        <div class="table-head">
-          <div><div class="ttl">담당자별 영업 실적 및 RISK 현황</div><div class="sub">행 클릭 시 100% 검증된 백데이터 확인 (PT 내역/대기, 견적문의, 계약서)</div></div>
+      <div class="period-meta" id="periodMeta"></div>
+    </div>
+
+    <div class="sales-page">
+      <section class="sales-hero">
+        <div class="sales-hero-head">
+          <div>
+            <div class="sales-eyebrow">SALES EVIDENCE</div>
+            <div class="sales-title">총 매출과 담당자별 근거를 한 화면에서 확인</div>
+            <div class="sales-desc">계약 매출, 릴레잇 진행금액, PT 승패 근거를 담당자별로 바로 확인하는 보고용 첫 화면입니다.</div>
+          </div>
+          <div class="sales-sync" id="salesDataSource">계약·PT·릴레잇 기준</div>
         </div>
-        <table class="perf-table">
-          <thead><tr><th class="left">담당자</th><th>수주액 (서명)</th><th>파이프라인 (기회)</th><th>PT 현황 (승률)</th><th>전환율 (계약/견적)</th><th class="center">RISK 상태</th></tr></thead>
-          <tbody id="assigneeBody"></tbody>
-        </table>
-      </div>
-    </div>
+        <div class="sales-hero-grid">
+          <div class="sales-total kpi-clickable" onclick="openKpiDetail('contract')">
+            <div>
+              <div class="label">총 매출</div>
+              <div class="value" id="pageTotalRevenue">0원</div>
+              <div class="sub" id="pageTotalRevenueSub">계약 0건 기준</div>
+            </div>
+            <div class="sub">클릭하면 계약 산출 근거를 확인합니다.</div>
+          </div>
+          <div class="sales-mini kpi-clickable" onclick="openKpiDetail('pipeline')">
+            <div class="label">진행 예상수주</div>
+            <div class="value" id="pagePipelineRevenue">0원</div>
+            <div class="sub" id="pagePipelineSub">릴레잇 계약·시공 단계 0건</div>
+          </div>
+          <div class="sales-mini kpi-clickable" onclick="openKpiDetail('ptrate')">
+            <div class="label">PT 승률</div>
+            <div class="value" id="pagePtRate">0%</div>
+            <div class="sub" id="pagePtSub">승패 확정 0건 · 미정 0건</div>
+          </div>
+          <div class="sales-mini kpi-clickable" onclick="openKpiDetail('convrate')">
+            <div class="label">문의 계약 전환</div>
+            <div class="value" id="pageConvRate">0%</div>
+            <div class="sub" id="pageConvSub">문의 0건 · 계약 0건</div>
+          </div>
+        </div>
+      </section>
 
-    <div class="right-col">
-      <div class="heatmap-card">
-        <div class="title">📊 팀 역량 히트맵 (공종별 PT 승률) <span style="font-size:11px; color:#64748b; font-weight:500; margin-left:6px;">※ 셀 Hover 시 산출근거 표시</span></div>
-        <table class="hm-table">
-          <thead><tr><th style="text-align:left; padding-left:12px;">담당자</th><th>전체</th><th>방수</th><th>재도장</th><th>주차장</th><th>도로</th></tr></thead>
-          <tbody id="heatmapBody"></tbody>
-        </table>
-      </div>
-      <div class="ai-card">
-        <div class="title">🤖 AI 전략 코멘트</div>
-        <div class="ai-list" id="aiComments"></div>
-      </div>
+      <section class="evidence-layout">
+        <div class="evidence-panel">
+          <div class="evidence-head">
+            <div>
+              <div class="ttl">담당자별 매출 근거</div>
+              <div class="sub">계약금액 기준으로 정렬하고, 각 담당자의 주요 계약 건을 바로 보여줍니다.</div>
+            </div>
+            <div class="evidence-count" id="revenueEvidenceCount">0명</div>
+          </div>
+          <div class="evidence-list" id="revenueEvidenceBody"></div>
+        </div>
+
+        <div class="evidence-panel">
+          <div class="evidence-head">
+            <div>
+              <div class="ttl">담당자별 PT 근거</div>
+              <div class="sub">PT 승률, 승·패·미정 건수와 최근 PT 이력을 함께 확인합니다.</div>
+            </div>
+            <div class="evidence-count" id="ptEvidenceCount">0건</div>
+          </div>
+          <div class="evidence-list" id="ptEvidenceBody"></div>
+        </div>
+      </section>
+
+      <section class="support-grid">
+        <div class="chart-card">
+          <div class="title">월별 계약 매출 흐름</div>
+          <div class="chart-container"><canvas id="trendChart"></canvas></div>
+        </div>
+        <div class="ai-card">
+          <div class="title">운영 코멘트</div>
+          <div class="ai-list" id="aiComments"></div>
+        </div>
+      </section>
     </div>
-  </div>
   </div>
 
   <!-- 🔍 릴레잇 현황 뷰 (탭 클릭 시 표시) - 임팩트 대시보드 -->
@@ -863,40 +943,113 @@ function generateAIComments(data) {
   return comments.join('');
 }
 
-function render(data){
-  document.getElementById('periodMeta').textContent = `${periodLabel()} 기준`;
-  document.getElementById('kpiTotalFee').textContent = fmtMoney(data.totals.fee);
-  document.getElementById('kpiTotalPipelineVal').textContent = fmtMoney(data.totals.pipeContractVal);
-  document.getElementById('kpiTotalPipelineCnt').textContent = data.totals.pipeContractCnt;
-  document.getElementById('kpiPipelineOppCost').textContent = fmtMoney(data.totals.pipeSalesVal);
-  document.getElementById('kpiPtRate').textContent = data.totals.ptTot>0 ? Math.round(data.totals.ptWin/data.totals.ptTot*100)+'%' : '0%';
-  document.getElementById('kpiPtDetail').textContent = `총 ${data.totals.ptTot}전 ${data.totals.ptWin}승 (대기 ${data.totals.ptPending}건)`;
-  document.getElementById('kpiConvRate').textContent = data.totals.est>0 ? Math.round(data.totals.cont/data.totals.est*100)+'%' : '0%';
-  document.getElementById('kpiConvDetail').textContent = `견적 ${data.totals.est}건 중 ${data.totals.cont}건 수주`;
-  
-  const tbody = document.getElementById('assigneeBody');
-  tbody.innerHTML = '';
-  data.rows.forEach(r => {
-    const tr = document.createElement('tr');
-    tr.onclick = () => openModal(r);
-    let bCls = 'normal', bTxt = '정상';
-    if(r.missing > 0){ bCls = 'missing'; bTxt = `⚠️ 누락 ${r.missing}건`; } else if(r.warning > 0){ bCls = 'warning'; bTxt = `확인필요 ${r.warning}건`; }
+function setText(id, value){
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
 
-    tr.innerHTML = `
-      <td class="left"><div class="name">${r.name}</div></td>
-      <td><div class="money-text">${fmtMoney(r.cSum)}</div></td>
-      <td><div class="money-text highlight-blue">${fmtMoney(r.pSum)}</div><div class="sub-text">${r.pCnt}건 진행중</div></td>
-      <td><div class="money-text">${r.winRate}%</div><div class="sub-text">${r.win}승 ${r.loss}패 <span style="color:var(--pri)">(${r.pending} 대기)</span></div></td>
-      <td><div class="money-text">${r.cRate}%</div><div class="sub-text">견적 ${r.eSum} / 계약 ${r.cntSum}</div></td>
-      <td class="center"><span class="risk-badge ${bCls}">${bTxt}</span></td>
+function setHtml(id, value){
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = value;
+}
+
+function compactName(value, max = 26){
+  const s = String(value || '').trim();
+  if (!s) return '-';
+  return s.length > max ? s.slice(0, max - 1) + '…' : s;
+}
+
+function openAssigneeEvidence(name){
+  const data = LATEST_DATA || buildData();
+  const row = data.rows.find(r => r.name === name);
+  if (row) openModal(row);
+}
+
+function ptTone(result){
+  const s = String(result || '');
+  if (/승/.test(s)) return 'win';
+  if (/패|실패|탈락/.test(s)) return 'loss';
+  return 'pending';
+}
+
+function renderEvidenceLists(data){
+  const revenueRows = [...data.rows].sort((a,b) => b.cSum - a.cSum);
+  const ptRows = [...data.rows].sort((a,b) => (b.win + b.loss + b.pending) - (a.win + a.loss + a.pending));
+  const totalContracts = data.rows.reduce((sum, r) => sum + r.conts.length, 0);
+  const totalPts = data.rows.reduce((sum, r) => sum + r.pts.length, 0);
+
+  setText('revenueEvidenceCount', `${revenueRows.filter(r => r.cSum > 0).length}명`);
+  setText('ptEvidenceCount', `${totalPts}건`);
+
+  setHtml('revenueEvidenceBody', revenueRows.map(r => {
+    const majorContracts = [...r.conts]
+      .filter(c => c.contractAmount > 0)
+      .sort((a,b) => b.contractAmount - a.contractAmount)
+      .slice(0, 3);
+    const chips = majorContracts.length
+      ? majorContracts.map(c => `<span class="evidence-chip">${escapeAttr(compactName(c.aptName, 22))} · ${fmtMoney(c.contractAmount)}</span>`).join('')
+      : `<span class="evidence-empty">조회 기간 내 계약 매출 근거 없음</span>`;
+    return `
+      <div class="revenue-evidence-row">
+        <div>
+          <div class="evidence-name">${escapeAttr(r.name)}</div>
+          <div class="evidence-role">계약 ${r.conts.length}건</div>
+        </div>
+        <div>
+          <div class="evidence-number">${fmtMoney(r.cSum)}</div>
+          <div class="evidence-sub">진행 예상 ${fmtMoney(r.pContractSum)}</div>
+        </div>
+        <div class="evidence-chipline">${chips}</div>
+        <button class="evidence-btn" onclick="openAssigneeEvidence('${escapeAttr(r.name)}')">상세</button>
+      </div>
     `;
-    tbody.appendChild(tr);
-  });
-  document.getElementById('aiComments').innerHTML = generateAIComments(data);
+  }).join(''));
+
+  setHtml('ptEvidenceBody', ptRows.map(r => {
+    const recentPts = [...r.pts].slice(0, 3);
+    const chips = recentPts.length
+      ? recentPts.map(p => `<span class="evidence-chip ${ptTone(p.result)}">${escapeAttr(compactName(p.siteName, 18))} · ${escapeAttr(p.result || '미정')}</span>`).join('')
+      : `<span class="evidence-empty">조회 기간 내 PT 근거 없음</span>`;
+    return `
+      <div class="pt-evidence-row">
+        <div>
+          <div class="evidence-name">${escapeAttr(r.name)}</div>
+          <div class="evidence-role">PT ${r.pts.length}건</div>
+        </div>
+        <div>
+          <div class="evidence-number ${r.winRate >= 60 ? 'green' : 'blue'}">${r.winRate}%</div>
+          <div class="evidence-sub">${r.win}승 ${r.loss}패 · 미정 ${r.pending}</div>
+        </div>
+        <div class="evidence-chipline">${chips}</div>
+        <button class="evidence-btn" onclick="openAssigneeEvidence('${escapeAttr(r.name)}')">상세</button>
+      </div>
+    `;
+  }).join(''));
+
+  return { totalContracts, totalPts };
+}
+
+function render(data){
+  setText('periodMeta', `${periodLabel()} 기준`);
+  const detail = renderEvidenceLists(data);
+  const ptRate = data.totals.ptTot > 0 ? Math.round(data.totals.ptWin / data.totals.ptTot * 100) : 0;
+  const convRate = data.totals.est > 0 ? Math.round(data.totals.cont / data.totals.est * 100) : 0;
+
+  setText('pageTotalRevenue', fmtMoney(data.totals.fee));
+  setText('pageTotalRevenueSub', `계약 ${detail.totalContracts}건 기준`);
+  setText('pagePipelineRevenue', fmtMoney(data.totals.pipeContractVal));
+  setText('pagePipelineSub', `릴레잇 계약·시공 단계 ${data.totals.pipeContractCnt}건 · 기회비용 ${fmtMoney(data.totals.pipeSalesVal)}`);
+  setText('pagePtRate', `${ptRate}%`);
+  setText('pagePtSub', `승패 확정 ${data.totals.ptTot}건 · 미정 ${data.totals.ptPending}건`);
+  setText('pageConvRate', `${convRate}%`);
+  setText('pageConvSub', `문의 ${data.totals.est}건 · 계약 ${data.totals.cont}건`);
+  setText('salesDataSource', `${periodLabel()} · 계약 ${detail.totalContracts}건 · PT ${detail.totalPts}건`);
+  setHtml('aiComments', generateAIComments(data));
 }
 
 function renderHeatmap(hmData){
   const tbody = document.getElementById('heatmapBody');
+  if (!tbody) return;
   tbody.innerHTML = '';
   hmData.forEach(r => {
     const tr = document.createElement('tr');
@@ -937,7 +1090,9 @@ function bindTooltips() {
 }
 
 function renderChart(){
-  const ctx = document.getElementById('trendChart').getContext('2d');
+  const canvas = document.getElementById('trendChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
   if(window.myChart) window.myChart.destroy();
   let monthlyData = Array(12).fill(0);
   filterByPeriod(CONTRACTS, STATE.year, 'all', 'signedDate').forEach(c => { const m = new Date(c.signedDate).getMonth(); monthlyData[m] += c.contractAmount / 100000000; });
