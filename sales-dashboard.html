@@ -515,7 +515,6 @@
       <button class="active" id="tabMain" onclick="switchView('main')">1. 매출 현황</button>
       <button id="tabRelate" onclick="switchView('relate')">2. 릴레잇 현황</button>
       <button id="tabTeamKpi" onclick="switchView('teamKpi')">3. 영업 KPI</button>
-      <button id="tabInquiry" onclick="switchView('inquiry')">문의 관리</button>
     </div>
   </div>
 
@@ -1143,7 +1142,7 @@ function switchView(view) {
   document.getElementById('tabMain').classList.toggle('active', view === 'main');
   document.getElementById('tabTeamKpi').classList.toggle('active', view === 'teamKpi');
   document.getElementById('tabRelate').classList.toggle('active', view === 'relate');
-  document.getElementById('tabInquiry').classList.toggle('active', view === 'inquiry');
+  document.getElementById('tabInquiry')?.classList.toggle('active', view === 'inquiry');
   // 릴레잇 뷰로 전환 시 데이터 렌더링
   if (view === 'teamKpi') renderTeamKpiDashboard();
   if (view === 'relate' && LATEST_DATA) renderRelateAnalysis(LATEST_DATA);
