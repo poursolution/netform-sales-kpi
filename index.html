@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>넷폼 영업 KPI 대시보드</title>
+  <link rel="icon" href="data:,">
+  <style>
+    :root {
+      --bg: #f4f6fa;
+      --surface: #ffffff;
+      --ink: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --blue: #2563eb;
+      --green: #059669;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      padding: 32px 20px;
+    }
+    main {
+      width: min(980px, 100%);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 34px;
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+    }
+    .eyebrow {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: #ecfdf5;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    h1 {
+      margin: 16px 0 8px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+    p {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 650;
+      line-height: 1.6;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 28px;
+    }
+    a.card {
+      display: block;
+      min-height: 150px;
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      color: inherit;
+      text-decoration: none;
+      background: #fbfcff;
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+    a.card:hover {
+      transform: translateY(-2px);
+      border-color: var(--blue);
+      box-shadow: 0 12px 26px rgba(37, 99, 235, 0.14);
+    }
+    .card strong {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+    .card span {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+      line-height: 1.55;
+    }
+    .note {
+      margin-top: 22px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #eff6ff;
+      color: #1e3a8a;
+      font-size: 13px;
+      font-weight: 750;
+      line-height: 1.55;
+    }
+    @media (max-width: 720px) {
+      main { padding: 24px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <span class="eyebrow">Netform Sales KPI</span>
+    <h1>영업 KPI와 매출통합 대시보드</h1>
+    <p>매출통합 대시보드가 원천 데이터를 계산하고, KPI 관리도구는 같은 사이트 안에서 자동 KPI를 읽기 전용으로 반영합니다.</p>
+
+    <div class="grid">
+      <a class="card" href="./kpi.html">
+        <strong>영업 KPI 관리도구</strong>
+        <span>담당자별 KPI, 운영관리, KPI 마스터를 확인합니다. 자동 KPI는 담당자가 수정할 수 없습니다.</span>
+      </a>
+      <a class="card" href="./sales-dashboard.html">
+        <strong>매출통합 대시보드</strong>
+        <span>계약, 릴레잇, PT, 문의 데이터를 계산하고 KPI 관리도구에 자동 연동 스냅샷을 제공합니다.</span>
+      </a>
+    </div>
+
+    <div class="note">처음 접속 시 매출통합 대시보드를 한 번 열어 자동 KPI 스냅샷을 만든 뒤 KPI 관리도구를 새로고침하면 됩니다.</div>
+  </main>
+</body>
+</html>
