@@ -458,7 +458,7 @@
   <div class="header">
     <div class="brand">영업매출현황 데이터 <span class="tag">경영진 실시간 대시보드</span></div>
     <div class="head-actions">
-      <button class="head-btn" onclick="openRelateSettings()" id="btnRelateKey">⚙️ Relate API 연결</button>
+      <button class="head-btn" onclick="openRelateSettings()" id="btnRelateKey">⚙️ Relate 공용 연동</button>
       <button class="head-btn" onclick="openInquirySettings()" id="btnInquirySheet">문의 시트 연결</button>
       <button class="head-btn dark" onclick="openExecutiveReport()">📄 경영진 보고서 보기 / 인쇄</button>
     </div>
@@ -1685,6 +1685,17 @@ function openExecutiveReport() {
 const RELATE_API = "https://api.relate.so/v1";
 const DEFAULT_RELATE_API_KEY = "";
 const DEFAULT_RELATE_PROCESS_ID = "";
+const DEFAULT_RELATE_PROXY_URL = "";
+
+function escapeAttr(value) {
+  return String(value || '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[ch]));
+}
 
 // 브랜드 정규화 — Relate 프로세스 이름이 다양해도 같은 브랜드로 합침
 function normalizeBrand(rawName) {
@@ -1701,15 +1712,22 @@ function getRelateConfig() {
   return {
     apiKey: localStorage.getItem('relate_api_key') || '',
     processId: localStorage.getItem('relate_process_id') || '',  // 비어있으면 자동 탐색
+    proxyUrl: localStorage.getItem('relate_proxy_url') || DEFAULT_RELATE_PROXY_URL,
   };
 }
-function saveRelateConfig(apiKey, processId) {
+function saveRelateConfig(apiKey, processId, proxyUrl) {
   if (apiKey !== null) localStorage.setItem('relate_api_key', apiKey);
   if (processId !== null) localStorage.setItem('relate_process_id', processId);
+  if (proxyUrl !== null) {
+    const clean = String(proxyUrl || '').trim().replace(/\/+$/, '');
+    if (clean) localStorage.setItem('relate_proxy_url', clean);
+    else localStorage.removeItem('relate_proxy_url');
+  }
 }
 function clearRelateConfig() {
   localStorage.removeItem('relate_api_key');
   localStorage.removeItem('relate_process_id');
+  localStorage.removeItem('relate_proxy_url');
 }
 
 // Relate API 공통 fetch 함수 (페이지네이션 자동 처리)
@@ -1807,9 +1825,66 @@ async function entryToPipelineItem(entry, statusTypeMap, apiKey, processName = '
   };
 }
 
+function normalizeRelateProxyUrl(proxyUrl) {
+  return String(proxyUrl || '').trim().replace(/\/+$/, '');
+}
+
+async function fetchRelateDealsFromProxy(proxyUrl, isAuto = false) {
+  const cleanProxyUrl = normalizeRelateProxyUrl(proxyUrl);
+  if (!cleanProxyUrl) throw new Error('공용 연동 주소가 비어있습니다');
+
+  const loader = document.getElementById('loader');
+  if (loader) {
+    loader.style.display = 'flex';
+    loader.textContent = '⚡ 공용 Relate 데이터 동기화...';
+  }
+
+  const endpoint = `${cleanProxyUrl}/relate/pipeline${isAuto ? '' : '?refresh=1'}`;
+  const response = await fetch(endpoint, { headers: { 'Accept': 'application/json' } });
+  if (!response.ok) throw new Error(`공용 Relate 연동 ${response.status}`);
+  const payload = await response.json();
+  if (!Array.isArray(payload.pipeline)) throw new Error('공용 Relate 응답에 pipeline 배열이 없습니다');
+
+  PIPELINE = payload.pipeline.map(item => ({
+    assigneeName: item.assigneeName || '미정',
+    stage: item.stage || '영업·관계',
+    orgName: item.orgName || item.name || '미정',
+    lastUpdated: item.lastUpdated || new Date().toISOString().split('T')[0],
+    createdDate: item.createdDate || item.lastUpdated || new Date().toISOString().split('T')[0],
+    estAmount: Number(item.estAmount) || 0,
+    brand: normalizeBrand(item.brand || item.processName || ''),
+  })).sort((a, b) => b.lastUpdated.localeCompare(a.lastUpdated));
+
+  if (loader) loader.style.display = 'none';
+  if (!isAuto) {
+    const updated = payload.updatedAt ? new Date(payload.updatedAt).toLocaleString('ko-KR') : '시간 정보 없음';
+    alert(`✅ 공용 Relate 동기화 완료\n영업기회 ${PIPELINE.length}건 · 프로세스 ${payload.processCount || '-'}개\n최신화: ${updated}`);
+  }
+  refresh();
+  return payload;
+}
+
 async function fetchRelateDeals(isAuto = false) {
   const loader = document.getElementById('loader');
   const cfg = getRelateConfig();
+
+  if (cfg.proxyUrl) {
+    try {
+      await fetchRelateDealsFromProxy(cfg.proxyUrl, isAuto);
+      return;
+    } catch (error) {
+      if (loader) loader.style.display = 'none';
+      console.error('공용 Relate 연동 오류:', error);
+      if (!cfg.apiKey) {
+        if (!isAuto) {
+          alert(`⚠️ 공용 Relate 연동 오류: ${error.message}\n\n공용 연동 주소를 확인해주세요.`);
+        }
+        refresh();
+        return;
+      }
+      if (!isAuto) console.warn('공용 연동 실패로 브라우저 API 키 직접 연동을 시도합니다.');
+    }
+  }
 
   // 키 없으면 폴백 (내장 데이터 사용)
   if (!cfg.apiKey) {
@@ -1974,33 +2049,37 @@ function openRelateSettings() {
   m.innerHTML = `
     <div class="modal-head">
       <div>
-        <div class="modal-title">⚙️ Relate API 연동 설정</div>
-        <div style="font-size:13px; color:var(--muted); margin-top:4px;">실제 Relate CRM 데이터로 자동 동기화</div>
+        <div class="modal-title">⚙️ Relate 공용 연동 설정</div>
+        <div style="font-size:13px; color:var(--muted); margin-top:4px;">공용 Worker를 우선 사용하고, 필요 시 브라우저 API 키 직접 연동으로 폴백합니다.</div>
       </div>
       <button class="close-btn" onclick="document.getElementById('modalBackdrop').classList.add('hidden')">닫기 ✕</button>
     </div>
     <div style="padding:8px 0;">
       <div style="margin-bottom:20px;">
-        <label style="display:block; font-size:13px; font-weight:700; color:#0f172a; margin-bottom:6px;">🔑 API 키 (Bearer Token)</label>
+        <label style="display:block; font-size:13px; font-weight:700; color:#0f172a; margin-bottom:6px;">🌐 공용 연동 주소</label>
+        <input type="url" id="relateProxyUrl" value="${escapeAttr(cfg.proxyUrl || '')}" placeholder="https://netform-sales-kpi-api.계정명.workers.dev" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px; font-family:monospace; font-size:13px;">
+        <div style="font-size:11px; color:var(--muted); margin-top:4px;">입력하면 직원별 API 키 없이 같은 Relate 데이터를 읽습니다. API 키는 Worker secret에만 저장됩니다.</div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="display:block; font-size:13px; font-weight:700; color:#0f172a; margin-bottom:6px;">🔑 API 키 직접 연동 <span style="font-weight:500; color:var(--muted);">(비상용/로컬 테스트)</span></label>
         ${cfg.apiKey ? `<div style="padding:8px 12px; background:#f1f5f9; border-radius:6px; font-family:monospace; font-size:12px; color:#475569; margin-bottom:6px;">${masked}</div>` : ''}
         <input type="password" id="relateApiKey" placeholder="${cfg.apiKey ? '새 키 입력 시에만 변경됨 (비워두면 기존 키 유지)' : 'Relate API Bearer token'}" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px; font-family:monospace; font-size:13px;">
-        <div style="font-size:11px; color:var(--muted); margin-top:4px;">localStorage에 안전하게 저장됨 (브라우저 외부로 전송되지 않음)</div>
+        <div style="font-size:11px; color:var(--muted); margin-top:4px;">공용 연동 주소가 없을 때만 사용합니다. 직원 브라우저별 저장 방식이라 운영용 기본값으로는 권장하지 않습니다.</div>
       </div>
       <div style="margin-bottom:20px;">
         <label style="display:block; font-size:13px; font-weight:700; color:#0f172a; margin-bottom:6px;">📋 프로세스 ID <span style="font-weight:500; color:var(--muted);">(선택사항)</span></label>
-        <input type="text" id="relateProcessId" value="${cfg.processId || ''}" placeholder="비워두면 process:true인 모든 List 자동 사용. 여러 개 콤마로 구분 (예: Jm9UpJ,QbkUlo)" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px; font-family:monospace; font-size:13px;">
-        <div style="font-size:11px; color:var(--muted); margin-top:4px;">Relate에서 파이프라인 URL의 마지막 영문/숫자 ID</div>
+        <input type="text" id="relateProcessId" value="${escapeAttr(cfg.processId || '')}" placeholder="직접 연동에서만 사용. 공용 Worker는 wrangler.toml/환경변수 기준" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px; font-family:monospace; font-size:13px;">
+        <div style="font-size:11px; color:var(--muted); margin-top:4px;">공용 Worker 배포 시에는 RELATE_PROCESS_IDS 환경변수로 관리합니다.</div>
       </div>
       <div style="padding:14px 18px; background:#eff6ff; border-left:4px solid var(--pri); border-radius:8px; font-size:12px; color:#1e3a8a; line-height:1.6; margin-bottom:20px;">
         <b>💡 동작 방식</b><br>
-        1) API 키 입력 후 [저장 + 동기화] 클릭<br>
-        2) Relate에서 process:true인 List(파이프라인)를 자동 탐색<br>
-        3) 각 List의 entries(영업기회) 전체 수집 (페이지네이션 자동)<br>
-        4) status type(won/active/lost)에 따라 계약·시공 / 영업·관계 / 패배 자동 분류<br>
-        5) 키 미입력 시 내장 백데이터 사용 (폴백)
+        1) 공용 Worker가 Relate API를 읽고 파이프라인 데이터를 만듭니다.<br>
+        2) 이 화면은 Worker URL만 호출하므로 직원별 API 키 입력이 필요 없습니다.<br>
+        3) KPI 관리도구는 이 화면이 계산한 자동 KPI 스냅샷을 읽습니다.<br>
+        4) 공용 주소가 없을 때만 브라우저 API 키 직접 연동을 사용합니다.
       </div>
       <div style="display:flex; gap:8px; justify-content:flex-end;">
-        ${cfg.apiKey ? `<button onclick="if(confirm('저장된 API 키를 삭제하시겠습니까?')){clearRelateConfig(); document.getElementById('modalBackdrop').classList.add('hidden'); alert('삭제됨');}" style="padding:10px 16px; background:#fee2e2; color:#991b1b; border:none; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer;">🗑️ 키 삭제</button>` : ''}
+        ${(cfg.apiKey || cfg.proxyUrl) ? `<button onclick="if(confirm('저장된 Relate 연동 설정을 삭제하시겠습니까?')){clearRelateConfig(); document.getElementById('modalBackdrop').classList.add('hidden'); alert('삭제됨');}" style="padding:10px 16px; background:#fee2e2; color:#991b1b; border:none; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer;">🗑️ 설정 삭제</button>` : ''}
         <button onclick="saveAndSync()" style="padding:10px 20px; background:#0f172a; color:white; border:none; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer;">💾 저장 + 동기화</button>
       </div>
     </div>`;
@@ -2008,12 +2087,13 @@ function openRelateSettings() {
 }
 
 function saveAndSync() {
+  const proxyUrlInput = document.getElementById('relateProxyUrl').value.trim();
   const apiKeyInput = document.getElementById('relateApiKey').value.trim();
   const processIdInput = document.getElementById('relateProcessId').value.trim();
   const cfg = getRelateConfig();
   // 키 입력값이 있으면 새로 저장, 없으면 기존 유지
-  if (apiKeyInput) saveRelateConfig(apiKeyInput, processIdInput);
-  else saveRelateConfig(null, processIdInput);
+  if (apiKeyInput) saveRelateConfig(apiKeyInput, processIdInput, proxyUrlInput);
+  else saveRelateConfig(null, processIdInput, proxyUrlInput);
   document.getElementById('modalBackdrop').classList.add('hidden');
   // 즉시 동기화
   fetchRelateDeals(false);

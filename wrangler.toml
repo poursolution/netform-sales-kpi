@@ -1,0 +1,12 @@
+name = "netform-sales-kpi-api"
+main = "worker/relate-proxy.js"
+compatibility_date = "2026-05-12"
+
+[vars]
+# GitHub Pages URL. 여러 origin을 허용하려면 쉼표로 구분합니다.
+CORS_ORIGIN = "https://poursolution.github.io"
+# 비워두면 process:true인 Relate List를 자동 탐색합니다.
+RELATE_PROCESS_IDS = ""
+
+# 배포 후 아래 secret을 별도로 등록해야 합니다.
+# wrangler secret put RELATE_API_KEY
