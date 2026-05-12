@@ -1,6 +1,8 @@
 name = "netform-sales-kpi-api"
 main = "worker/relate-proxy.js"
 compatibility_date = "2026-05-12"
+account_id = "f0d8aa6e731ecd2012952c89a425aa64"
+workers_dev = true
 
 [vars]
 # GitHub Pages URL. 여러 origin을 허용하려면 쉼표로 구분합니다.

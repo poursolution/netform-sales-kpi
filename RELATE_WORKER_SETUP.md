@@ -27,7 +27,7 @@ npx wrangler deploy
 예시:
 
 ```text
-https://netform-sales-kpi-api.<계정명>.workers.dev
+https://netform-sales-kpi-api.promieses.workers.dev
 ```
 
 5. 매출통합 대시보드에서 `Relate 연동`을 열고 `공용 연동 주소`에 Worker URL을 입력합니다.
