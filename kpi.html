@@ -945,12 +945,6 @@
     </div>
   </div>
 
-  <div class="app-tabs">
-    <button class="app-tab active" id="viewTab-member" onclick="switchView('member')">담당자 KPI</button>
-    <button class="app-tab" id="viewTab-ops" onclick="switchView('ops')">운영 관리</button>
-    <button class="app-tab" id="viewTab-master" onclick="switchView('master')">KPI 마스터</button>
-  </div>
-
   <div class="app-view" id="view-member">
     <div class="section-card">
     <div class="section-head">
@@ -985,25 +979,6 @@
   </div>
   </div>
 
-  <div class="app-view" id="view-ops" hidden>
-    <div class="section-card">
-      <div class="section-head">
-        <h2>운영 관리</h2>
-        <div class="meta">미입력, 증빙, 이견, 확정 상태를 관리합니다</div>
-      </div>
-      <div id="opsDashboard"></div>
-    </div>
-  </div>
-
-  <div class="app-view" id="view-master" hidden>
-    <div class="section-card">
-      <div class="section-head">
-        <h2>KPI 마스터</h2>
-        <div class="meta">측정식, 주기, 출처, 증빙 기준을 사전 정의합니다</div>
-      </div>
-      <div id="masterDashboard"></div>
-    </div>
-  </div>
 </div>
 
 <div class="modal-backdrop" id="kpiEditorModal" hidden>
@@ -1238,7 +1213,6 @@ const INITIAL_DATA = {
 
 let state = loadState();
 let activeMemberId = state.members[0]?.id || null;
-let activeView = 'member';
 
 function createDefaultSubKpis({ pipelineCurrent = 0, pipelineTarget = 38, ptCurrent = 0, ptTarget = 70 } = {}) {
   return [
@@ -1264,8 +1238,6 @@ function save() {
   state.schemaVersion = DATA_SCHEMA_VERSION;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   showSaveStatus();
-  if (activeView === 'ops') renderOpsDashboard();
-  if (activeView === 'master') renderMasterDashboard();
 }
 
 function cloneInitialData() {
@@ -1576,8 +1548,6 @@ function syncSalesLiveKpis({ render = false } = {}) {
     renderTeamKpis();
     renderTabs();
     renderMemberPanel();
-    renderOpsDashboard();
-    renderMasterDashboard();
   }
   return true;
 }
@@ -1648,18 +1618,6 @@ function kpiCurrentText(current, target, unit, pct) {
 }
 
 let kpiEditorContext = null;
-
-function switchView(view) {
-  activeView = view;
-  ['member', 'ops', 'master'].forEach(key => {
-    const panel = document.getElementById(`view-${key}`);
-    const tab = document.getElementById(`viewTab-${key}`);
-    if (panel) panel.hidden = key !== view;
-    if (tab) tab.classList.toggle('active', key === view);
-  });
-  if (view === 'ops') renderOpsDashboard();
-  if (view === 'master') renderMasterDashboard();
-}
 
 function showEditorField(id, show) {
   const el = document.getElementById(id);
@@ -2845,7 +2803,7 @@ function deletePoolItem(groupId, itemId) {
 
 function resetAll() {
   if (!confirm('초기화하시겠습니까?')) return;
-  state = JSON.parse(JSON.stringify(INITIAL_DATA)); activeMemberId = state.members[0].id; kpiPoolOpen = false; syncSalesLiveKpis(); save(); renderTeamKpis(); renderTabs(); renderMemberPanel(); renderKpiPool(); renderOpsDashboard(); renderMasterDashboard();
+  state = JSON.parse(JSON.stringify(INITIAL_DATA)); activeMemberId = state.members[0].id; kpiPoolOpen = false; syncSalesLiveKpis(); save(); renderTeamKpis(); renderTabs(); renderMemberPanel(); renderKpiPool();
 }
 
 function exportData() {
@@ -2862,8 +2820,6 @@ renderTeamKpis();
 renderTabs();
 renderMemberPanel();
 renderKpiPool();
-renderOpsDashboard();
-renderMasterDashboard();
 window.addEventListener('storage', event => {
   if (event.key === SALES_LIVE_KPI_KEY) syncSalesLiveKpis({ render: true });
 });
