@@ -1733,13 +1733,13 @@ function clearRelateConfig() {
 // Relate API 공통 fetch 함수 (페이지네이션 자동 처리)
 async function relateFetch(path, apiKey) {
   const url = path.startsWith('http') ? path : `${RELATE_API}${path}`;
-  const r = await fetch(url, { method:'GET', headers:{ 'Authorization': `Bearer ${apiKey}`, 'Content-Type':'application/json' } });
+  const r = await fetch(url, { method:'GET', headers:{ 'Authorization': `Bearer ${apiKey}`, 'Accept':'application/json', 'Content-Type':'application/json' } });
   if (!r.ok) throw new Error(`Relate API ${r.status}: ${path}`);
   return r.json();
 }
 
 // 전체 페이지 수집 (페이지네이션 자동) — 큰 페이지로 왕복 횟수 최소화
-async function relateFetchAll(path, apiKey, maxItems = 10000, pageSize = 200) {
+async function relateFetchAll(path, apiKey, maxItems = 10000, pageSize = 100) {
   const all = [];
   let after = 0;
   while (all.length < maxItems) {

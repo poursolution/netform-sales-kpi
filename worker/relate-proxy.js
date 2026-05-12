@@ -51,6 +51,7 @@ async function relateFetch(path, apiKey) {
     method: "GET",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
+      "Accept": "application/json",
       "Content-Type": "application/json",
     },
   });
@@ -58,7 +59,7 @@ async function relateFetch(path, apiKey) {
   return response.json();
 }
 
-async function relateFetchAll(path, apiKey, maxItems = 10000, pageSize = 200) {
+async function relateFetchAll(path, apiKey, maxItems = 10000, pageSize = 100) {
   const all = [];
   let after = 0;
   while (all.length < maxItems) {
