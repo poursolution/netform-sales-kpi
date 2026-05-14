@@ -476,20 +476,20 @@
   .sales-title{font-size:22px; font-weight:900; color:#0f172a; letter-spacing:-.5px;}
   .sales-desc{font-size:13px; color:#64748b; font-weight:650; margin-top:6px; line-height:1.5;}
   .sales-sync{font-size:12px; color:#64748b; font-weight:750; padding:8px 12px; border-radius:999px; background:#f8fafc; border:1px solid #e2e8f0; white-space:nowrap;}
-  .sales-hero-grid{display:grid; grid-template-columns:minmax(280px,1.1fr) repeat(4,minmax(138px,.55fr)); gap:14px; padding:20px 24px 12px;}
-  .sales-total{background:#0f172a; color:#fff; border-radius:16px; padding:24px; min-height:154px; display:flex; flex-direction:column; justify-content:space-between;}
+  .sales-hero-grid{display:grid; grid-template-columns:minmax(320px,1.25fr) repeat(3,minmax(180px,.75fr)); gap:16px; padding:22px 28px 16px;}
+  .sales-total{background:#0f172a; color:#fff; border-radius:16px; padding:26px; min-height:156px; display:flex; flex-direction:column; justify-content:space-between;}
   .sales-total .label{font-size:12px; color:#bfdbfe; font-weight:850;}
   .sales-total .value{font-size:42px; font-weight:950; letter-spacing:-1.2px; line-height:1; margin:10px 0;}
   .sales-total .sub{font-size:13px; color:#cbd5e1; font-weight:700;}
-  .sales-mini{background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:18px; min-height:154px; display:flex; flex-direction:column; justify-content:space-between;}
+  .sales-mini{background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:22px; min-height:156px; display:flex; flex-direction:column; justify-content:space-between;}
   .sales-mini .label{font-size:12px; color:#64748b; font-weight:850;}
-  .sales-mini .value{font-size:28px; font-weight:950; color:#0f172a; letter-spacing:-.7px;}
+  .sales-mini .value{font-size:32px; font-weight:950; color:#0f172a; letter-spacing:-.7px;}
   .sales-mini .sub{font-size:12px; color:#64748b; font-weight:700; line-height:1.45;}
   .sales-mini.danger{background:#fff7ed; border-color:#fed7aa;}
   .sales-mini.danger .value{color:#c2410c;}
-  .sales-alert{margin:0 24px 22px; border:1px solid #fecaca; background:#fef2f2; color:#991b1b; border-radius:14px; padding:12px 14px; font-size:12px; font-weight:800; line-height:1.55;}
+  .sales-alert{margin:0 28px 22px; border:1px solid #fecaca; background:#fef2f2; color:#991b1b; border-radius:14px; padding:13px 15px; font-size:13px; font-weight:800; line-height:1.55;}
   .sales-alert.neutral{border-color:#dbeafe; background:#eff6ff; color:#1e40af;}
-  .sales-split-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:0 24px 22px;}
+  .sales-split-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:0 28px 24px;}
   .sales-split-item{border:1px solid #e2e8f0; background:#f8fafc; border-radius:14px; padding:13px 14px; min-width:0;}
   .sales-split-item .name{font-size:12px; color:#64748b; font-weight:900;}
   .sales-split-item .num{font-size:21px; color:#0f172a; font-weight:950; letter-spacing:-.4px; margin-top:6px;}
@@ -499,15 +499,33 @@
   .sales-split-item.mgmt{background:#eff6ff; border-color:#bfdbfe;}
   .sales-split-item.mgmt .num{color:#1d4ed8;}
   .sales-split-item.other{background:#f8fafc;}
-  .evidence-layout{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(360px,.75fr); gap:18px; align-items:start;}
+  .sales-person-section{background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 8px 24px rgba(15,23,42,0.04); overflow:hidden;}
+  .sales-person-head{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; padding:20px 22px 16px; border-bottom:1px solid #e2e8f0;}
+  .sales-person-head .ttl{font-size:18px; font-weight:950; color:#0f172a; letter-spacing:-.25px;}
+  .sales-person-head .sub{font-size:13px; color:#64748b; font-weight:700; margin-top:5px;}
+  .sales-person-grid{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:18px;}
+  .sales-person-card{border:1px solid #e2e8f0; background:#fff; border-radius:15px; padding:16px; text-align:left; cursor:pointer; transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;}
+  .sales-person-card:hover{transform:translateY(-2px); border-color:#93c5fd; box-shadow:0 14px 28px rgba(15,23,42,.08);}
+  .sales-person-top{display:flex; justify-content:space-between; gap:10px; align-items:flex-start;}
+  .sales-person-name{font-size:17px; font-weight:950; color:#0f172a;}
+  .sales-person-role{font-size:10px; font-weight:950; border-radius:999px; padding:4px 7px; background:#f1f5f9; color:#475569; white-space:nowrap;}
+  .sales-person-role.kpi{background:#dcfce7; color:#047857;}
+  .sales-person-role.mgmt{background:#dbeafe; color:#1d4ed8;}
+  .sales-person-value{font-size:28px; line-height:1; font-weight:950; color:#0f172a; margin-top:16px; letter-spacing:-.7px;}
+  .sales-person-sub{font-size:12px; color:#64748b; font-weight:800; margin-top:7px; line-height:1.4;}
+  .sales-person-metrics{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px;}
+  .sales-person-metric{background:#f8fafc; border-radius:10px; padding:9px 10px;}
+  .sales-person-metric span{display:block; font-size:10px; color:#64748b; font-weight:900;}
+  .sales-person-metric b{display:block; font-size:13px; color:#0f172a; font-weight:950; margin-top:4px;}
+  .evidence-layout{display:none;}
   .evidence-panel{background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 8px 24px rgba(15,23,42,0.04); overflow:hidden;}
   .evidence-head{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; padding:20px 22px 16px; border-bottom:1px solid #e2e8f0;}
   .evidence-head .ttl{font-size:17px; font-weight:950; color:#0f172a; letter-spacing:-.25px;}
   .evidence-head .sub{font-size:12px; color:#64748b; font-weight:700; margin-top:5px;}
   .evidence-count{font-size:12px; color:#2563eb; font-weight:900; background:#eff6ff; padding:5px 10px; border-radius:999px; white-space:nowrap;}
   .evidence-list{display:flex; flex-direction:column;}
-  .revenue-evidence-row{display:grid; grid-template-columns:150px 140px minmax(0,1fr) 76px; gap:16px; align-items:center; padding:16px 22px; border-bottom:1px solid #f1f5f9;}
-  .pt-evidence-row{display:grid; grid-template-columns:120px 94px minmax(0,1fr) 70px; gap:14px; align-items:center; padding:15px 18px; border-bottom:1px solid #f1f5f9;}
+  .revenue-evidence-row{display:grid; grid-template-columns:170px 150px minmax(0,1fr) 92px; gap:18px; align-items:center; padding:18px 24px; border-bottom:1px solid #f1f5f9;}
+  .pt-evidence-row{display:grid; grid-template-columns:160px 120px minmax(0,1fr) 92px; gap:16px; align-items:center; padding:18px 24px; border-bottom:1px solid #f1f5f9;}
   .revenue-evidence-row:last-child,.pt-evidence-row:last-child{border-bottom:0;}
   .revenue-evidence-row:hover,.pt-evidence-row:hover{background:#f8fafc;}
   .evidence-name{font-size:15px; font-weight:950; color:#0f172a;}
@@ -528,11 +546,8 @@
   .evidence-empty{font-size:12px; color:#94a3b8; font-weight:750;}
   .evidence-btn{border:1px solid #cbd5e1; background:#fff; color:#0f172a; border-radius:10px; padding:8px 10px; font-size:12px; font-weight:900; cursor:pointer;}
   .evidence-btn:hover{background:#0f172a; border-color:#0f172a; color:#fff;}
-  .support-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
-  .support-grid .chart-card,.support-grid .ai-card{height:auto; min-height:280px;}
-  .support-grid .chart-container{height:220px;}
-  @media(max-width:1180px){.sales-hero-grid{grid-template-columns:1fr 1fr}.sales-split-strip{grid-template-columns:1fr}.evidence-layout,.support-grid{grid-template-columns:1fr}.pt-evidence-row{grid-template-columns:150px 110px minmax(0,1fr) 76px;}}
-  @media(max-width:760px){.wrap{padding:16px}.sales-hero-head{flex-direction:column}.sales-hero-grid{grid-template-columns:1fr}.sales-split-strip,.sales-alert{margin-left:16px; margin-right:16px}.revenue-evidence-row,.pt-evidence-row{grid-template-columns:1fr}.evidence-btn{width:max-content}.sales-total .value{font-size:34px}}
+  @media(max-width:1180px){.sales-hero-grid{grid-template-columns:1fr 1fr}.sales-split-strip{grid-template-columns:1fr}.sales-person-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pt-evidence-row{grid-template-columns:150px 110px minmax(0,1fr) 76px;}}
+  @media(max-width:760px){.wrap{padding:16px}.sales-hero-head{flex-direction:column}.sales-hero-grid{grid-template-columns:1fr}.sales-split-strip,.sales-alert{margin-left:16px; margin-right:16px}.sales-person-grid{grid-template-columns:1fr}.revenue-evidence-row,.pt-evidence-row{grid-template-columns:1fr}.evidence-btn{width:max-content}.sales-total .value{font-size:34px}}
   #loader{position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#0f172a; color:white; padding:12px 24px; border-radius:8px; font-weight:700; font-size:14px; z-index:9999; display:none; box-shadow:0 4px 12px rgba(0,0,0,0.3); align-items:center; gap:8px;}
 </style>
 </head>
@@ -596,11 +611,6 @@
             <div class="value" id="pageKpiRevenue">0원</div>
             <div class="sub" id="pageKpiRevenueSub">영업담당자 5명 기준</div>
           </div>
-          <div class="sales-mini">
-            <div class="label">관리자·외부 기여</div>
-            <div class="value" id="pageNonKpiRevenue">0원</div>
-            <div class="sub" id="pageNonKpiRevenueSub">상무님·기타 담당 포함</div>
-          </div>
           <div class="sales-mini danger">
             <div class="label">남은 목표</div>
             <div class="value" id="pageRevenueGap">0원</div>
@@ -632,6 +642,17 @@
         </div>
       </section>
 
+      <section class="sales-person-section">
+        <div class="sales-person-head">
+          <div>
+            <div class="ttl">담당자별 성과</div>
+            <div class="sub">매출과 PT 핵심 근거만 카드로 보고, 클릭하면 상세 내역을 확인합니다.</div>
+          </div>
+          <div class="evidence-count" id="salesPersonCount">0명</div>
+        </div>
+        <div class="sales-person-grid" id="salesPersonCards"></div>
+      </section>
+
       <section class="evidence-layout">
         <div class="evidence-panel">
           <div class="evidence-head">
@@ -656,16 +677,6 @@
         </div>
       </section>
 
-      <section class="support-grid">
-        <div class="chart-card">
-          <div class="title">월별 계약 매출 흐름</div>
-          <div class="chart-container"><canvas id="trendChart"></canvas></div>
-        </div>
-        <div class="ai-card">
-          <div class="title">운영 코멘트</div>
-          <div class="ai-list" id="aiComments"></div>
-        </div>
-      </section>
     </div>
   </div>
 
@@ -1169,6 +1180,32 @@ function renderEvidenceLists(data){
   const ptRows = [...data.rows].sort((a,b) => (b.win + b.loss + b.pending) - (a.win + a.loss + a.pending));
   const totalContracts = data.rows.reduce((sum, r) => sum + r.conts.length, 0);
   const totalPts = data.rows.reduce((sum, r) => sum + r.pts.length, 0);
+  const personRows = [...data.rows].sort((a,b) => {
+    const ga = revenueGroup(a.name), gb = revenueGroup(b.name);
+    if (ga.order !== gb.order) return ga.order - gb.order;
+    return (b.cSum + b.pts.length * 10000000) - (a.cSum + a.pts.length * 10000000);
+  });
+
+  setText('salesPersonCount', `${personRows.length}명`);
+  setHtml('salesPersonCards', personRows.map(r => {
+    const group = revenueGroup(r.name);
+    const ptClosed = r.win + r.loss;
+    const ptText = ptClosed ? `${r.winRate}%` : '-';
+    return `
+      <button class="sales-person-card" type="button" onclick="openAssigneeEvidence('${escapeAttr(r.name)}')">
+        <div class="sales-person-top">
+          <div class="sales-person-name">${escapeAttr(r.name)}</div>
+          <div class="sales-person-role ${group.key}">${group.label}</div>
+        </div>
+        <div class="sales-person-value">${fmtMoney(r.cSum)}</div>
+        <div class="sales-person-sub">계약 ${r.conts.length}건 · 진행 예상 ${fmtMoney(r.pContractSum)}</div>
+        <div class="sales-person-metrics">
+          <div class="sales-person-metric"><span>PT 승률</span><b>${ptText}</b></div>
+          <div class="sales-person-metric"><span>PT 현황</span><b>${r.pts.length}건 · 미정 ${r.pending}</b></div>
+        </div>
+      </button>
+    `;
+  }).join(''));
 
   setText('revenueEvidenceCount', `${revenueRows.filter(r => r.cSum > 0).length}명`);
   setText('ptEvidenceCount', `${totalPts}건`);
@@ -1233,8 +1270,6 @@ function render(data){
   setText('pageTotalRevenueSub', `연간 목표 대비 ${revenue.progressToAnnual}% · 현재시점 목표 대비 ${revenue.progressToElapsed}%`);
   setText('pageKpiRevenue', fmtMoney(revenue.kpiRevenue));
   setText('pageKpiRevenueSub', `전체 매출 중 ${revenue.kpiShare}% · ${revenue.kpiContracts.length}건`);
-  setText('pageNonKpiRevenue', fmtMoney(revenue.managerRevenue + revenue.otherRevenue));
-  setText('pageNonKpiRevenueSub', `관리자 ${fmtMoney(revenue.managerRevenue)} · 기타 ${fmtMoney(revenue.otherRevenue)}`);
   setText('pageRevenueGap', fmtMoney(revenue.gap));
   setText('pageRevenueGapSub', `남은 월 필요 매출 ${fmtMoney(revenue.requiredMonthly)}`);
   setText('pagePtRate', `${ptRate}%`);
@@ -1250,8 +1285,8 @@ function render(data){
     const isBad = revenue.progressToElapsed < 70;
     riskNote.className = `sales-alert${isBad ? '' : ' neutral'}`;
     riskNote.textContent = isBad
-      ? `경고: ${periodLabel()} 기준 전체 계약매출은 ${fmtMoney(revenue.totalRevenue)}입니다. 230억 목표를 선형 기준으로 보면 현재시점 목표 대비 ${revenue.progressToElapsed}% 수준이며, 남은 목표는 ${fmtMoney(revenue.gap)}입니다.`
-      : `현재 ${periodLabel()} 기준 전체 계약매출은 ${fmtMoney(revenue.totalRevenue)}이며, 현재시점 목표 대비 ${revenue.progressToElapsed}%입니다.`;
+      ? `목표 대비 부족: 현재시점 ${revenue.progressToElapsed}% · 남은 목표 ${fmtMoney(revenue.gap)} · 남은 월 필요 ${fmtMoney(revenue.requiredMonthly)}`
+      : `목표 추적 중: 현재시점 ${revenue.progressToElapsed}% · 누적 계약매출 ${fmtMoney(revenue.totalRevenue)}`;
   }
   setText('salesDataSource', `${periodLabel()} · 계약 ${revenue.confirmedContracts.length}건 · PT ${detail.totalPts}건 · ${PT_SOURCE_STATUS}`);
   setHtml('aiComments', generateAIComments(data));
