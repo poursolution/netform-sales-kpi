@@ -399,7 +399,7 @@
   .kpi-mission{background:#f1f5f9; border-left:4px solid var(--pri); border-radius:14px; padding:20px 24px; margin-bottom:18px;}
   .kpi-mission .eyebrow{font-size:12px; color:#2563eb; font-weight:850; margin-bottom:10px;}
   .kpi-mission .title{font-size:18px; color:#0f172a; font-weight:850; line-height:1.55;}
-  .kpi-focus{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px;}
+  .kpi-focus{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px;}
   .kpi-focus-card{background:#eff6ff; border:1px solid #3b82f6; border-radius:14px; padding:22px; text-align:center;}
   .kpi-focus-card .num{font-size:34px; font-weight:900; color:#2563eb; line-height:1;}
   .kpi-focus-card .label{margin-top:10px; color:#64748b; font-size:13px; font-weight:800;}
@@ -446,7 +446,29 @@
   .person-kpi-row-actions button{border:0; border-radius:8px; padding:8px 10px; font-size:12px; font-weight:850; cursor:pointer;}
   .person-kpi-row-actions .edit{background:#eff6ff; color:#1d4ed8;}
   .person-kpi-row-actions .detail{background:#0f172a; color:white;}
-  @media(max-width:900px){.lead-grid{grid-template-columns:repeat(2,1fr)}.lead-layout{grid-template-columns:1fr}.lead-settings input{min-width:100%;}.kpi-focus{grid-template-columns:1fr}.task-row{grid-template-columns:1fr}.task-owner{text-align:left}.person-kpi-grid{grid-template-columns:1fr}.person-kpi-list-row{grid-template-columns:1fr}.person-kpi-row-actions{justify-content:flex-start}}
+  .assignee-performance-grid{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px;}
+  .assignee-performance-card{background:#fff; border:1px solid #e2e8f0; border-radius:16px; padding:16px; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease; min-height:210px; display:flex; flex-direction:column; justify-content:space-between;}
+  .assignee-performance-card:hover{transform:translateY(-2px); border-color:#93c5fd; box-shadow:0 14px 28px rgba(15,23,42,.08);}
+  .assignee-performance-head{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:12px;}
+  .assignee-performance-name{font-size:18px; font-weight:950; color:#0f172a; letter-spacing:-.2px;}
+  .assignee-performance-status{font-size:11px; font-weight:950; border-radius:999px; padding:4px 8px; white-space:nowrap; background:#f1f5f9; color:#475569;}
+  .assignee-performance-status.good{background:#dcfce7; color:#047857;}
+  .assignee-performance-status.warn{background:#fef3c7; color:#b45309;}
+  .assignee-performance-status.bad{background:#fee2e2; color:#b91c1c;}
+  .assignee-performance-main{margin-bottom:14px;}
+  .assignee-performance-main .value{font-size:30px; line-height:1; font-weight:950; color:#0f172a; letter-spacing:-.8px;}
+  .assignee-performance-main .meta{font-size:12px; color:#64748b; font-weight:800; margin-top:8px; line-height:1.4;}
+  .assignee-performance-metrics{display:grid; grid-template-columns:1fr; gap:7px; margin-top:12px;}
+  .assignee-performance-metric{display:flex; justify-content:space-between; gap:8px; align-items:center; border-top:1px solid #f1f5f9; padding-top:7px; font-size:11.5px; font-weight:850; color:#334155;}
+  .assignee-performance-metric span:first-child{color:#64748b;}
+  .assignee-performance-foot{margin-top:12px; color:#2563eb; font-size:12px; font-weight:950;}
+  .assignee-modal-summary{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:16px;}
+  .assignee-modal-stat{background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:12px;}
+  .assignee-modal-stat .label{font-size:11px; color:#64748b; font-weight:900;}
+  .assignee-modal-stat .value{font-size:20px; color:#0f172a; font-weight:950; margin-top:6px;}
+  .assignee-modal-stat .hint{font-size:11px; color:#64748b; font-weight:750; margin-top:4px; line-height:1.35;}
+  @media(max-width:1180px){.assignee-performance-grid{grid-template-columns:repeat(2,1fr)}.kpi-focus{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:900px){.lead-grid{grid-template-columns:repeat(2,1fr)}.lead-layout{grid-template-columns:1fr}.lead-settings input{min-width:100%;}.kpi-focus{grid-template-columns:1fr}.task-row{grid-template-columns:1fr}.task-owner{text-align:left}.person-kpi-grid{grid-template-columns:1fr}.person-kpi-list-row{grid-template-columns:1fr}.person-kpi-row-actions{justify-content:flex-start}.assignee-performance-grid,.assignee-modal-summary{grid-template-columns:1fr}}
   .sales-page{display:flex; flex-direction:column; gap:18px;}
   .sales-hero{background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 10px 28px rgba(15,23,42,0.05); overflow:hidden;}
   .sales-hero-head{display:flex; justify-content:space-between; gap:18px; align-items:flex-start; padding:22px 24px 0;}
@@ -454,7 +476,7 @@
   .sales-title{font-size:22px; font-weight:900; color:#0f172a; letter-spacing:-.5px;}
   .sales-desc{font-size:13px; color:#64748b; font-weight:650; margin-top:6px; line-height:1.5;}
   .sales-sync{font-size:12px; color:#64748b; font-weight:750; padding:8px 12px; border-radius:999px; background:#f8fafc; border:1px solid #e2e8f0; white-space:nowrap;}
-  .sales-hero-grid{display:grid; grid-template-columns:minmax(300px,1.25fr) repeat(3,minmax(160px,.65fr)); gap:14px; padding:20px 24px 24px;}
+  .sales-hero-grid{display:grid; grid-template-columns:minmax(280px,1.1fr) repeat(4,minmax(138px,.55fr)); gap:14px; padding:20px 24px 12px;}
   .sales-total{background:#0f172a; color:#fff; border-radius:16px; padding:24px; min-height:154px; display:flex; flex-direction:column; justify-content:space-between;}
   .sales-total .label{font-size:12px; color:#bfdbfe; font-weight:850;}
   .sales-total .value{font-size:42px; font-weight:950; letter-spacing:-1.2px; line-height:1; margin:10px 0;}
@@ -463,6 +485,20 @@
   .sales-mini .label{font-size:12px; color:#64748b; font-weight:850;}
   .sales-mini .value{font-size:28px; font-weight:950; color:#0f172a; letter-spacing:-.7px;}
   .sales-mini .sub{font-size:12px; color:#64748b; font-weight:700; line-height:1.45;}
+  .sales-mini.danger{background:#fff7ed; border-color:#fed7aa;}
+  .sales-mini.danger .value{color:#c2410c;}
+  .sales-alert{margin:0 24px 22px; border:1px solid #fecaca; background:#fef2f2; color:#991b1b; border-radius:14px; padding:12px 14px; font-size:12px; font-weight:800; line-height:1.55;}
+  .sales-alert.neutral{border-color:#dbeafe; background:#eff6ff; color:#1e40af;}
+  .sales-split-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:0 24px 22px;}
+  .sales-split-item{border:1px solid #e2e8f0; background:#f8fafc; border-radius:14px; padding:13px 14px; min-width:0;}
+  .sales-split-item .name{font-size:12px; color:#64748b; font-weight:900;}
+  .sales-split-item .num{font-size:21px; color:#0f172a; font-weight:950; letter-spacing:-.4px; margin-top:6px;}
+  .sales-split-item .hint{font-size:11px; color:#64748b; font-weight:750; margin-top:4px; line-height:1.35;}
+  .sales-split-item.kpi{background:#ecfdf5; border-color:#bbf7d0;}
+  .sales-split-item.kpi .num{color:#047857;}
+  .sales-split-item.mgmt{background:#eff6ff; border-color:#bfdbfe;}
+  .sales-split-item.mgmt .num{color:#1d4ed8;}
+  .sales-split-item.other{background:#f8fafc;}
   .evidence-layout{display:grid; grid-template-columns:minmax(0,1.25fr) minmax(360px,.75fr); gap:18px; align-items:start;}
   .evidence-panel{background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 8px 24px rgba(15,23,42,0.04); overflow:hidden;}
   .evidence-head{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; padding:20px 22px 16px; border-bottom:1px solid #e2e8f0;}
@@ -476,6 +512,10 @@
   .revenue-evidence-row:hover,.pt-evidence-row:hover{background:#f8fafc;}
   .evidence-name{font-size:15px; font-weight:950; color:#0f172a;}
   .evidence-role{font-size:11px; color:#94a3b8; font-weight:800; margin-top:4px;}
+  .evidence-badge{display:inline-flex; align-items:center; width:max-content; margin-top:7px; border-radius:999px; padding:3px 7px; font-size:10px; font-weight:900; background:#f1f5f9; color:#475569;}
+  .evidence-badge.kpi{background:#dcfce7; color:#047857;}
+  .evidence-badge.mgmt{background:#dbeafe; color:#1d4ed8;}
+  .evidence-badge.other{background:#f1f5f9; color:#64748b;}
   .evidence-number{font-size:19px; font-weight:950; color:#0f172a; letter-spacing:-.35px;}
   .evidence-number.blue{color:#1d4ed8;}
   .evidence-number.green{color:#047857;}
@@ -491,8 +531,8 @@
   .support-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
   .support-grid .chart-card,.support-grid .ai-card{height:auto; min-height:280px;}
   .support-grid .chart-container{height:220px;}
-  @media(max-width:1180px){.sales-hero-grid{grid-template-columns:1fr 1fr}.evidence-layout,.support-grid{grid-template-columns:1fr}.pt-evidence-row{grid-template-columns:150px 110px minmax(0,1fr) 76px;}}
-  @media(max-width:760px){.wrap{padding:16px}.sales-hero-head{flex-direction:column}.sales-hero-grid{grid-template-columns:1fr}.revenue-evidence-row,.pt-evidence-row{grid-template-columns:1fr}.evidence-btn{width:max-content}.sales-total .value{font-size:34px}}
+  @media(max-width:1180px){.sales-hero-grid{grid-template-columns:1fr 1fr}.sales-split-strip{grid-template-columns:1fr}.evidence-layout,.support-grid{grid-template-columns:1fr}.pt-evidence-row{grid-template-columns:150px 110px minmax(0,1fr) 76px;}}
+  @media(max-width:760px){.wrap{padding:16px}.sales-hero-head{flex-direction:column}.sales-hero-grid{grid-template-columns:1fr}.sales-split-strip,.sales-alert{margin-left:16px; margin-right:16px}.revenue-evidence-row,.pt-evidence-row{grid-template-columns:1fr}.evidence-btn{width:max-content}.sales-total .value{font-size:34px}}
   #loader{position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#0f172a; color:white; padding:12px 24px; border-radius:8px; font-weight:700; font-size:14px; z-index:9999; display:none; box-shadow:0 4px 12px rgba(0,0,0,0.3); align-items:center; gap:8px;}
 </style>
 </head>
@@ -538,33 +578,56 @@
           <div>
             <div class="sales-eyebrow">SALES EVIDENCE</div>
             <div class="sales-title">총 매출과 담당자별 근거를 한 화면에서 확인</div>
-            <div class="sales-desc">계약 매출, 릴레잇 진행금액, PT 승패 근거를 담당자별로 바로 확인하는 보고용 첫 화면입니다.</div>
+            <div class="sales-desc">계약 매출을 KPI 대상·관리자·기타 기여로 분리하고, 담당자별 매출 근거와 PT 승패 근거를 바로 확인하는 보고용 첫 화면입니다.</div>
           </div>
           <div class="sales-sync" id="salesDataSource">계약·PT·릴레잇 기준</div>
         </div>
         <div class="sales-hero-grid">
           <div class="sales-total kpi-clickable" onclick="openKpiDetail('contract')">
             <div>
-              <div class="label">총 매출</div>
+              <div class="label">전체 계약매출</div>
               <div class="value" id="pageTotalRevenue">0원</div>
-              <div class="sub" id="pageTotalRevenueSub">계약 0건 기준</div>
+              <div class="sub" id="pageTotalRevenueSub">230억 목표 대비 0%</div>
             </div>
             <div class="sub">클릭하면 계약 산출 근거를 확인합니다.</div>
           </div>
-          <div class="sales-mini kpi-clickable" onclick="openKpiDetail('pipeline')">
-            <div class="label">진행 예상수주</div>
-            <div class="value" id="pagePipelineRevenue">0원</div>
-            <div class="sub" id="pagePipelineSub">릴레잇 계약·시공 단계 0건</div>
+          <div class="sales-mini">
+            <div class="label">KPI 대상 매출</div>
+            <div class="value" id="pageKpiRevenue">0원</div>
+            <div class="sub" id="pageKpiRevenueSub">영업담당자 5명 기준</div>
+          </div>
+          <div class="sales-mini">
+            <div class="label">관리자·외부 기여</div>
+            <div class="value" id="pageNonKpiRevenue">0원</div>
+            <div class="sub" id="pageNonKpiRevenueSub">상무님·기타 담당 포함</div>
+          </div>
+          <div class="sales-mini danger">
+            <div class="label">남은 목표</div>
+            <div class="value" id="pageRevenueGap">0원</div>
+            <div class="sub" id="pageRevenueGapSub">남은 월 필요 매출 0원</div>
           </div>
           <div class="sales-mini kpi-clickable" onclick="openKpiDetail('ptrate')">
             <div class="label">PT 승률</div>
             <div class="value" id="pagePtRate">0%</div>
             <div class="sub" id="pagePtSub">승패 확정 0건 · 미정 0건</div>
           </div>
-          <div class="sales-mini kpi-clickable" onclick="openKpiDetail('convrate')">
-            <div class="label">문의 계약 전환</div>
-            <div class="value" id="pageConvRate">0%</div>
-            <div class="sub" id="pageConvSub">문의 0건 · 계약 0건</div>
+        </div>
+        <div class="sales-alert" id="salesRiskNote">매출 목표 대비 부족분을 산정 중입니다.</div>
+        <div class="sales-split-strip">
+          <div class="sales-split-item kpi">
+            <div class="name">KPI 대상 영업담당자</div>
+            <div class="num" id="splitKpiRevenue">0원</div>
+            <div class="hint" id="splitKpiHint">한준엽·한인규·정정훈·김성민·이필선</div>
+          </div>
+          <div class="sales-split-item mgmt">
+            <div class="name">관리자 직접 기여</div>
+            <div class="num" id="splitManagerRevenue">0원</div>
+            <div class="hint" id="splitManagerHint">황윤선 기준</div>
+          </div>
+          <div class="sales-split-item other">
+            <div class="name">기타·외부·미배정</div>
+            <div class="num" id="splitOtherRevenue">0원</div>
+            <div class="hint" id="splitOtherHint">KPI 대상 외 계약 매출</div>
           </div>
         </div>
       </section>
@@ -574,7 +637,7 @@
           <div class="evidence-head">
             <div>
               <div class="ttl">담당자별 매출 근거</div>
-              <div class="sub">계약금액 기준으로 정렬하고, 각 담당자의 주요 계약 건을 바로 보여줍니다.</div>
+              <div class="sub">KPI 대상 담당자를 먼저 보고, 관리자·기타 기여는 분리해서 확인합니다.</div>
             </div>
             <div class="evidence-count" id="revenueEvidenceCount">0명</div>
           </div>
@@ -683,6 +746,8 @@
 <div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal" id="modal" onclick="event.stopPropagation()"></div></div>
 <script>
 const ASSIGNEES = ['황윤선','이필선','한준엽','한인규','정정훈','김성민','조재연','조성용'];  // 조민준 제외 
+const SALES_KPI_ASSIGNEES = ['한준엽','한인규','정정훈','김성민','이필선'];
+const MANAGER_REVENUE_ASSIGNEES = ['황윤선'];
 let STATE = { year: 2026, quarter: 'all', relateBrand: 'all' };
 function setRelateBrand(b) { STATE.relateBrand = b; if (LATEST_DATA) renderRelateAnalysis(LATEST_DATA); }
 
@@ -905,8 +970,10 @@ function generateAIComments(data) {
   const { rows, totals, hmData } = data;
   if(totals.ptTot === 0 && totals.fee === 0) return `<div class="ai-item"><span class="icon">🔍</span> <div>선택하신 기간에 데이터가 없습니다.</div></div>`;
   let comments = [];
+  const revenueBreakdown = getSalesRevenueBreakdown();
+  comments.push(`<div class="ai-item" style="border-left-color:${revenueBreakdown.progressToElapsed < 70 ? 'var(--red)' : 'var(--green)'}"><span class="icon">📌</span> <div><b>[매출 목표 진단]</b> 전체 계약매출은 <b>${fmtMoney(revenueBreakdown.totalRevenue)}</b>이며, 이 중 KPI 대상 영업담당자 5명의 매출은 <b>${fmtMoney(revenueBreakdown.kpiRevenue)}</b>입니다. 230억 목표 기준 남은 목표는 <b>${fmtMoney(revenueBreakdown.gap)}</b>, 남은 월 필요 매출은 <b>${fmtMoney(revenueBreakdown.requiredMonthly)}</b>입니다.</div></div>`);
   const winR = totals.ptTot > 0 ? Math.round(totals.ptWin/totals.ptTot*100) : 0;
-  comments.push(`<div class="ai-item"><span class="icon">📈</span> <div>현재 조회 기간(${periodLabel()}) <b>팀 종합 PT 승률은 ${winR}%</b>, <b>총 수주액은 ${fmtMoney(totals.fee)}</b>입니다.</div></div>`);
+  comments.push(`<div class="ai-item"><span class="icon">📈</span> <div>현재 조회 기간(${periodLabel()}) <b>팀 종합 PT 승률은 ${winR}%</b>, <b>전체 계약매출은 ${fmtMoney(revenueBreakdown.totalRevenue)}</b>입니다.</div></div>`);
 
   // ====== 영업/CRM 진단 (대표 관점) ======
   const today = new Date();
@@ -1027,8 +1094,78 @@ function ptTone(result){
   return 'pending';
 }
 
+function salesPeriodMonths(){
+  if (STATE.quarter === 'all') return [1,2,3,4,5,6,7,8,9,10,11,12];
+  const start = (Number(STATE.quarter) - 1) * 3 + 1;
+  return [start, start + 1, start + 2];
+}
+
+function revenueGroup(name){
+  if (SALES_KPI_ASSIGNEES.includes(name)) return { key:'kpi', label:'KPI 담당자', order:0 };
+  if (MANAGER_REVENUE_ASSIGNEES.includes(name)) return { key:'mgmt', label:'관리자 기여', order:1 };
+  return { key:'other', label:'기타/외부', order:2 };
+}
+
+function remainingMonthsForRunRate(){
+  if (STATE.quarter !== 'all') return salesPeriodMonths().length;
+  const selectedYear = Number(STATE.year);
+  const now = new Date();
+  if (selectedYear && selectedYear === now.getFullYear()) {
+    return Math.max(1, 12 - (now.getMonth() + 1));
+  }
+  return 12;
+}
+
+function getSalesRevenueBreakdown(){
+  const totalTarget = Number(getTeamKpiConfig().totalRevenue) || 23000000000;
+  const months = salesPeriodMonths();
+  const periodTarget = totalTarget / 12 * months.length;
+  const confirmedContracts = filterByPeriod(CONTRACTS, STATE.year, STATE.quarter, 'signedDate').filter(c => c.contractAmount > 0);
+  const kpiContracts = confirmedContracts.filter(c => SALES_KPI_ASSIGNEES.includes(c.managerName));
+  const managerContracts = confirmedContracts.filter(c => MANAGER_REVENUE_ASSIGNEES.includes(c.managerName));
+  const otherContracts = confirmedContracts.filter(c => !SALES_KPI_ASSIGNEES.includes(c.managerName) && !MANAGER_REVENUE_ASSIGNEES.includes(c.managerName));
+  const sum = arr => arr.reduce((s,c)=>s+c.contractAmount,0);
+  const totalRevenue = sum(confirmedContracts);
+  const kpiRevenue = sum(kpiContracts);
+  const managerRevenue = sum(managerContracts);
+  const otherRevenue = sum(otherContracts);
+  const selectedYear = Number(STATE.year);
+  const now = new Date();
+  const elapsedMonths = selectedYear && selectedYear === now.getFullYear() && STATE.quarter === 'all'
+    ? Math.min(now.getMonth() + 1, 12)
+    : months.length;
+  const elapsedTarget = totalTarget / 12 * elapsedMonths;
+  const gapTarget = STATE.quarter === 'all' ? totalTarget : periodTarget;
+  const gap = Math.max(0, gapTarget - totalRevenue);
+  return {
+    confirmedContracts,
+    totalTarget,
+    periodTarget,
+    elapsedTarget,
+    gapTarget,
+    gap,
+    requiredMonthly: gap / remainingMonthsForRunRate(),
+    totalRevenue,
+    kpiRevenue,
+    managerRevenue,
+    otherRevenue,
+    kpiContracts,
+    managerContracts,
+    otherContracts,
+    progressToAnnual: kpiPercent(totalRevenue, totalTarget),
+    progressToElapsed: kpiPercent(totalRevenue, elapsedTarget),
+    kpiShare: totalRevenue ? Math.round(kpiRevenue / totalRevenue * 100) : 0,
+    managerShare: totalRevenue ? Math.round(managerRevenue / totalRevenue * 100) : 0,
+    otherShare: totalRevenue ? Math.round(otherRevenue / totalRevenue * 100) : 0
+  };
+}
+
 function renderEvidenceLists(data){
-  const revenueRows = [...data.rows].sort((a,b) => b.cSum - a.cSum);
+  const revenueRows = [...data.rows].sort((a,b) => {
+    const ga = revenueGroup(a.name), gb = revenueGroup(b.name);
+    if (ga.order !== gb.order) return ga.order - gb.order;
+    return b.cSum - a.cSum;
+  });
   const ptRows = [...data.rows].sort((a,b) => (b.win + b.loss + b.pending) - (a.win + a.loss + a.pending));
   const totalContracts = data.rows.reduce((sum, r) => sum + r.conts.length, 0);
   const totalPts = data.rows.reduce((sum, r) => sum + r.pts.length, 0);
@@ -1037,6 +1174,7 @@ function renderEvidenceLists(data){
   setText('ptEvidenceCount', `${totalPts}건`);
 
   setHtml('revenueEvidenceBody', revenueRows.map(r => {
+    const group = revenueGroup(r.name);
     const majorContracts = [...r.conts]
       .filter(c => c.contractAmount > 0)
       .sort((a,b) => b.contractAmount - a.contractAmount)
@@ -1049,6 +1187,7 @@ function renderEvidenceLists(data){
         <div>
           <div class="evidence-name">${escapeAttr(r.name)}</div>
           <div class="evidence-role">계약 ${r.conts.length}건</div>
+          <div class="evidence-badge ${group.key}">${group.label}</div>
         </div>
         <div>
           <div class="evidence-number">${fmtMoney(r.cSum)}</div>
@@ -1087,18 +1226,34 @@ function renderEvidenceLists(data){
 function render(data){
   setText('periodMeta', `${periodLabel()} 기준`);
   const detail = renderEvidenceLists(data);
+  const revenue = getSalesRevenueBreakdown();
   const ptRate = data.totals.ptTot > 0 ? Math.round(data.totals.ptWin / data.totals.ptTot * 100) : 0;
-  const convRate = data.totals.est > 0 ? Math.round(data.totals.cont / data.totals.est * 100) : 0;
 
-  setText('pageTotalRevenue', fmtMoney(data.totals.fee));
-  setText('pageTotalRevenueSub', `계약 ${detail.totalContracts}건 기준`);
-  setText('pagePipelineRevenue', fmtMoney(data.totals.pipeContractVal));
-  setText('pagePipelineSub', `릴레잇 계약·시공 단계 ${data.totals.pipeContractCnt}건 · 기회비용 ${fmtMoney(data.totals.pipeSalesVal)}`);
+  setText('pageTotalRevenue', fmtMoney(revenue.totalRevenue));
+  setText('pageTotalRevenueSub', `연간 목표 대비 ${revenue.progressToAnnual}% · 현재시점 목표 대비 ${revenue.progressToElapsed}%`);
+  setText('pageKpiRevenue', fmtMoney(revenue.kpiRevenue));
+  setText('pageKpiRevenueSub', `전체 매출 중 ${revenue.kpiShare}% · ${revenue.kpiContracts.length}건`);
+  setText('pageNonKpiRevenue', fmtMoney(revenue.managerRevenue + revenue.otherRevenue));
+  setText('pageNonKpiRevenueSub', `관리자 ${fmtMoney(revenue.managerRevenue)} · 기타 ${fmtMoney(revenue.otherRevenue)}`);
+  setText('pageRevenueGap', fmtMoney(revenue.gap));
+  setText('pageRevenueGapSub', `남은 월 필요 매출 ${fmtMoney(revenue.requiredMonthly)}`);
   setText('pagePtRate', `${ptRate}%`);
   setText('pagePtSub', `승패 확정 ${data.totals.ptTot}건 · 미정 ${data.totals.ptPending}건`);
-  setText('pageConvRate', `${convRate}%`);
-  setText('pageConvSub', `문의 ${data.totals.est}건 · 계약 ${data.totals.cont}건`);
-  setText('salesDataSource', `${periodLabel()} · 계약 ${detail.totalContracts}건 · PT ${detail.totalPts}건 · ${PT_SOURCE_STATUS}`);
+  setText('splitKpiRevenue', fmtMoney(revenue.kpiRevenue));
+  setText('splitKpiHint', `${SALES_KPI_ASSIGNEES.join('·')} · ${revenue.kpiShare}%`);
+  setText('splitManagerRevenue', fmtMoney(revenue.managerRevenue));
+  setText('splitManagerHint', `${MANAGER_REVENUE_ASSIGNEES.join('·')} · ${revenue.managerShare}%`);
+  setText('splitOtherRevenue', fmtMoney(revenue.otherRevenue));
+  setText('splitOtherHint', `${revenue.otherContracts.length}건 · ${revenue.otherShare}%`);
+  const riskNote = document.getElementById('salesRiskNote');
+  if (riskNote) {
+    const isBad = revenue.progressToElapsed < 70;
+    riskNote.className = `sales-alert${isBad ? '' : ' neutral'}`;
+    riskNote.textContent = isBad
+      ? `경고: ${periodLabel()} 기준 전체 계약매출은 ${fmtMoney(revenue.totalRevenue)}입니다. 230억 목표를 선형 기준으로 보면 현재시점 목표 대비 ${revenue.progressToElapsed}% 수준이며, 남은 목표는 ${fmtMoney(revenue.gap)}입니다.`
+      : `현재 ${periodLabel()} 기준 전체 계약매출은 ${fmtMoney(revenue.totalRevenue)}이며, 현재시점 목표 대비 ${revenue.progressToElapsed}%입니다.`;
+  }
+  setText('salesDataSource', `${periodLabel()} · 계약 ${revenue.confirmedContracts.length}건 · PT ${detail.totalPts}건 · ${PT_SOURCE_STATUS}`);
   setHtml('aiComments', generateAIComments(data));
 }
 
@@ -2326,7 +2481,7 @@ const TEAM_KPI_TARGETS = {
   relateActivityRate: 90,
   relateMatchRate: 90
 };
-const TEAM_KPI_SALES_ASSIGNEES = ['황윤선','한준엽','한인규','정정훈','김성민','이필선'];
+const TEAM_KPI_SALES_ASSIGNEES = SALES_KPI_ASSIGNEES;
 const SALES_LIVE_KPI_KEY = 'netform-sales-live-kpi-v1';
 
 function getTeamKpiConfig() {
@@ -2584,17 +2739,31 @@ function renderTeamKpiDashboard() {
     const assigneeAnnualTarget = Number(cfg.assigneeTargets?.[name]) || totalTarget / TEAM_KPI_SALES_ASSIGNEES.length;
     const assigneePeriodTarget = assigneeAnnualTarget / 12 * months.length;
     const actual = m.contracts.filter(c => c.managerName === name).reduce((s,c)=>s+c.contractAmount, 0);
-    const pipeline = m.activePipeline.filter(p => p.assigneeName === name).reduce((s,p)=>s+p.estAmount, 0);
+    const pipes = m.activePipeline.filter(p => p.assigneeName === name);
+    const freshPipes = pipes.filter(p => {
+      const d = new Date(p.lastUpdated);
+      return !isNaN(d.getTime()) && (Date.now() - d.getTime()) / 86400000 <= 30;
+    });
+    const pts = filterByPeriod(PTS, STATE.year, STATE.quarter, 'date').filter(p => p.ptAssignee === name);
+    const closed = pts.filter(p => p.result === '승' || p.result === '패');
+    const wins = closed.filter(p => p.result === '승').length;
     const actualRate = kpiPercent(actual, assigneePeriodTarget);
-    const coverageRate = kpiPercent(actual + pipeline, assigneePeriodTarget);
-    return `<tr><td class="left"><b>${name}</b></td><td>${fmtMoney(assigneeAnnualTarget)}</td><td>${fmtMoney(assigneePeriodTarget)}</td><td>${fmtMoney(actual)}</td><td>${fmtMoney(pipeline)}</td><td>${kpiBar(actualRate)}</td><td>${kpiBar(coverageRate)}</td></tr>`;
+    const activityRate = pipes.length ? Math.round(freshPipes.length / pipes.length * 100) : 0;
+    const ptRate = closed.length ? Math.round(wins / closed.length * 100) : 0;
+    return `<tr><td class="left"><b>${name}</b></td><td>${fmtMoney(assigneeAnnualTarget)}</td><td>${fmtMoney(assigneePeriodTarget)}</td><td>${fmtMoney(actual)}</td><td>${kpiBar(actualRate)}</td><td>${ptRate}%</td><td>${activityRate}%</td></tr>`;
   }).join('');
   const assigneeDetailMap = {};
+  const revenueBreakdown = getSalesRevenueBreakdown();
+  const kpiAnnualTarget = TEAM_KPI_SALES_ASSIGNEES.reduce((sum, name) => {
+    return sum + (Number(cfg.assigneeTargets?.[name]) || totalTarget / TEAM_KPI_SALES_ASSIGNEES.length);
+  }, 0);
+  const kpiPeriodTarget = kpiAnnualTarget / 12 * months.length;
+  const kpiProgress = kpiPercent(revenueBreakdown.kpiRevenue, kpiPeriodTarget);
+  const elapsedProgress = revenueBreakdown.progressToElapsed;
   const assigneeCards = TEAM_KPI_SALES_ASSIGNEES.map((name, idx) => {
     const assigneeAnnualTarget = Number(cfg.assigneeTargets?.[name]) || totalTarget / TEAM_KPI_SALES_ASSIGNEES.length;
     const assigneePeriodTarget = assigneeAnnualTarget / 12 * months.length;
     const actual = m.contracts.filter(c => c.managerName === name).reduce((s,c)=>s+c.contractAmount, 0);
-    const pipeline = m.activePipeline.filter(p => p.assigneeName === name).reduce((s,p)=>s+(p.estAmount || 0), 0);
     const pipes = m.activePipeline.filter(p => p.assigneeName === name);
     const freshPipes = pipes.filter(p => {
       const d = new Date(p.lastUpdated);
@@ -2606,75 +2775,68 @@ function renderTeamKpiDashboard() {
     const pendingPts = pts.filter(p => !p.result || p.result === '미정').length;
     const inquiry = getAssigneeInquiryKpis(name);
     const actualRate = kpiPercent(actual, assigneePeriodTarget);
-    const coverageRate = kpiPercent(actual + pipeline, assigneePeriodTarget);
     const activityRate = pipes.length ? Math.round(freshPipes.length / pipes.length * 100) : 0;
     const ptRate = closed.length ? Math.round(wins / closed.length * 100) : 0;
-    const inquiryConvText = inquiry.hasLive ? `${inquiry.converted}/${inquiry.serious}건 · ${inquiry.seriousConvRate}%` : '문의 시트 연결 후 산정';
-    const inquiryConvStatus = inquiry.hasLive ? kpiBar(inquiry.seriousConvRate) : '<span class="lead-pill neutral">연결 예정</span>';
-    const badfitStatus = inquiry.hasLive ? kpiBar(inquiry.badfitClassRate) : '<span class="lead-pill neutral">연결 예정</span>';
-    const followupText = inquiry.hasLive ? `${inquiry.quoteFollowed}/${inquiry.quoteTotal}건 · ${inquiry.followupRate}%` : '문의 시트 팔로업일 연결 후 산정';
+    const followupText = inquiry.hasLive ? `${inquiry.quoteFollowed}/${inquiry.quoteTotal}건 · ${inquiry.followupRate}%` : '문의 시트 연결 예정';
     const followupStatus = inquiry.hasLive ? kpiBar(inquiry.followupRate) : '<span class="lead-pill neutral">연결 예정</span>';
-    const nextActionText = inquiry.hasLive ? `${inquiry.nextActionFilled}/${inquiry.nextActionNeeded}건 · ${inquiry.nextActionRate}%` : '다음행동/예정일 연결 후 산정';
+    const nextActionText = inquiry.hasLive ? `${inquiry.nextActionFilled}/${inquiry.nextActionNeeded}건 · ${inquiry.nextActionRate}%` : '다음행동 연결 예정';
     const nextActionStatus = inquiry.hasLive ? kpiBar(inquiry.nextActionRate) : '<span class="lead-pill neutral">연결 예정</span>';
-    const inquiryCardText = inquiry.hasLive ? `${inquiry.converted}/${inquiry.serious}건 · ${inquiry.seriousConvRate}%` : '시트 연결 필요';
-    const followupCardText = inquiry.hasLive ? `${inquiry.followMiss}건 누락 · ${inquiry.followupRate}%` : '7/14일 기준 연결';
+    const inquiryConvText = inquiry.hasLive ? `${inquiry.converted}/${inquiry.serious}건 · ${inquiry.seriousConvRate}%` : '문의 시트 연결 예정';
+    const inquiryConvStatus = inquiry.hasLive ? kpiBar(inquiry.seriousConvRate) : '<span class="lead-pill neutral">연결 예정</span>';
+    const statusClass = actualRate >= 100 ? 'good' : actualRate >= 70 ? 'warn' : 'bad';
+    const statusText = actualRate >= 100 ? '달성권' : actualRate >= 70 ? '추적권' : '위험';
     const key = `person_${idx}`;
     assigneeDetailMap[key] = {
       name,
-      html: `<table class="backdata-table"><thead><tr><th>구분</th><th>KPI</th><th>측정식</th><th>현재 기준</th><th>상태</th></tr></thead><tbody>
-        <tr><td><b>대표 KPI</b></td><td>매출 목표 달성률</td><td>담당자 실제 계약매출 / 담당자 목표매출</td><td>${fmtMoney(actual)} / ${fmtMoney(assigneePeriodTarget)} · ${actualRate}%</td><td>${kpiBar(actualRate)}</td></tr>
-        <tr><td>행동 KPI</td><td>파이프라인 커버리지</td><td>실제 계약매출 + 릴레잇 예상수주액 / 담당자 목표매출</td><td>${fmtMoney(actual + pipeline)} / ${fmtMoney(assigneePeriodTarget)} · ${coverageRate}%</td><td>${kpiBar(coverageRate)}</td></tr>
-        <tr><td>행동 KPI</td><td>진성문의 계약 전환율</td><td>계약 전환 건 / 배드핏 제외 진성문의 건</td><td>${inquiryConvText}</td><td>${inquiryConvStatus}</td></tr>
-        <tr><td>행동 KPI</td><td>문의 품질 분류율</td><td>진성문의·배드핏 분류 완료 건 / 전체 문의 건</td><td>${inquiry.hasLive ? `${inquiry.serious + inquiry.badfit}/${inquiry.total}건 · ${inquiry.badfitClassRate}%` : '문의품질분류 컬럼 연결 후 산정'}</td><td>${badfitStatus}</td></tr>
-        <tr><td>행동 KPI</td><td>견적 후 7일/14일 팔로업률</td><td>견적 발송 후 7일 내 1차, 14일 내 2차 후속조치 완료 건 / 견적 발송 건</td><td>${followupText}</td><td>${followupStatus}</td></tr>
-        <tr><td>행동 KPI</td><td>다음 행동 기재율</td><td>진성문의 중 다음행동 또는 다음행동예정일 입력 건 / 진행 진성문의 건</td><td>${nextActionText}</td><td>${nextActionStatus}</td></tr>
-        <tr><td>행동 KPI</td><td>릴레잇 활동률</td><td>스테이지 변경 또는 메모 작성 기준 30일 내 활동 건 / 진행 릴레잇 건</td><td>${freshPipes.length}/${pipes.length}건 · ${activityRate}%</td><td>${kpiBar(activityRate)}</td></tr>
-        <tr><td>행동 KPI</td><td>공법 PT 승률 및 미정 정리</td><td>PT 승리 건 / 승패 확정 건, 미정 PT는 별도 정리</td><td>${wins}/${closed.length}건 · ${ptRate}% · 미정 ${pendingPts}건</td><td>${kpiBar(ptRate)}</td></tr>
-      </tbody></table>`
+      html: `
+        <div class="assignee-modal-summary">
+          <div class="assignee-modal-stat"><div class="label">계약매출</div><div class="value">${fmtMoney(actual)}</div><div class="hint">목표 ${fmtMoney(assigneePeriodTarget)}</div></div>
+          <div class="assignee-modal-stat"><div class="label">목표 달성률</div><div class="value">${actualRate}%</div><div class="hint">${statusText}</div></div>
+          <div class="assignee-modal-stat"><div class="label">PT 승률</div><div class="value">${ptRate}%</div><div class="hint">승패 확정 ${closed.length}건 · 미정 ${pendingPts}건</div></div>
+          <div class="assignee-modal-stat"><div class="label">릴레잇 활동</div><div class="value">${activityRate}%</div><div class="hint">30일 내 활동 ${freshPipes.length}/${pipes.length}건</div></div>
+        </div>
+        <table class="backdata-table">
+          <thead><tr><th>구분</th><th>KPI</th><th>측정식</th><th>현재 기준</th><th>상태</th></tr></thead>
+          <tbody>
+            <tr><td><b>대표 KPI</b></td><td>매출 목표 달성률</td><td>담당자 실제 계약매출 / 담당자 목표매출</td><td>${fmtMoney(actual)} / ${fmtMoney(assigneePeriodTarget)} · ${actualRate}%</td><td>${kpiBar(actualRate)}</td></tr>
+            <tr><td>행동 KPI</td><td>진성문의 계약 전환율</td><td>계약 전환 건 / 확정 진성문의 건</td><td>${inquiryConvText}</td><td>${inquiryConvStatus}</td></tr>
+            <tr><td>행동 KPI</td><td>견적 후 7일/14일 팔로업률</td><td>견적 발송 후 7일 내 1차, 14일 내 2차 후속조치 완료 건 / 견적 발송 건</td><td>${followupText}</td><td>${followupStatus}</td></tr>
+            <tr><td>행동 KPI</td><td>다음 행동 기재율</td><td>진행 진성문의 중 다음행동 또는 예정일 입력 건 / 진행 진성문의 건</td><td>${nextActionText}</td><td>${nextActionStatus}</td></tr>
+            <tr><td>행동 KPI</td><td>릴레잇 활동률</td><td>스테이지 변경 또는 메모 작성 기준 30일 내 활동 건 / 진행 릴레잇 건</td><td>${freshPipes.length}/${pipes.length}건 · ${activityRate}%</td><td>${kpiBar(activityRate)}</td></tr>
+            <tr><td>행동 KPI</td><td>공법 PT 승률 및 미정 정리</td><td>PT 승리 건 / 승패 확정 건, 미정 PT는 별도 정리</td><td>${wins}/${closed.length}건 · ${ptRate}% · 미정 ${pendingPts}건</td><td>${kpiBar(ptRate)}</td></tr>
+          </tbody>
+        </table>`
     };
-    return `<div class="person-kpi-list-row" onclick="openTeamKpiDetail('${key}')">
-      <div>
-        <div class="person-kpi-list-name">${name}</div>
-        <div class="person-kpi-list-rep">담당 고객사 매출 목표 달성률<br>${fmtMoney(actual)} / ${fmtMoney(assigneePeriodTarget)} · ${actualRate}%</div>
+    return `<button class="assignee-performance-card" type="button" onclick="openTeamKpiDetail('${key}')">
+      <div class="assignee-performance-head">
+        <div class="assignee-performance-name">${name}</div>
+        <div class="assignee-performance-status ${statusClass}">${statusText}</div>
       </div>
-      <ul class="person-kpi-sublist">
-        <li class="person-kpi-subitem"><span><b>진성 전환</b>${inquiryCardText}</span></li>
-        <li class="person-kpi-subitem"><span><b>견적 후 7/14일 팔로업</b>${followupCardText}</span></li>
-        <li class="person-kpi-subitem"><span><b>릴레잇 활동</b>메모·스테이지 ${freshPipes.length}/${pipes.length}건</span></li>
-        <li class="person-kpi-subitem"><span><b>PT 결과 정리</b>${wins}/${closed.length} 승률 ${ptRate}% · 미정 ${pendingPts}건</span></li>
-      </ul>
-      <div>${kpiBar(actualRate)}</div>
-      <div class="person-kpi-row-actions">
-        <button class="edit" onclick="event.stopPropagation(); openTeamKpiSettings();">수정</button>
-        <button class="detail" onclick="event.stopPropagation(); openTeamKpiDetail('${key}')">세부 KPI</button>
+      <div class="assignee-performance-main">
+        <div>
+          <div class="value">${actualRate}%</div>
+          <div class="meta">매출 ${fmtMoney(actual)} / ${fmtMoney(assigneePeriodTarget)}</div>
+        </div>
       </div>
-    </div>`;
+      <div class="assignee-performance-metrics">
+        <div class="assignee-performance-metric"><span>남은 목표</span><b>${fmtMoney(Math.max(assigneePeriodTarget - actual, 0))}</b></div>
+        <div class="assignee-performance-metric"><span>PT</span><b>${ptRate}% · 미정 ${pendingPts}건</b></div>
+        <div class="assignee-performance-metric"><span>릴레잇</span><b>${freshPipes.length}/${pipes.length}건</b></div>
+      </div>
+      <div class="assignee-performance-foot">클릭해서 담당자별 상세 성과 보기</div>
+    </button>`;
   }).join('');
   const definitionRows = [
     ['대표 KPI 1. 매출 230억 달성률', '실제 계약매출 / 매출 목표', `${fmtMoney(totalTarget)}`, '월/분기/연간'],
-    ['대표 KPI 2. 실행공사 120억 달성률', '실행공사 계약매출 / 실행공사 목표', `${fmtMoney(executionTarget)}`, '월/분기/연간'],
-    ['대표 KPI 3. 자재판매 100억 달성률', '자재판매 계약매출 / 자재판매 목표', `${fmtMoney(materialTarget)}`, '월/분기/연간'],
-    ['대표 KPI 4. 기타 10억 달성률', '기타 계약매출 / 기타 목표', `${fmtMoney(otherTarget)}`, '월/분기/연간'],
-    ['대표 KPI 5. 월별 목표 달성률', '월 실제 계약매출 / 월 목표매출', `${fmtMoney(monthlyTarget)} / 월`, '매월'],
-    ['대표 KPI 6. 담당자별 목표 달성률', '담당자 실제 계약매출 / 담당자 목표매출', '담당자별 설정값', '월/분기/연간'],
-    ['행동 KPI 1. 진성문의 계약 전환율', '계약 전환 건 / 배드핏 제외 진성문의 건', '담당자별 추적', '주간'],
-    ['행동 KPI 2. 문의 품질 분류율', '진성문의·배드핏 분류 완료 건 / 전체 문의 건', '100%', '주간'],
-    ['행동 KPI 3. 견적 후 7일/14일 팔로업률', '견적 발송 후 7일 내 1차, 14일 내 2차 후속조치 완료 건 / 견적 발송 건', `${cfg.followupRate}%`, '주간'],
+    ['대표 KPI 2. KPI 대상 매출 달성률', 'KPI 대상 담당자 실제 계약매출 / KPI 대상 담당자 목표매출', `${fmtMoney(kpiAnnualTarget)}`, '월/분기/연간'],
+    ['대표 KPI 3. 현재시점 목표 달성률', '현재 누적 계약매출 / 현재시점 선형 목표매출', `${fmtMoney(revenueBreakdown.elapsedTarget)}`, '월간'],
+    ['대표 KPI 4. 공법 PT 승률', 'PT 승리 건 / 승패 확정 건', `${cfg.ptWinRate}%`, '월간'],
+    ['행동 KPI 1. 진성문의 계약 전환율', '계약 전환 건 / 확정 진성문의 건', '담당자별 추적', '주간'],
+    ['행동 KPI 2. 견적 후 7일/14일 팔로업률', '견적 발송 후 7일 내 1차, 14일 내 2차 후속조치 완료 건 / 견적 발송 건', `${cfg.followupRate}%`, '주간'],
+    ['행동 KPI 3. 다음 행동 기재율', '진행 진성문의 중 다음행동 또는 예정일 입력 건 / 진행 진성문의 건', '100%', '주간'],
     ['행동 KPI 4. 릴레잇 활동률', '스테이지 변경 또는 메모 작성 기준 30일 내 활동 건 / 진행 릴레잇 건', `${cfg.relateActivityRate || TEAM_KPI_TARGETS.relateActivityRate}%`, '주간'],
-    ['행동 KPI 5. 공법 PT 승률 및 미정 정리', 'PT 승리 건 / 승패 확정 건, 미정 PT 별도 관리', `${cfg.ptWinRate}%`, '월간'],
-    ['행동 KPI 6. 2027 세미나 분산 운영률', '월별·권역별 배정 완료 세미나 수 / 연간 세미나 계획 수', `${cfg.seminarSplitRate}%`, '월간'],
-    ['행동 KPI 7. 세미나 후속 전환율', '세미나 참석 단지 중 후속상담·견적 전환 단지 수 / 세미나 참석 단지 수', `${cfg.seminarConversionRate}%`, '월간']
+    ['행동 KPI 5. PT 승/패 분석률', 'PT 승/패 확정 건 중 승패 사유 작성 건 / 승패 확정 건', '100%', '월간']
   ].map(r => `<tr><td class="left"><b>${r[0]}</b></td><td class="left">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('');
-  const tasks = [
-    {title:'대표 KPI 1. 총 매출 달성률', meta:`측정식: 실제 계약매출 / 매출 목표. 현재 조회기간 기준 ${fmtMoney(m.totalRevenue)} / ${fmtMoney(periodTarget)}로 계산합니다.`, owner:'영업팀 전체', status:'측정 가능', progress:kpiPercent(m.totalRevenue, periodTarget), value:kpiPercent(m.totalRevenue, periodTarget), detailKey:'revenue'},
-    {title:'대표 KPI 2. 월별 목표 달성률', meta:`측정식: 월 실제 계약매출 / 월 목표매출. 월 목표는 ${fmtMoney(monthlyTarget)} 기준입니다.`, owner:'영업팀 전체', status:'측정 가능', progress:0, displayText:'월별 표', reportOnly:true, detailKey:'monthly'},
-    {title:'대표 KPI 3. 담당자별 목표 달성률', meta:`측정식: 담당자 실제 계약매출 / 담당자 목표매출. 대상은 ${TEAM_KPI_SALES_ASSIGNEES.join(', ')}입니다.`, owner:'영업팀장', status:'측정 가능', progress:0, displayText:'담당자 표', reportOnly:true, detailKey:'assignee'},
-    {title:'대표 KPI 4. 파이프라인 커버리지', meta:'측정식: 실제 계약매출 + 릴레잇 예상수주액 / 담당자 목표매출. 목표 대비 수주 후보가 충분한지 봅니다.', owner:'영업팀 전체', status:'측정 가능', progress:0, displayText:'커버리지', reportOnly:true, detailKey:'pipeline'},
-    {title:'대표 KPI 5. 공법 PT 승률', meta:'측정식: PT 승리 건 / 승패 확정 건. 목표는 70%로 관리합니다.', owner:'PT 담당 전체', status:'측정 가능', progress:ptProgress, value:m.ptWinRate, detailKey:'pt'},
-    {title:'대표 KPI 6. 견적 후 7일 팔로업률', meta:'측정식: 7일 내 후속조치 완료 건 / 견적 발송 건. 목표는 90%로 관리합니다.', owner:'담당 영업', status:'측정 예정', hasData:false, reportOnly:true, detailKey:'followup'},
-    {title:'대표 KPI 7. 2027 세미나 분산 운영률', meta:'측정식: 월별·권역별 배정 완료 세미나 수 / 연간 세미나 계획 수. 2026년 3~4월 집중 문제를 개선합니다.', owner:'영업기획', status:'측정 예정', hasData:false, reportOnly:true, detailKey:'seminarSplit'},
-    {title:'대표 KPI 8. 세미나 후속 전환율', meta:'측정식: 세미나 참석 단지 중 후속상담·견적 전환 단지 수 / 세미나 참석 단지 수.', owner:'영업팀 전체', status:'측정 예정', hasData:false, reportOnly:true, detailKey:'seminarConversion'}
-  ];
   window._TEAM_KPI_DETAIL = {
     periodLabel: periodLabel(),
     definitionRows,
@@ -2682,60 +2844,61 @@ function renderTeamKpiDashboard() {
     assigneeRows,
     monthlyTarget,
     periodTarget,
-    executionPeriodTarget,
-    materialPeriodTarget,
+    kpiPeriodTarget,
     totalRevenue: m.totalRevenue,
-    executionRevenue: m.executionRevenue,
-    materialRevenue: m.materialRevenue,
+    kpiRevenue: revenueBreakdown.kpiRevenue,
+    elapsedTarget: revenueBreakdown.elapsedTarget,
+    elapsedProgress,
     ptWinRate: m.ptWinRate,
     ptWins: m.ptWins,
     ptTotal: m.closedPts.length,
     assigneeDetailMap
   };
 
-  document.getElementById('teamKpiPeriodMeta').textContent = `${periodLabel()} · 보고용 KPI 진행안`;
+  document.getElementById('teamKpiPeriodMeta').textContent = `${periodLabel()} · 보고용 KPI 진행률`;
   document.getElementById('teamKpiHero').innerHTML = `
     <div class="kpi-mission">
       <div class="eyebrow">팀 미션</div>
-      <div class="title">영업대행사 로써 담당 고객사의 마이크로한 영업관리&지원을 통한 매출 230억 달성 [실행공사 120억, 자재판매 100억, 기타 10억]</div>
+      <div class="title">영업대행사로서 담당 고객사의 마이크로한 영업관리와 지원을 통해 매출 230억 달성</div>
     </div>`;
   document.getElementById('teamKpiFocus').innerHTML = `
     <div class="kpi-focus">
       <div class="kpi-focus-card" onclick="openTeamKpiDetail('revenue')" style="cursor:pointer;">
         <div class="num">${totalProgress}%</div>
-        <div class="label">매출 230억 달성률</div>
+        <div class="label">조회기간 매출 달성률</div>
         <div class="sub">${fmtMoney(m.totalRevenue)} / ${fmtMoney(periodTarget)}</div>
       </div>
-      <div class="kpi-focus-card" onclick="openTeamKpiDetail('execution')" style="cursor:pointer;">
-        <div class="num">${executionProgress}%</div>
-        <div class="label">실행공사 매출관리</div>
-        <div class="sub">${fmtMoney(m.executionRevenue)} / ${fmtMoney(executionPeriodTarget)}</div>
+      <div class="kpi-focus-card" onclick="openTeamKpiDetail('elapsed')" style="cursor:pointer;">
+        <div class="num">${elapsedProgress}%</div>
+        <div class="label">현재시점 목표 대비</div>
+        <div class="sub">${fmtMoney(revenueBreakdown.totalRevenue)} / ${fmtMoney(revenueBreakdown.elapsedTarget)}</div>
       </div>
-      <div class="kpi-focus-card" onclick="openTeamKpiDetail('material')" style="cursor:pointer;">
-        <div class="num">${materialProgress}%</div>
-        <div class="label">자재판매 매출관리</div>
-        <div class="sub">${fmtMoney(m.materialRevenue)} / ${fmtMoney(materialPeriodTarget)}</div>
+      <div class="kpi-focus-card" onclick="openTeamKpiDetail('assignee')" style="cursor:pointer;">
+        <div class="num">${kpiProgress}%</div>
+        <div class="label">KPI 대상 매출 달성률</div>
+        <div class="sub">${fmtMoney(revenueBreakdown.kpiRevenue)} / ${fmtMoney(kpiPeriodTarget)}</div>
+      </div>
+      <div class="kpi-focus-card" onclick="openTeamKpiDetail('pt')" style="cursor:pointer;">
+        <div class="num">${m.ptWinRate}%</div>
+        <div class="label">공법 PT 승률</div>
+        <div class="sub">${m.ptWins}/${m.closedPts.length}건 · 목표 ${cfg.ptWinRate}%</div>
       </div>
     </div>`;
-  document.getElementById('teamKpiCards').innerHTML = `
-    <div style="background:#f8fafc; border-radius:14px; padding:18px; text-align:center; color:#334155; font-size:14px; font-weight:850; margin-bottom:24px;">
-      📊 팀 평균 진척률: <span style="color:#2563eb; font-size:18px; font-weight:950;">${Math.round((totalProgress + executionProgress + materialProgress) / 3)}%</span>
-    </div>`;
+  document.getElementById('teamKpiCards').innerHTML = '';
   document.getElementById('teamKpiTasks').innerHTML = `
     <div class="lead-panel">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:16px; flex-wrap:wrap;">
         <div>
-          <div class="panel-title">담당자별 세부 KPI 리스트</div>
-          <div class="panel-sub">대표 KPI는 상단 3개 지표로 보고하고, 담당자별로 그 달성을 위해 관리할 세부 KPI만 리스트로 확인합니다.</div>
+          <div class="panel-title">담당자별 성과</div>
+          <div class="panel-sub">담당자를 클릭하면 매출, PT, 릴레잇 활동, 후속관리 성과를 한 화면에서 확인합니다.</div>
         </div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button onclick="openTeamKpiSettings()" style="padding:9px 12px; border:0; border-radius:8px; background:#3b82f6; color:white; font-size:12px; font-weight:850; cursor:pointer;">수정</button>
+          <button onclick="openTeamKpiSettings()" style="padding:9px 12px; border:0; border-radius:8px; background:#3b82f6; color:white; font-size:12px; font-weight:850; cursor:pointer;">목표 수정</button>
           <button onclick="openTeamKpiDetail('definitions')" style="padding:9px 12px; border:1px solid #cbd5e1; border-radius:8px; background:white; color:#334155; font-size:12px; font-weight:850; cursor:pointer;">KPI 산식</button>
           <button onclick="openTeamKpiDetail('monthly')" style="padding:9px 12px; border:1px solid #cbd5e1; border-radius:8px; background:white; color:#334155; font-size:12px; font-weight:850; cursor:pointer;">월별표</button>
-          <button onclick="openTeamKpiDetail('seminarSplit')" style="padding:9px 12px; border:1px solid #cbd5e1; border-radius:8px; background:white; color:#334155; font-size:12px; font-weight:850; cursor:pointer;">세미나 KPI</button>
         </div>
       </div>
-      <div class="person-kpi-list">${assigneeCards}</div>
+      <div class="assignee-performance-grid">${assigneeCards}</div>
     </div>`;
   document.getElementById('teamKpiDetails').innerHTML = '';
 }
@@ -2746,10 +2909,15 @@ function openTeamKpiDetail(type) {
   const m = document.getElementById('modal');
   if (d.assigneeDetailMap && d.assigneeDetailMap[type]) {
     const person = d.assigneeDetailMap[type];
-    m.innerHTML = `<div class="modal-head"><div><div class="modal-title">${person.name} 담당자 KPI 상세</div><div style="font-size:13px; color:#64748b; margin-top:4px;">대표 KPI 아래에 회의록에서 합의된 행동 KPI를 붙여 관리합니다.</div></div><button class="close-btn" onclick="document.getElementById('modalBackdrop').classList.add('hidden')">닫기 ✕</button></div>
-      <div class="modal-section-title">담당자 KPI 구조</div>
-      <div style="font-size:12px; color:#64748b; font-weight:700; margin-bottom:12px;">대표 KPI는 담당자 매출 목표 달성률이고, 행동 KPI는 진성문의 전환·배드핏 분류·7/14일 팔로업·릴레잇 활동·PT 결과 정리입니다.</div>
-      ${person.html}`;
+    m.innerHTML = `<div class="modal-head">
+      <div>
+        <div class="modal-title">${person.name} 담당자 성과</div>
+        <div style="font-size:13px; color:#64748b; margin-top:4px;">매출, PT, 릴레잇, 후속관리 중심으로 봅니다.</div>
+      </div>
+      <button class="close-btn" onclick="document.getElementById('modalBackdrop').classList.add('hidden')">닫기 ×</button>
+    </div>
+    <div class="modal-section-title">담당자별 KPI 상세</div>
+    ${person.html}`;
     document.getElementById('modalBackdrop').classList.remove('hidden');
     return;
   }
@@ -2759,38 +2927,30 @@ function openTeamKpiDetail(type) {
     ${table}`;
   const definitionTable = `<table class="backdata-table"><thead><tr><th>KPI</th><th>측정식</th><th>목표</th><th>점검주기</th></tr></thead><tbody>${d.definitionRows}</tbody></table>`;
   const monthlyTable = `<table class="backdata-table"><thead><tr><th>월</th><th>목표</th><th>실적</th><th>달성률</th><th>상태</th></tr></thead><tbody>${d.monthRows}</tbody></table>`;
-  const assigneeTable = `<table class="backdata-table"><thead><tr><th>담당자</th><th>연간목표</th><th>조회기간목표</th><th>실적</th><th>파이프라인</th><th>달성률</th><th>커버리지</th></tr></thead><tbody>${d.assigneeRows}</tbody></table>`;
-  const seminarTable = `<table class="backdata-table"><thead><tr><th>KPI</th><th>측정식</th><th>목표</th><th>개선 포인트</th></tr></thead><tbody>
-    <tr><td><b>2027 세미나 분산 운영률</b></td><td>월별·권역별 배정 완료 세미나 수 / 연간 세미나 계획 수</td><td>100%</td><td>2026년 3~4월 집중으로 인한 영업/PT 병목 개선</td></tr>
-    <tr><td><b>세미나 후속 전환율</b></td><td>후속상담·견적 전환 단지 수 / 세미나 참석 단지 수</td><td>목표 확정 필요</td><td>세미나 이후 릴레잇 등록, 후속상담, 견적 전환 추적</td></tr>
-  </tbody></table>`;
+  const assigneeTable = `<table class="backdata-table"><thead><tr><th>담당자</th><th>연간목표</th><th>조회기간목표</th><th>계약매출</th><th>달성률</th><th>PT 승률</th><th>릴레잇 활동률</th></tr></thead><tbody>${d.assigneeRows}</tbody></table>`;
   const bodies = {
-    definitions: modalTable('KPI 측정식', '회의록 기준으로 대표 KPI와 행동 KPI를 분리한 산식입니다.', definitionTable),
-    revenue: modalTable('대표 KPI 1. 매출 230억 달성률', `실제 계약매출 / 230억 · 현재 ${fmtMoney(d.totalRevenue)} / ${fmtMoney(d.periodTarget)}`, definitionTable),
-    execution: modalTable('대표 KPI. 실행공사 120억 달성률', `실행공사 계약매출 / 실행공사 목표 · 현재 ${fmtMoney(d.executionRevenue)} / ${fmtMoney(d.executionPeriodTarget)}`, definitionTable),
-    material: modalTable('대표 KPI. 자재판매 100억 달성률', `자재판매 계약매출 / 자재판매 목표 · 현재 ${fmtMoney(d.materialRevenue)} / ${fmtMoney(d.materialPeriodTarget)}`, definitionTable),
-    monthly: modalTable('대표 KPI 2. 월별 목표 달성률', `월 목표 ${fmtMoney(d.monthlyTarget)} 기준입니다.`, monthlyTable),
-    assignee: modalTable('대표 KPI 3. 담당자별 목표 달성률', `대상: ${TEAM_KPI_SALES_ASSIGNEES.join(', ')}`, assigneeTable),
-    pipeline: modalTable('행동 KPI. 파이프라인 커버리지', '실제 계약매출 + 릴레잇 예상수주액 / 담당자 목표매출입니다.', assigneeTable),
-    pt: modalTable('행동 KPI. 공법 PT 승률 및 미정 정리', `PT 승리 건 / 승패 확정 건 · 현재 ${d.ptWins}/${d.ptTotal}건, ${d.ptWinRate}%`, definitionTable),
-    followup: modalTable('행동 KPI. 견적 후 7일/14일 팔로업률', '견적 발송 후 7일 내 1차 후속조치, 14일 내 2차 후속조치가 완료됐는지 측정합니다.', definitionTable),
-    seminarSplit: modalTable('행동 KPI. 2027 세미나 분산 운영률', '2026년 3월 시작 후 4월 말 종료로 영업/PT 일정이 몰린 문제를 개선하기 위한 지표입니다.', seminarTable),
-    seminarConversion: modalTable('행동 KPI. 세미나 후속 전환율', '세미나 참석 단지가 실제 후속상담과 견적으로 이어지는지 측정합니다.', seminarTable)
+    definitions: modalTable('KPI 산식', '대표 KPI는 상단에서 바로 보고, 행동 KPI는 담당자 상세에서 확인합니다.', definitionTable),
+    revenue: modalTable('조회기간 매출 달성률', `실제 계약매출 / 조회기간 목표매출입니다. 현재 ${fmtMoney(d.totalRevenue)} / ${fmtMoney(d.periodTarget)}입니다.`, definitionTable),
+    elapsed: modalTable('현재시점 목표 대비', `현재 누적 계약매출 / 현재시점 선형 목표매출입니다. 현재 ${fmtMoney(d.totalRevenue)} / ${fmtMoney(d.elapsedTarget)}입니다.`, definitionTable),
+    assignee: modalTable('KPI 대상 담당자 매출', `대상 담당자: ${TEAM_KPI_SALES_ASSIGNEES.join(', ')}`, assigneeTable),
+    monthly: modalTable('월별 목표 달성률', `월 목표 ${fmtMoney(d.monthlyTarget)} 기준입니다.`, monthlyTable),
+    pt: modalTable('공법 PT 승률 및 미정 정리', `PT 승리 건 / 승패 확정 건입니다. 현재 ${d.ptWins}/${d.ptTotal}건, ${d.ptWinRate}%입니다.`, definitionTable)
   };
   const title = {
-    definitions:'KPI 전체 측정식',
-    revenue:'매출 230억 달성률 상세',
-    execution:'실행공사 120억 달성률 상세',
-    material:'자재판매 100억 달성률 상세',
+    definitions:'KPI 산식',
+    revenue:'조회기간 매출 달성률 상세',
+    elapsed:'현재시점 목표 대비 상세',
+    assignee:'KPI 대상 담당자 매출 상세',
     monthly:'월별 목표 달성률 상세',
-    assignee:'담당자별 목표 달성률 상세',
-    pipeline:'파이프라인 커버리지 상세',
-    pt:'공법 PT 승률 및 미정 정리 상세',
-    followup:'견적 후 7일/14일 팔로업률 상세',
-    seminarSplit:'2027 세미나 분산 운영률 상세',
-    seminarConversion:'세미나 후속 전환율 상세'
-  }[type] || '대표 KPI 상세';
-  m.innerHTML = `<div class="modal-head"><div><div class="modal-title">${title}</div><div style="font-size:13px; color:#64748b; margin-top:4px;">${d.periodLabel} 기준 · 클릭 상세</div></div><button class="close-btn" onclick="document.getElementById('modalBackdrop').classList.add('hidden')">닫기 ✕</button></div>${bodies[type] || bodies.definitions}`;
+    pt:'공법 PT 승률 상세'
+  }[type] || 'KPI 상세';
+  m.innerHTML = `<div class="modal-head">
+    <div>
+      <div class="modal-title">${title}</div>
+      <div style="font-size:13px; color:#64748b; margin-top:4px;">${d.periodLabel} 기준 · 클릭 상세</div>
+    </div>
+    <button class="close-btn" onclick="document.getElementById('modalBackdrop').classList.add('hidden')">닫기 ×</button>
+  </div>${bodies[type] || bodies.definitions}`;
   document.getElementById('modalBackdrop').classList.remove('hidden');
 }
 
