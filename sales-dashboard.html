@@ -757,8 +757,9 @@
 <div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal" id="modal" onclick="event.stopPropagation()"></div></div>
 <script>
 const ASSIGNEES = ['황윤선','이필선','한준엽','한인규','정정훈','김성민','조재연','조성용'];  // 조민준 제외 
-const SALES_KPI_ASSIGNEES = ['한준엽','한인규','정정훈','김성민','이필선'];
+const SALES_KPI_ASSIGNEES = ['이필선','한준엽','한인규','정정훈','김성민'];
 const MANAGER_REVENUE_ASSIGNEES = ['황윤선'];
+const SALES_PERSON_DISPLAY_ORDER = ['황윤선','이필선','한준엽','한인규','정정훈','김성민'];
 let STATE = { year: 2026, quarter: 'all', relateBrand: 'all' };
 function setRelateBrand(b) { STATE.relateBrand = b; if (LATEST_DATA) renderRelateAnalysis(LATEST_DATA); }
 
@@ -1180,11 +1181,9 @@ function renderEvidenceLists(data){
   const ptRows = [...data.rows].sort((a,b) => (b.win + b.loss + b.pending) - (a.win + a.loss + a.pending));
   const totalContracts = data.rows.reduce((sum, r) => sum + r.conts.length, 0);
   const totalPts = data.rows.reduce((sum, r) => sum + r.pts.length, 0);
-  const personRows = [...data.rows].sort((a,b) => {
-    const ga = revenueGroup(a.name), gb = revenueGroup(b.name);
-    if (ga.order !== gb.order) return ga.order - gb.order;
-    return (b.cSum + b.pts.length * 10000000) - (a.cSum + a.pts.length * 10000000);
-  });
+  const personRows = [...data.rows]
+    .filter(r => SALES_PERSON_DISPLAY_ORDER.includes(r.name))
+    .sort((a,b) => SALES_PERSON_DISPLAY_ORDER.indexOf(a.name) - SALES_PERSON_DISPLAY_ORDER.indexOf(b.name));
 
   setText('salesPersonCount', `${personRows.length}명`);
   setHtml('salesPersonCards', personRows.map(r => {
