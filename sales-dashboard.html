@@ -503,20 +503,31 @@
   .sales-person-head{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; padding:20px 22px 16px; border-bottom:1px solid #e2e8f0;}
   .sales-person-head .ttl{font-size:18px; font-weight:950; color:#0f172a; letter-spacing:-.25px;}
   .sales-person-head .sub{font-size:13px; color:#64748b; font-weight:700; margin-top:5px;}
-  .sales-person-grid{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:18px;}
-  .sales-person-card{border:1px solid #e2e8f0; background:#fff; border-radius:15px; padding:16px; text-align:left; cursor:pointer; transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;}
-  .sales-person-card:hover{transform:translateY(-2px); border-color:#93c5fd; box-shadow:0 14px 28px rgba(15,23,42,.08);}
-  .sales-person-top{display:flex; justify-content:space-between; gap:10px; align-items:flex-start;}
-  .sales-person-name{font-size:17px; font-weight:950; color:#0f172a;}
+  .sales-person-box{padding:18px;}
+  .sales-person-tabs{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .sales-person-tab{border:1px solid #cbd5e1; background:#fff; color:#334155; border-radius:999px; padding:9px 14px; font-size:13px; font-weight:950; cursor:pointer; transition:background .15s ease, color .15s ease, border-color .15s ease;}
+  .sales-person-tab.active{background:#0f172a; border-color:#0f172a; color:#fff;}
+  .sales-person-tab:hover{border-color:#0f172a;}
+  .sales-person-detail-panel{border:1px solid #e2e8f0; background:#f8fafc; border-radius:16px; padding:18px; display:grid; grid-template-columns:280px minmax(0,1fr); gap:18px; align-items:stretch;}
+  .sales-person-profile{background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; min-height:228px;}
+  .sales-person-name{font-size:22px; font-weight:950; color:#0f172a;}
   .sales-person-role{font-size:10px; font-weight:950; border-radius:999px; padding:4px 7px; background:#f1f5f9; color:#475569; white-space:nowrap;}
   .sales-person-role.kpi{background:#dcfce7; color:#047857;}
   .sales-person-role.mgmt{background:#dbeafe; color:#1d4ed8;}
-  .sales-person-value{font-size:28px; line-height:1; font-weight:950; color:#0f172a; margin-top:16px; letter-spacing:-.7px;}
+  .sales-person-role.other{background:#f1f5f9; color:#64748b;}
+  .sales-person-value{font-size:34px; line-height:1; font-weight:950; color:#0f172a; margin-top:18px; letter-spacing:-.8px;}
   .sales-person-sub{font-size:12px; color:#64748b; font-weight:800; margin-top:7px; line-height:1.4;}
-  .sales-person-metrics{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px;}
-  .sales-person-metric{background:#f8fafc; border-radius:10px; padding:9px 10px;}
+  .sales-person-detail-btn{margin-top:16px; border:0; background:#2563eb; color:#fff; border-radius:10px; padding:10px 12px; font-size:12px; font-weight:950; cursor:pointer;}
+  .sales-person-metrics{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px;}
+  .sales-person-metric{background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px;}
   .sales-person-metric span{display:block; font-size:10px; color:#64748b; font-weight:900;}
-  .sales-person-metric b{display:block; font-size:13px; color:#0f172a; font-weight:950; margin-top:4px;}
+  .sales-person-metric b{display:block; font-size:18px; color:#0f172a; font-weight:950; margin-top:6px;}
+  .sales-person-lists{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
+  .sales-person-listbox{background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px; min-height:92px;}
+  .sales-person-listbox .list-title{font-size:12px; color:#0f172a; font-weight:950; margin-bottom:8px;}
+  .sales-person-line{display:flex; justify-content:space-between; gap:12px; font-size:12px; color:#334155; font-weight:800; padding:6px 0; border-top:1px solid #f1f5f9;}
+  .sales-person-line:first-of-type{border-top:0;}
+  .sales-person-line .muted{color:#64748b; font-weight:750;}
   .evidence-layout{display:none;}
   .evidence-panel{background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 8px 24px rgba(15,23,42,0.04); overflow:hidden;}
   .evidence-head{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; padding:20px 22px 16px; border-bottom:1px solid #e2e8f0;}
@@ -546,8 +557,8 @@
   .evidence-empty{font-size:12px; color:#94a3b8; font-weight:750;}
   .evidence-btn{border:1px solid #cbd5e1; background:#fff; color:#0f172a; border-radius:10px; padding:8px 10px; font-size:12px; font-weight:900; cursor:pointer;}
   .evidence-btn:hover{background:#0f172a; border-color:#0f172a; color:#fff;}
-  @media(max-width:1180px){.sales-hero-grid{grid-template-columns:1fr 1fr}.sales-split-strip{grid-template-columns:1fr}.sales-person-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pt-evidence-row{grid-template-columns:150px 110px minmax(0,1fr) 76px;}}
-  @media(max-width:760px){.wrap{padding:16px}.sales-hero-head{flex-direction:column}.sales-hero-grid{grid-template-columns:1fr}.sales-split-strip,.sales-alert{margin-left:16px; margin-right:16px}.sales-person-grid{grid-template-columns:1fr}.revenue-evidence-row,.pt-evidence-row{grid-template-columns:1fr}.evidence-btn{width:max-content}.sales-total .value{font-size:34px}}
+  @media(max-width:1180px){.sales-hero-grid{grid-template-columns:1fr 1fr}.sales-split-strip{grid-template-columns:1fr}.sales-person-detail-panel{grid-template-columns:1fr}.sales-person-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.pt-evidence-row{grid-template-columns:150px 110px minmax(0,1fr) 76px;}}
+  @media(max-width:760px){.wrap{padding:16px}.sales-hero-head{flex-direction:column}.sales-hero-grid{grid-template-columns:1fr}.sales-split-strip,.sales-alert{margin-left:16px; margin-right:16px}.sales-person-metrics,.sales-person-lists{grid-template-columns:1fr}.revenue-evidence-row,.pt-evidence-row{grid-template-columns:1fr}.evidence-btn{width:max-content}.sales-total .value{font-size:34px}}
   #loader{position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#0f172a; color:white; padding:12px 24px; border-radius:8px; font-weight:700; font-size:14px; z-index:9999; display:none; box-shadow:0 4px 12px rgba(0,0,0,0.3); align-items:center; gap:8px;}
 </style>
 </head>
@@ -646,11 +657,14 @@
         <div class="sales-person-head">
           <div>
             <div class="ttl">담당자별 성과</div>
-            <div class="sub">매출과 PT 핵심 근거만 카드로 보고, 클릭하면 상세 내역을 확인합니다.</div>
+            <div class="sub">담당자를 선택하면 매출과 PT 핵심 실적이 아래에 표시됩니다.</div>
           </div>
           <div class="evidence-count" id="salesPersonCount">0명</div>
         </div>
-        <div class="sales-person-grid" id="salesPersonCards"></div>
+        <div class="sales-person-box">
+          <div class="sales-person-tabs" id="salesPersonTabs"></div>
+          <div id="salesPersonDetail"></div>
+        </div>
       </section>
 
       <section class="evidence-layout">
@@ -1099,6 +1113,78 @@ function openAssigneeEvidence(name){
   if (row) openModal(row);
 }
 
+function selectSalesPerson(name){
+  window._SALES_PERSON_SELECTED = name;
+  renderSalesPersonTabs();
+  renderSalesPersonDetail(name);
+}
+
+function renderSalesPersonTabs(){
+  const rows = window._SALES_PERSON_ROWS || [];
+  const selected = window._SALES_PERSON_SELECTED || rows[0]?.name || '';
+  setHtml('salesPersonTabs', rows.map(r => {
+    const isActive = r.name === selected;
+    return `<button class="sales-person-tab ${isActive ? 'active' : ''}" type="button" onclick="selectSalesPerson('${escapeAttr(r.name)}')">${escapeAttr(r.name)}</button>`;
+  }).join(''));
+}
+
+function renderSalesPersonDetail(name){
+  const rows = window._SALES_PERSON_ROWS || [];
+  const row = rows.find(r => r.name === name) || rows[0];
+  if (!row) {
+    setHtml('salesPersonDetail', '<div class="evidence-empty">표시할 담당자 데이터가 없습니다.</div>');
+    return;
+  }
+  window._SALES_PERSON_SELECTED = row.name;
+  const group = revenueGroup(row.name);
+  const ptClosed = row.win + row.loss;
+  const ptRate = ptClosed ? `${row.winRate}%` : '-';
+  const majorContracts = [...row.conts]
+    .filter(c => c.contractAmount > 0)
+    .sort((a,b) => b.contractAmount - a.contractAmount)
+    .slice(0, 3);
+  const recentPts = [...row.pts].slice(0, 3);
+  const contractLines = majorContracts.length
+    ? majorContracts.map(c => `<div class="sales-person-line"><span>${escapeAttr(compactName(c.aptName, 24))}</span><b>${fmtMoney(c.contractAmount)}</b></div>`).join('')
+    : '<div class="sales-person-line"><span class="muted">조회 기간 내 계약 매출 없음</span><b>-</b></div>';
+  const ptLines = recentPts.length
+    ? recentPts.map(p => `<div class="sales-person-line"><span>${escapeAttr(compactName(p.siteName, 24))}</span><b>${escapeAttr(p.result || '미정')}</b></div>`).join('')
+    : '<div class="sales-person-line"><span class="muted">조회 기간 내 PT 없음</span><b>-</b></div>';
+  setHtml('salesPersonDetail', `
+    <div class="sales-person-detail-panel">
+      <div class="sales-person-profile">
+        <div>
+          <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start;">
+            <div class="sales-person-name">${escapeAttr(row.name)}</div>
+            <div class="sales-person-role ${group.key}">${group.label}</div>
+          </div>
+          <div class="sales-person-value">${fmtMoney(row.cSum)}</div>
+          <div class="sales-person-sub">계약 ${row.conts.length}건 · 진행 예상 ${fmtMoney(row.pContractSum)}</div>
+        </div>
+        <button class="sales-person-detail-btn" type="button" onclick="openAssigneeEvidence('${escapeAttr(row.name)}')">상세 내역 보기</button>
+      </div>
+      <div>
+        <div class="sales-person-metrics">
+          <div class="sales-person-metric"><span>계약매출</span><b>${fmtMoney(row.cSum)}</b></div>
+          <div class="sales-person-metric"><span>계약 건수</span><b>${row.conts.length}건</b></div>
+          <div class="sales-person-metric"><span>PT 승률</span><b>${ptRate}</b></div>
+          <div class="sales-person-metric"><span>PT 현황</span><b>${row.pts.length}건 · 미정 ${row.pending}</b></div>
+        </div>
+        <div class="sales-person-lists">
+          <div class="sales-person-listbox">
+            <div class="list-title">주요 계약 근거</div>
+            ${contractLines}
+          </div>
+          <div class="sales-person-listbox">
+            <div class="list-title">최근 PT 근거</div>
+            ${ptLines}
+          </div>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
 function ptTone(result){
   const s = String(result || '');
   if (/승/.test(s)) return 'win';
@@ -1184,6 +1270,12 @@ function renderEvidenceLists(data){
   const personRows = [...data.rows]
     .filter(r => SALES_PERSON_DISPLAY_ORDER.includes(r.name))
     .sort((a,b) => SALES_PERSON_DISPLAY_ORDER.indexOf(a.name) - SALES_PERSON_DISPLAY_ORDER.indexOf(b.name));
+  window._SALES_PERSON_ROWS = personRows;
+  if (!window._SALES_PERSON_SELECTED || !personRows.some(r => r.name === window._SALES_PERSON_SELECTED)) {
+    window._SALES_PERSON_SELECTED = personRows[0]?.name || '';
+  }
+  renderSalesPersonTabs();
+  renderSalesPersonDetail(window._SALES_PERSON_SELECTED);
 
   setText('salesPersonCount', `${personRows.length}명`);
   setHtml('salesPersonCards', personRows.map(r => {
