@@ -2965,16 +2965,25 @@ function filterConvRate(btn, st) {
   tabs.forEach(t => {
     const active = t === btn;
     t.classList.toggle('active', active);
-    t.style.background = active ? '#0a0e1a' : '#fff';
-    t.style.color = active ? '#fff' : '#374151';
-    t.style.borderColor = active ? '#0a0e1a' : '#e5e7eb';
+    if (t.dataset.st === '__CONVERTED__') {
+      t.style.background = active ? '#059669' : '#fff';
+      t.style.color = active ? '#fff' : '#059669';
+      t.style.borderColor = '#059669';
+    } else {
+      t.style.background = active ? '#0a0e1a' : '#fff';
+      t.style.color = active ? '#fff' : '#374151';
+      t.style.borderColor = active ? '#0a0e1a' : '#e5e7eb';
+    }
   });
   const tbody = document.querySelector('#convRateTable tbody');
   if (!tbody) return;
   const rows = tbody.querySelectorAll('tr[data-status]');
   let visible = 0, conv = 0;
   rows.forEach(r => {
-    const match = (st === '__ALL__') || (r.getAttribute('data-status') === st);
+    let match;
+    if (st === '__ALL__') match = true;
+    else if (st === '__CONVERTED__') match = r.getAttribute('data-converted') === '1';
+    else match = r.getAttribute('data-status') === st;
     r.style.display = match ? '' : 'none';
     if (match) {
       visible++;
@@ -3112,6 +3121,10 @@ function openKpiDetail(type) {
           style="padding:7px 14px; border:1px solid #0a0e1a; background:#0a0e1a; color:#fff; border-radius:8px; font-size:12.5px; font-weight:700; cursor:pointer;">
           전체 <span style="margin-left:6px; opacity:0.7;">${totalE}건</span>
         </button>
+        <button class="convrate-tab" data-st="__CONVERTED__" onclick="filterConvRate(this,'__CONVERTED__')"
+          style="padding:7px 14px; border:1px solid #059669; background:#fff; color:#059669; border-radius:8px; font-size:12.5px; font-weight:700; cursor:pointer;">
+          ✓ 계약전환만 <span style="margin-left:6px; opacity:0.85;">${totalC}건</span>
+        </button>
         ${statusList.map(([st, c]) => `
           <button class="convrate-tab" data-st="${escAttr(st)}" onclick="filterConvRate(this,'${escAttr(st)}')"
             style="padding:7px 14px; border:1px solid #e5e7eb; background:#fff; color:#374151; border-radius:8px; font-size:12.5px; font-weight:700; cursor:pointer;">
@@ -3119,7 +3132,12 @@ function openKpiDetail(type) {
             ${c.conv>0?`<span style="margin-left:4px; color:#059669;">(전환 ${c.conv})</span>`:''}
           </button>`).join('')}
       </div>`;
-    const tableRows = all.map(i => `<tr data-status="${escAttr(i.status||'(미지정)')}"><td>${i.date}</td><td><b>${i.siteName}</b></td><td>${i.type}</td><td class="center">${i.managerName}</td><td>${i.status}</td><td class="center"><span class="status-badge ${i.isConverted?'win':'support'}">${i.isConverted?'✓ 계약전환':'미전환'}</span></td></tr>`).join('');
+    const tableRows = all.map(i => {
+      const siteDisplay = i.siteName && String(i.siteName).trim()
+        ? escAttr(i.siteName)
+        : `<span style="color:#9ca3af; font-weight:600;">(현장명 없음 · 담당자 ${escAttr(i.managerName || '-')})</span>`;
+      return `<tr data-status="${escAttr(i.status||'(미지정)')}" data-converted="${i.isConverted ? '1' : '0'}"><td>${i.date}</td><td><b>${siteDisplay}</b></td><td>${i.type}</td><td class="center">${i.managerName}</td><td>${i.status}</td><td class="center"><span class="status-badge ${i.isConverted?'win':'support'}">${i.isConverted?'✓ 계약전환':'미전환'}</span></td></tr>`;
+    }).join('');
     title = '견적 대비 계약 전환율 산출 근거';
     body = `
       <div class="kpi-summary"><div><span class="lbl-sm">조회 기간</span> <b>${periodLabel()}</b></div><div><span class="lbl-sm">견적 문의</span> <b id="convSumE">${totalE}건</b></div><div><span class="lbl-sm">계약 전환</span> <b id="convSumC">${totalC}건</b></div><div><span class="lbl-sm">전환율</span> <b id="convSumR" style="color:var(--purple)">${rate}%</b></div></div>
