@@ -2488,6 +2488,36 @@ function generateRelateInsights(data) {
 let LATEST_DATA = null;
 
 // KPI 카드 클릭 시 산출 근거 모달 표시
+// 견적→계약 전환율 모달 진행상태 필터
+function filterConvRate(btn, st) {
+  const tabs = document.querySelectorAll('.convrate-tab');
+  tabs.forEach(t => {
+    const active = t === btn;
+    t.classList.toggle('active', active);
+    t.style.background = active ? '#0a0e1a' : '#fff';
+    t.style.color = active ? '#fff' : '#374151';
+    t.style.borderColor = active ? '#0a0e1a' : '#e5e7eb';
+  });
+  const tbody = document.querySelector('#convRateTable tbody');
+  if (!tbody) return;
+  const rows = tbody.querySelectorAll('tr[data-status]');
+  let visible = 0, conv = 0;
+  rows.forEach(r => {
+    const match = (st === '__ALL__') || (r.getAttribute('data-status') === st);
+    r.style.display = match ? '' : 'none';
+    if (match) {
+      visible++;
+      if (r.querySelector('.status-badge.win')) conv++;
+    }
+  });
+  const sumE = document.getElementById('convSumE');
+  const sumC = document.getElementById('convSumC');
+  const sumR = document.getElementById('convSumR');
+  if (sumE) sumE.textContent = visible + '건';
+  if (sumC) sumC.textContent = conv + '건';
+  if (sumR) sumR.textContent = (visible > 0 ? Math.round(conv / visible * 100) : 0) + '%';
+}
+
 function openKpiDetail(type) {
   const data = LATEST_DATA || buildData();
   const m = document.getElementById('modal');
@@ -2595,13 +2625,37 @@ function openKpiDetail(type) {
     all.sort((a,b)=>b.date.localeCompare(a.date));
     const totalE = all.length, totalC = all.filter(i=>i.isConverted).length;
     const rate = totalE>0 ? Math.round(totalC/totalE*100) : 0;
-    const tableRows = all.map(i => `<tr><td>${i.date}</td><td><b>${i.siteName}</b></td><td>${i.type}</td><td class="center">${i.managerName}</td><td>${i.status}</td><td class="center"><span class="status-badge ${i.isConverted?'win':'support'}">${i.isConverted?'✓ 계약전환':'미전환'}</span></td></tr>`).join('');
+    // 진행상태별 카운트 (등장 순서로 정렬)
+    const statusGroups = {};
+    all.forEach(i => {
+      const s = i.status || '(미지정)';
+      if (!statusGroups[s]) statusGroups[s] = { total:0, conv:0 };
+      statusGroups[s].total++;
+      if (i.isConverted) statusGroups[s].conv++;
+    });
+    const statusList = Object.entries(statusGroups).sort((a,b)=>b[1].total - a[1].total);
+    const escAttr = s => String(s).replace(/"/g,'&quot;').replace(/'/g,"&#39;");
+    const tabsHtml = `
+      <div class="convrate-tabs" style="display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 14px;">
+        <button class="convrate-tab active" data-st="__ALL__" onclick="filterConvRate(this,'__ALL__')"
+          style="padding:7px 14px; border:1px solid #0a0e1a; background:#0a0e1a; color:#fff; border-radius:8px; font-size:12.5px; font-weight:700; cursor:pointer;">
+          전체 <span style="margin-left:6px; opacity:0.7;">${totalE}건</span>
+        </button>
+        ${statusList.map(([st, c]) => `
+          <button class="convrate-tab" data-st="${escAttr(st)}" onclick="filterConvRate(this,'${escAttr(st)}')"
+            style="padding:7px 14px; border:1px solid #e5e7eb; background:#fff; color:#374151; border-radius:8px; font-size:12.5px; font-weight:700; cursor:pointer;">
+            ${st} <span style="margin-left:6px; color:#6b7280;">${c.total}건</span>
+            ${c.conv>0?`<span style="margin-left:4px; color:#059669;">(전환 ${c.conv})</span>`:''}
+          </button>`).join('')}
+      </div>`;
+    const tableRows = all.map(i => `<tr data-status="${escAttr(i.status||'(미지정)')}"><td>${i.date}</td><td><b>${i.siteName}</b></td><td>${i.type}</td><td class="center">${i.managerName}</td><td>${i.status}</td><td class="center"><span class="status-badge ${i.isConverted?'win':'support'}">${i.isConverted?'✓ 계약전환':'미전환'}</span></td></tr>`).join('');
     title = '견적 대비 계약 전환율 산출 근거';
     body = `
-      <div class="kpi-summary"><div><span class="lbl-sm">조회 기간</span> <b>${periodLabel()}</b></div><div><span class="lbl-sm">견적 문의</span> <b>${totalE}건</b></div><div><span class="lbl-sm">계약 전환</span> <b>${totalC}건</b></div><div><span class="lbl-sm">전환율</span> <b style="color:var(--purple)">${rate}%</b></div></div>
+      <div class="kpi-summary"><div><span class="lbl-sm">조회 기간</span> <b>${periodLabel()}</b></div><div><span class="lbl-sm">견적 문의</span> <b id="convSumE">${totalE}건</b></div><div><span class="lbl-sm">계약 전환</span> <b id="convSumC">${totalC}건</b></div><div><span class="lbl-sm">전환율</span> <b id="convSumR" style="color:var(--purple)">${rate}%</b></div></div>
       <div class="kpi-formula" style="margin:8px 0 16px">📐 <b>산출 공식</b> : 계약 전환(${totalC}) ÷ 견적 문의(${totalE}) × 100 = <b>${rate}%</b></div>
       <div class="modal-section-title" style="border-left-color:var(--purple)">📞 견적 문의 전체 내역 (최신순)</div>
-      <table class="backdata-table"><thead><tr><th>접수일</th><th>현장명</th><th>공사유형</th><th class="center">담당자</th><th>진행상태</th><th class="center">계약전환</th></tr></thead><tbody>${tableRows || '<tr><td colspan="6" style="text-align:center; color:#94a3b8; padding:20px">조회 기간 내 문의 내역이 없습니다.</td></tr>'}</tbody></table>`;
+      ${tabsHtml}
+      <table class="backdata-table" id="convRateTable"><thead><tr><th>접수일</th><th>현장명</th><th>공사유형</th><th class="center">담당자</th><th>진행상태</th><th class="center">계약전환</th></tr></thead><tbody>${tableRows || '<tr><td colspan="6" style="text-align:center; color:#94a3b8; padding:20px">조회 기간 내 문의 내역이 없습니다.</td></tr>'}</tbody></table>`;
   }
 
   m.innerHTML = `<div class="modal-head"><div><div class="modal-title">${title}</div><div style="font-size:13px; color:var(--muted); margin-top:4px;">${periodLabel()} 기준</div></div><button class="close-btn" onclick="document.getElementById('modalBackdrop').classList.add('hidden')">닫기 ✕</button></div>${body}`;
