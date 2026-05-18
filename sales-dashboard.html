@@ -364,6 +364,44 @@
   .modal-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border)}
   .modal-title{font-size:20px; font-weight:800; color:#0f172a} .close-btn{padding:6px 12px; border-radius:8px; background:#f1f5f9; border:none; font-size:14px; font-weight:700; color:#475569; cursor:pointer}
   .modal-section-title{font-size:15px; font-weight:800; border-left:4px solid var(--pri); padding-left:10px; margin:28px 0 12px;}
+
+  /* ── Focused Modal (no scroll, category tabs) ── */
+  .modal.focus-modal{max-width:1040px; max-height:88vh; overflow:hidden; display:flex; flex-direction:column; padding:0;}
+  .focus-modal-head{padding:20px 24px 16px; border-bottom:1px solid #e5e7eb; display:flex; justify-content:space-between; align-items:flex-start; gap:16px;}
+  .focus-modal-head .ttl{font-size:18px; font-weight:800; color:#0a0e1a; letter-spacing:-0.3px;}
+  .focus-modal-head .sub{font-size:12px; color:#64748b; font-weight:600; margin-top:4px;}
+  .focus-modal-tabs{display:flex; gap:4px; padding:10px 24px; background:#fafbfc; border-bottom:1px solid #e5e7eb; flex-wrap:wrap;}
+  .focus-modal-tab{
+    border:1px solid transparent; background:transparent; color:#64748b;
+    padding:6px 14px; border-radius:8px; font-size:12.5px; font-weight:700; cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px; transition:0.15s; letter-spacing:-0.1px;
+  }
+  .focus-modal-tab:hover{background:#fff; color:#0a0e1a;}
+  .focus-modal-tab.active{background:#0a0e1a; color:#fff; border-color:#0a0e1a;}
+  .focus-modal-tab .cnt{
+    font-size:10px; font-weight:800; padding:1px 7px; border-radius:999px;
+    background:rgba(255,255,255,0.15); color:#fff;
+  }
+  .focus-modal-tab:not(.active) .cnt{background:#e5e7eb; color:#475569;}
+  .focus-modal-tab.win.active{background:#059669; border-color:#059669;}
+  .focus-modal-tab.loss.active{background:#dc2626; border-color:#dc2626;}
+  .focus-modal-tab.pending.active{background:#2563eb; border-color:#2563eb;}
+  .focus-modal-body{flex:1; overflow:hidden; padding:0; display:flex; flex-direction:column;}
+  .focus-modal-table-wrap{flex:1; overflow-y:auto; padding:0 24px 24px;}
+  .focus-modal-table{width:100%; border-collapse:separate; border-spacing:0; font-size:13px;}
+  .focus-modal-table thead th{
+    position:sticky; top:0; z-index:1;
+    background:#fafbfc; padding:10px 14px; font-size:11px; font-weight:700; color:#64748b;
+    text-align:left; border-bottom:1px solid #e5e7eb; letter-spacing:0.3px; text-transform:uppercase; white-space:nowrap;
+  }
+  .focus-modal-table thead th.right{text-align:right;}
+  .focus-modal-table thead th.center{text-align:center;}
+  .focus-modal-table tbody td{padding:11px 14px; border-bottom:1px solid #f1f5f9; color:#334155; font-weight:600;}
+  .focus-modal-table tbody td.right{text-align:right;}
+  .focus-modal-table tbody td.center{text-align:center;}
+  .focus-modal-table tbody tr:hover td{background:#fafbfc;}
+  .focus-modal-table tbody td b{color:#0a0e1a; font-weight:800;}
+  .focus-modal-empty{padding:48px 24px; text-align:center; color:#94a3b8; font-size:13px; font-weight:600;}
   .backdata-table{width:100%; border-collapse:collapse; font-size:12px; margin-bottom:12px;}
   .backdata-table th{background:#f8fafc; padding:10px 12px; text-align:left; color:var(--muted); font-weight:700; border-bottom:1px solid var(--border);}
   .backdata-table td{padding:10px 12px; border-bottom:1px solid var(--line); color:#334155; font-weight:600;}
@@ -469,97 +507,379 @@
   .assignee-modal-stat .hint{font-size:11px; color:#64748b; font-weight:750; margin-top:4px; line-height:1.35;}
   @media(max-width:1180px){.assignee-performance-grid{grid-template-columns:repeat(2,1fr)}.kpi-focus{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:900px){.lead-grid{grid-template-columns:repeat(2,1fr)}.lead-layout{grid-template-columns:1fr}.lead-settings input{min-width:100%;}.kpi-focus{grid-template-columns:1fr}.task-row{grid-template-columns:1fr}.task-owner{text-align:left}.person-kpi-grid{grid-template-columns:1fr}.person-kpi-list-row{grid-template-columns:1fr}.person-kpi-row-actions{justify-content:flex-start}.assignee-performance-grid,.assignee-modal-summary{grid-template-columns:1fr}}
-  .sales-page{display:flex; flex-direction:column; gap:18px;}
-  .sales-hero{background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 10px 28px rgba(15,23,42,0.05); overflow:hidden;}
-  .sales-hero-head{display:flex; justify-content:space-between; gap:18px; align-items:flex-start; padding:22px 24px 0;}
-  .sales-eyebrow{font-size:12px; font-weight:900; color:#2563eb; letter-spacing:.2px; margin-bottom:7px;}
-  .sales-title{font-size:22px; font-weight:900; color:#0f172a; letter-spacing:-.5px;}
-  .sales-desc{font-size:13px; color:#64748b; font-weight:650; margin-top:6px; line-height:1.5;}
-  .sales-sync{font-size:12px; color:#64748b; font-weight:750; padding:8px 12px; border-radius:999px; background:#f8fafc; border:1px solid #e2e8f0; white-space:nowrap;}
-  .sales-hero-grid{display:grid; grid-template-columns:minmax(320px,1.25fr) repeat(3,minmax(180px,.75fr)); gap:16px; padding:22px 28px 16px;}
-  .sales-total{background:#0f172a; color:#fff; border-radius:16px; padding:26px; min-height:156px; display:flex; flex-direction:column; justify-content:space-between;}
-  .sales-total .label{font-size:12px; color:#bfdbfe; font-weight:850;}
-  .sales-total .value{font-size:42px; font-weight:950; letter-spacing:-1.2px; line-height:1; margin:10px 0;}
-  .sales-total .sub{font-size:13px; color:#cbd5e1; font-weight:700;}
-  .sales-mini{background:#f8fafc; border:1px solid #e2e8f0; border-radius:16px; padding:22px; min-height:156px; display:flex; flex-direction:column; justify-content:space-between;}
-  .sales-mini .label{font-size:12px; color:#64748b; font-weight:850;}
-  .sales-mini .value{font-size:32px; font-weight:950; color:#0f172a; letter-spacing:-.7px;}
-  .sales-mini .sub{font-size:12px; color:#64748b; font-weight:700; line-height:1.45;}
-  .sales-mini.danger{background:#fff7ed; border-color:#fed7aa;}
-  .sales-mini.danger .value{color:#c2410c;}
-  .sales-alert{margin:0 28px 22px; border:1px solid #fecaca; background:#fef2f2; color:#991b1b; border-radius:14px; padding:13px 15px; font-size:13px; font-weight:800; line-height:1.55;}
-  .sales-alert.neutral{border-color:#dbeafe; background:#eff6ff; color:#1e40af;}
-  .sales-split-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:0 28px 24px;}
-  .sales-split-item{border:1px solid #e2e8f0; background:#f8fafc; border-radius:14px; padding:13px 14px; min-width:0;}
-  .sales-split-item .name{font-size:12px; color:#64748b; font-weight:900;}
-  .sales-split-item .num{font-size:21px; color:#0f172a; font-weight:950; letter-spacing:-.4px; margin-top:6px;}
-  .sales-split-item .hint{font-size:11px; color:#64748b; font-weight:750; margin-top:4px; line-height:1.35;}
-  .sales-split-item.kpi{background:#ecfdf5; border-color:#bbf7d0;}
-  .sales-split-item.kpi .num{color:#047857;}
-  .sales-split-item.mgmt{background:#eff6ff; border-color:#bfdbfe;}
-  .sales-split-item.mgmt .num{color:#1d4ed8;}
-  .sales-split-item.other{background:#f8fafc;}
-  .sales-person-section{background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 8px 24px rgba(15,23,42,0.04); overflow:hidden;}
-  .sales-person-head{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; padding:20px 22px 16px; border-bottom:1px solid #e2e8f0;}
-  .sales-person-head .ttl{font-size:18px; font-weight:950; color:#0f172a; letter-spacing:-.25px;}
-  .sales-person-head .sub{font-size:13px; color:#64748b; font-weight:700; margin-top:5px;}
-  .sales-person-box{padding:18px;}
-  .sales-person-tabs{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
-  .sales-person-tab{border:1px solid #cbd5e1; background:#fff; color:#334155; border-radius:999px; padding:9px 14px; font-size:13px; font-weight:950; cursor:pointer; transition:background .15s ease, color .15s ease, border-color .15s ease;}
-  .sales-person-tab.active{background:#0f172a; border-color:#0f172a; color:#fff;}
-  .sales-person-tab:hover{border-color:#0f172a;}
-  .sales-person-detail-panel{border:1px solid #e2e8f0; background:#f8fafc; border-radius:16px; padding:18px; display:grid; grid-template-columns:280px minmax(0,1fr); gap:18px; align-items:stretch;}
-  .sales-person-profile{background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; min-height:228px;}
-  .sales-person-name{font-size:22px; font-weight:950; color:#0f172a;}
-  .sales-person-role{font-size:10px; font-weight:950; border-radius:999px; padding:4px 7px; background:#f1f5f9; color:#475569; white-space:nowrap;}
-  .sales-person-role.kpi{background:#dcfce7; color:#047857;}
-  .sales-person-role.mgmt{background:#dbeafe; color:#1d4ed8;}
-  .sales-person-role.other{background:#f1f5f9; color:#64748b;}
-  .sales-person-value{font-size:34px; line-height:1; font-weight:950; color:#0f172a; margin-top:18px; letter-spacing:-.8px;}
-  .sales-person-sub{font-size:12px; color:#64748b; font-weight:800; margin-top:7px; line-height:1.4;}
-  .sales-person-detail-btn{margin-top:16px; border:0; background:#2563eb; color:#fff; border-radius:10px; padding:10px 12px; font-size:12px; font-weight:950; cursor:pointer;}
-  .sales-person-metrics{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px;}
-  .sales-person-metric{background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px;}
-  .sales-person-metric span{display:block; font-size:10px; color:#64748b; font-weight:900;}
-  .sales-person-metric b{display:block; font-size:18px; color:#0f172a; font-weight:950; margin-top:6px;}
-  .sales-person-lists{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
-  .sales-person-listbox{background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px; min-height:92px;}
-  .sales-person-listbox .list-title{font-size:12px; color:#0f172a; font-weight:950; margin-bottom:8px;}
-  .sales-person-line{display:flex; justify-content:space-between; gap:12px; font-size:12px; color:#334155; font-weight:800; padding:6px 0; border-top:1px solid #f1f5f9;}
-  .sales-person-line:first-of-type{border-top:0;}
-  .sales-person-line .muted{color:#64748b; font-weight:750;}
-  .evidence-layout{display:none;}
-  .evidence-panel{background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 8px 24px rgba(15,23,42,0.04); overflow:hidden;}
-  .evidence-head{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; padding:20px 22px 16px; border-bottom:1px solid #e2e8f0;}
-  .evidence-head .ttl{font-size:17px; font-weight:950; color:#0f172a; letter-spacing:-.25px;}
-  .evidence-head .sub{font-size:12px; color:#64748b; font-weight:700; margin-top:5px;}
-  .evidence-count{font-size:12px; color:#2563eb; font-weight:900; background:#eff6ff; padding:5px 10px; border-radius:999px; white-space:nowrap;}
-  .evidence-list{display:flex; flex-direction:column;}
-  .revenue-evidence-row{display:grid; grid-template-columns:170px 150px minmax(0,1fr) 92px; gap:18px; align-items:center; padding:18px 24px; border-bottom:1px solid #f1f5f9;}
-  .pt-evidence-row{display:grid; grid-template-columns:160px 120px minmax(0,1fr) 92px; gap:16px; align-items:center; padding:18px 24px; border-bottom:1px solid #f1f5f9;}
-  .revenue-evidence-row:last-child,.pt-evidence-row:last-child{border-bottom:0;}
-  .revenue-evidence-row:hover,.pt-evidence-row:hover{background:#f8fafc;}
-  .evidence-name{font-size:15px; font-weight:950; color:#0f172a;}
-  .evidence-role{font-size:11px; color:#94a3b8; font-weight:800; margin-top:4px;}
-  .evidence-badge{display:inline-flex; align-items:center; width:max-content; margin-top:7px; border-radius:999px; padding:3px 7px; font-size:10px; font-weight:900; background:#f1f5f9; color:#475569;}
-  .evidence-badge.kpi{background:#dcfce7; color:#047857;}
-  .evidence-badge.mgmt{background:#dbeafe; color:#1d4ed8;}
-  .evidence-badge.other{background:#f1f5f9; color:#64748b;}
-  .evidence-number{font-size:19px; font-weight:950; color:#0f172a; letter-spacing:-.35px;}
-  .evidence-number.blue{color:#1d4ed8;}
-  .evidence-number.green{color:#047857;}
-  .evidence-sub{font-size:11px; color:#64748b; font-weight:750; margin-top:4px; line-height:1.35;}
-  .evidence-chipline{display:flex; flex-wrap:wrap; gap:6px;}
-  .evidence-chip{max-width:100%; border:1px solid #e2e8f0; background:#fff; color:#334155; border-radius:999px; padding:5px 9px; font-size:11px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  .evidence-chip.win{background:#ecfdf5; border-color:#bbf7d0; color:#047857;}
-  .evidence-chip.loss{background:#fef2f2; border-color:#fecaca; color:#b91c1c;}
-  .evidence-chip.pending{background:#eff6ff; border-color:#bfdbfe; color:#1d4ed8;}
-  .evidence-empty{font-size:12px; color:#94a3b8; font-weight:750;}
-  .evidence-btn{border:1px solid #cbd5e1; background:#fff; color:#0f172a; border-radius:10px; padding:8px 10px; font-size:12px; font-weight:900; cursor:pointer;}
-  .evidence-btn:hover{background:#0f172a; border-color:#0f172a; color:#fff;}
-  @media(max-width:1180px){.sales-hero-grid{grid-template-columns:1fr 1fr}.sales-split-strip{grid-template-columns:1fr}.sales-person-detail-panel{grid-template-columns:1fr}.sales-person-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.pt-evidence-row{grid-template-columns:150px 110px minmax(0,1fr) 76px;}}
-  @media(max-width:760px){.wrap{padding:16px}.sales-hero-head{flex-direction:column}.sales-hero-grid{grid-template-columns:1fr}.sales-split-strip,.sales-alert{margin-left:16px; margin-right:16px}.sales-person-metrics,.sales-person-lists{grid-template-columns:1fr}.revenue-evidence-row,.pt-evidence-row{grid-template-columns:1fr}.evidence-btn{width:max-content}.sales-total .value{font-size:34px}}
+  /* ════════════════════════════════════════════════════════════
+     SECTION 1 — 매출 현황 (Modern Data Dashboard)
+     ════════════════════════════════════════════════════════════ */
+  .sales-page{
+    --sv-bg:#fafbfc; --sv-surface:#ffffff; --sv-border:#e5e7eb; --sv-border-soft:#f1f5f9;
+    --sv-ink:#0a0e1a; --sv-ink-2:#475569; --sv-muted:#64748b; --sv-muted-2:#94a3b8;
+    --sv-accent:#4f46e5; --sv-accent-soft:#eef2ff;
+    --sv-success:#059669; --sv-success-soft:#ecfdf5;
+    --sv-warn:#d97706; --sv-warn-soft:#fffbeb;
+    --sv-danger:#dc2626; --sv-danger-soft:#fef2f2;
+    --sv-info:#2563eb; --sv-info-soft:#eff6ff;
+    --sv-shadow-sm:0 1px 2px rgba(15,23,42,0.04);
+    --sv-shadow:0 1px 3px rgba(15,23,42,0.06), 0 8px 24px -8px rgba(15,23,42,0.08);
+    --sv-shadow-lg:0 4px 8px -2px rgba(15,23,42,0.04), 0 20px 40px -16px rgba(15,23,42,0.12);
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .sales-page .sv-eyebrow{font-size:10px; font-weight:700; color:var(--sv-muted); letter-spacing:1.4px; text-transform:uppercase;}
+  .sales-page .sv-section-title{font-size:15px; font-weight:800; color:var(--sv-ink); letter-spacing:-0.4px; margin:0;}
+  .sales-page .sv-section-sub{font-size:12px; color:var(--sv-muted); font-weight:500; margin-top:2px; line-height:1.4;}
+
+  /* ── HERO: 연간 누적 매출 + 진행률 도넛 ── */
+  .sales-page .sv-hero{
+    background:linear-gradient(135deg, #0a0e1a 0%, #1e293b 100%);
+    border-radius:16px; padding:20px 24px;
+    color:#fff; position:relative; overflow:hidden;
+    box-shadow:var(--sv-shadow-lg);
+  }
+  .sales-page .sv-hero::before{
+    content:''; position:absolute; right:-60px; top:-60px;
+    width:240px; height:240px; border-radius:50%;
+    background:radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .sales-page .sv-hero-grid{
+    display:grid; grid-template-columns:1fr 130px; gap:24px; align-items:center;
+    position:relative; z-index:1;
+  }
+  .sales-page .sv-hero-meta .sv-eyebrow{color:#a5b4fc;}
+  .sales-page .sv-hero-title{font-size:12px; font-weight:600; color:#cbd5e1; margin:8px 0 4px;}
+  .sales-page .sv-hero-value{font-size:38px; font-weight:800; letter-spacing:-1.4px; line-height:1; color:#fff;}
+  .sales-page .sv-hero-sub{font-size:12px; font-weight:500; color:#94a3b8; margin-top:8px; line-height:1.4; max-width:520px;}
+  .sales-page .sv-hero-sync{
+    display:inline-flex; align-items:center; gap:6px;
+    margin-top:10px; padding:4px 10px;
+    background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12);
+    border-radius:999px; font-size:10px; font-weight:600; color:#cbd5e1;
+    backdrop-filter:blur(8px);
+  }
+  .sales-page .sv-hero-sync::before{
+    content:''; width:5px; height:5px; border-radius:50%; background:#10b981;
+    box-shadow:0 0 0 3px rgba(16,185,129,0.2);
+  }
+  .sales-page .sv-ring{position:relative; width:130px; height:130px; margin-left:auto;}
+  .sales-page .sv-ring svg{width:100%; height:100%; transform:rotate(-90deg);}
+  .sales-page .sv-ring-track{fill:none; stroke:rgba(255,255,255,0.08); stroke-width:11;}
+  .sales-page .sv-ring-fill{fill:none; stroke:url(#sv-ring-grad); stroke-width:11; stroke-linecap:round; transition:stroke-dashoffset 0.6s ease;}
+  .sales-page .sv-ring-center{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;}
+  .sales-page .sv-ring-pct{font-size:24px; font-weight:800; color:#fff; letter-spacing:-1px; line-height:1;}
+  .sales-page .sv-ring-lbl{font-size:9px; font-weight:700; color:#94a3b8; letter-spacing:1px; text-transform:uppercase;}
+
+  /* ── KPI METRICS (4 cards) ── */
+  .sales-page .sv-metrics{display:grid; grid-template-columns:repeat(4, 1fr); gap:10px;}
+  .sales-page .sv-metric{
+    background:var(--sv-surface); border:1px solid var(--sv-border); border-radius:12px;
+    padding:14px 16px 12px; box-shadow:var(--sv-shadow-sm);
+    transition:transform 0.2s, box-shadow 0.2s, border-color 0.2s; position:relative;
+  }
+  .sales-page .sv-metric.clickable{cursor:pointer;}
+  .sales-page .sv-metric.clickable:hover{transform:translateY(-1px); box-shadow:var(--sv-shadow); border-color:#cbd5e1;}
+  .sales-page .sv-metric::before{
+    content:''; position:absolute; left:0; top:14px; bottom:14px;
+    width:3px; border-radius:0 2px 2px 0; background:var(--sv-border);
+  }
+  .sales-page .sv-metric.accent::before{background:var(--sv-accent);}
+  .sales-page .sv-metric.success::before{background:var(--sv-success);}
+  .sales-page .sv-metric.danger::before{background:var(--sv-danger);}
+  .sales-page .sv-metric.info::before{background:var(--sv-info);}
+  .sales-page .sv-m-head{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; gap:6px;}
+  .sales-page .sv-m-label{font-size:10px; font-weight:700; color:var(--sv-muted); letter-spacing:0.8px; text-transform:uppercase;}
+  .sales-page .sv-m-icon{
+    width:22px; height:22px; border-radius:6px; display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:800;
+  }
+  .sales-page .sv-m-icon.accent{background:var(--sv-accent-soft); color:var(--sv-accent);}
+  .sales-page .sv-m-icon.success{background:var(--sv-success-soft); color:var(--sv-success);}
+  .sales-page .sv-m-icon.danger{background:var(--sv-danger-soft); color:var(--sv-danger);}
+  .sales-page .sv-m-icon.info{background:var(--sv-info-soft); color:var(--sv-info);}
+  .sales-page .sv-m-value{font-size:22px; font-weight:800; color:var(--sv-ink); letter-spacing:-0.8px; line-height:1;}
+  .sales-page .sv-m-value.accent{color:var(--sv-accent);}
+  .sales-page .sv-m-value.success{color:var(--sv-success);}
+  .sales-page .sv-m-value.danger{color:var(--sv-danger);}
+  .sales-page .sv-m-sub{font-size:11px; color:var(--sv-muted); font-weight:500; margin-top:6px; line-height:1.4;}
+
+  /* ── ALERT ── */
+  .sales-page .sv-alert{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 14px; border-radius:10px; border:1px solid var(--sv-danger);
+    background:var(--sv-danger-soft); color:#991b1b;
+    font-size:12.5px; font-weight:600; line-height:1.45;
+    box-shadow:var(--sv-shadow-sm);
+  }
+  .sales-page .sv-alert::before{
+    content:'!'; flex-shrink:0; width:18px; height:18px; border-radius:50%;
+    background:var(--sv-danger); color:#fff; font-size:11px; font-weight:800;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .sales-page .sv-alert.neutral{border-color:#bfdbfe; background:var(--sv-info-soft); color:#1e3a8a;}
+  .sales-page .sv-alert.neutral::before{content:'✓'; background:var(--sv-info);}
+
+  /* ── PERFORMANCE SECTION (tabs + detail) ── */
+  .sales-page .sv-perf{
+    background:var(--sv-surface); border:1px solid var(--sv-border); border-radius:14px;
+    box-shadow:var(--sv-shadow-sm); overflow:hidden;
+  }
+  .sales-page .sv-perf-head{
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+    padding:12px 18px; border-bottom:1px solid var(--sv-border-soft);
+  }
+  .sales-page .sv-perf-count{
+    font-size:10px; color:var(--sv-info); font-weight:700; letter-spacing:0.4px;
+    background:var(--sv-info-soft); padding:3px 10px; border-radius:999px; border:1px solid #bfdbfe;
+  }
+  .sales-page .sv-perf-body{padding:14px 18px 16px;}
+  .sales-page .sv-perf-tabs{display:flex; flex-wrap:wrap; gap:4px; margin-bottom:12px; padding:3px; background:#f8fafc; border:1px solid var(--sv-border); border-radius:10px; width:max-content;}
+  .sales-page .sv-perf-tab{
+    border:none; background:transparent; color:var(--sv-muted-2);
+    padding:6px 14px; font-size:12px; font-weight:700; cursor:pointer; border-radius:7px;
+    transition:0.15s; letter-spacing:-0.1px;
+  }
+  .sales-page .sv-perf-tab:hover{color:var(--sv-ink);}
+  .sales-page .sv-perf-tab.active{background:#fff; color:var(--sv-ink); box-shadow:var(--sv-shadow-sm);}
+
+  /* PERSON DETAIL PANEL */
+  .sales-page .sv-detail{display:grid; grid-template-columns:240px 1fr; gap:12px;}
+  .sales-page .sv-detail-card{
+    background:linear-gradient(160deg, #0a0e1a 0%, #1e293b 100%);
+    border-radius:12px; padding:16px; color:#fff; display:flex; flex-direction:column; justify-content:space-between; min-height:180px;
+    position:relative; overflow:hidden;
+  }
+  .sales-page .sv-detail-card::after{
+    content:''; position:absolute; right:-30px; bottom:-30px; width:100px; height:100px;
+    border-radius:50%; background:radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%);
+  }
+  .sales-page .sv-detail-card > *{position:relative; z-index:1;}
+  .sales-page .sv-detail-top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+  .sales-page .sv-detail-name{font-size:18px; font-weight:800; color:#fff; letter-spacing:-0.4px;}
+  .sales-page .sv-detail-role{
+    font-size:9px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase;
+    padding:3px 7px; border-radius:999px; white-space:nowrap;
+  }
+  .sales-page .sv-detail-role.kpi{background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(52,211,153,0.3);}
+  .sales-page .sv-detail-role.mgmt{background:rgba(99,102,241,0.15); color:#a5b4fc; border:1px solid rgba(165,180,252,0.3);}
+  .sales-page .sv-detail-role.other{background:rgba(148,163,184,0.15); color:#cbd5e1; border:1px solid rgba(203,213,225,0.2);}
+  .sales-page .sv-detail-amount{font-size:26px; font-weight:800; color:#fff; letter-spacing:-0.8px; line-height:1; margin:10px 0 4px;}
+  .sales-page .sv-detail-meta{font-size:11px; font-weight:500; color:#94a3b8; line-height:1.4;}
+  .sales-page .sv-detail-btn{
+    margin-top:10px; padding:7px 10px; border:none; cursor:pointer;
+    background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.15);
+    border-radius:7px; font-size:11px; font-weight:700; letter-spacing:-0.1px;
+    transition:background 0.15s;
+  }
+  .sales-page .sv-detail-btn:hover{background:rgba(255,255,255,0.18);}
+  .sales-page .sv-detail-right{display:flex; flex-direction:column; gap:10px;}
+  .sales-page .sv-stats{display:grid; grid-template-columns:repeat(4, 1fr); gap:8px;}
+  .sales-page .sv-stat{
+    background:#fafbfc; border:1px solid var(--sv-border-soft); border-radius:9px; padding:9px 11px;
+    transition:background 0.15s, border-color 0.15s, transform 0.15s;
+  }
+  .sales-page .sv-stat.clickable{cursor:pointer;}
+  .sales-page .sv-stat.clickable:hover{background:#fff; border-color:#cbd5e1; transform:translateY(-1px);}
+  .sales-page .sv-stat-lbl{font-size:9px; font-weight:700; color:var(--sv-muted); letter-spacing:0.6px; text-transform:uppercase; display:flex; justify-content:space-between; align-items:center;}
+  .sales-page .sv-stat-hint{font-size:8px; font-weight:700; color:var(--sv-muted-2); letter-spacing:0.4px;}
+  .sales-page .sv-stat.clickable:hover .sv-stat-hint{color:var(--sv-info);}
+  .sales-page .sv-stat-val{font-size:16px; font-weight:800; color:var(--sv-ink); letter-spacing:-0.4px; margin-top:4px; line-height:1;}
+  .sales-page .sv-stat-val.success{color:var(--sv-success);}
+  .sales-page .sv-stat-val.info{color:var(--sv-info);}
+  .sales-page .sv-lists{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .sales-page .sv-list{background:#fafbfc; border:1px solid var(--sv-border-soft); border-radius:9px; padding:10px 12px;}
+  .sales-page .sv-list-title{
+    font-size:10px; font-weight:700; color:var(--sv-muted); letter-spacing:0.6px; text-transform:uppercase;
+    margin-bottom:6px; padding-bottom:5px; border-bottom:1px solid var(--sv-border-soft);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .sales-page .sv-list-title .sv-list-count{
+    font-size:9px; font-weight:700; color:var(--sv-muted-2); letter-spacing:0;
+    background:#fff; padding:1px 6px; border-radius:999px; border:1px solid var(--sv-border);
+  }
+  .sales-page .sv-list-row{display:flex; justify-content:space-between; gap:8px; padding:4px 0; font-size:11.5px; color:var(--sv-ink-2); font-weight:600; line-height:1.3; border-top:1px solid var(--sv-border-soft);}
+  .sales-page .sv-list-row:first-of-type{border-top:0;}
+  .sales-page .sv-list-row b{color:var(--sv-ink); font-weight:800;}
+  .sales-page .sv-list-row .pill{
+    font-size:9px; font-weight:800; padding:1px 7px; border-radius:999px; letter-spacing:0.2px;
+  }
+  .sales-page .sv-list-row .pill.win{background:var(--sv-success-soft); color:var(--sv-success);}
+  .sales-page .sv-list-row .pill.loss{background:var(--sv-danger-soft); color:var(--sv-danger);}
+  .sales-page .sv-list-row .pill.pending{background:var(--sv-info-soft); color:var(--sv-info);}
+  .sales-page .sv-list-empty{font-size:11px; color:var(--sv-muted-2); font-weight:500; padding:8px 0; text-align:center;}
+
+  /* PT GROUPED (승/패/미정) */
+  .sales-page .sv-pt-groups{display:flex; flex-direction:column; gap:8px;}
+  .sales-page .sv-pt-group{display:grid; grid-template-columns:60px 1fr; gap:8px; align-items:flex-start;}
+  .sales-page .sv-pt-grp-tag{
+    font-size:10px; font-weight:800; padding:3px 0; border-radius:5px;
+    text-align:center; letter-spacing:0.3px; line-height:1.2; white-space:nowrap;
+  }
+  .sales-page .sv-pt-grp-tag.win{background:var(--sv-success-soft); color:var(--sv-success); border:1px solid #a7f3d0;}
+  .sales-page .sv-pt-grp-tag.loss{background:var(--sv-danger-soft); color:var(--sv-danger); border:1px solid #fecaca;}
+  .sales-page .sv-pt-grp-tag.pending{background:var(--sv-info-soft); color:var(--sv-info); border:1px solid #bfdbfe;}
+  .sales-page .sv-pt-chips{display:flex; flex-wrap:wrap; gap:3px;}
+  .sales-page .sv-pt-chip{
+    font-size:10.5px; font-weight:600; color:var(--sv-ink-2);
+    padding:2px 7px; border-radius:5px; background:#fff; border:1px solid var(--sv-border);
+    line-height:1.3; white-space:nowrap; max-width:140px; overflow:hidden; text-overflow:ellipsis;
+  }
+
+  /* Hidden evidence panels (kept for JS render targets) */
+  .sales-page .evidence-layout{display:none;}
+
+  @media(max-width:1180px){
+    .sales-page .sv-metrics{grid-template-columns:repeat(2, 1fr);}
+    .sales-page .sv-detail{grid-template-columns:1fr;}
+    .sales-page .sv-detail-card{min-height:auto;}
+    .sales-page .sv-stats{grid-template-columns:repeat(4, 1fr);}
+  }
+  @media(max-width:760px){
+    .sales-page .sv-hero{padding:16px 18px;}
+    .sales-page .sv-hero-grid{grid-template-columns:1fr; gap:16px;}
+    .sales-page .sv-ring{margin:0 auto; width:110px; height:110px;}
+    .sales-page .sv-hero-value{font-size:30px;}
+    .sales-page .sv-metrics{grid-template-columns:1fr;}
+    .sales-page .sv-stats{grid-template-columns:repeat(2, 1fr);}
+    .sales-page .sv-lists{grid-template-columns:1fr;}
+    .sales-page .sv-perf-tabs{width:auto;}
+  }
   #loader{position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#0f172a; color:white; padding:12px 24px; border-radius:8px; font-weight:700; font-size:14px; z-index:9999; display:none; box-shadow:0 4px 12px rgba(0,0,0,0.3); align-items:center; gap:8px;}
+
+  /* ════════════════════════════════════════════════════════════
+     SECTION 3 — 영업 KPI (v4 흐름 · 모던 데이터 대시보드)
+     ════════════════════════════════════════════════════════════ */
+  #viewTeamKpi{
+    --tk-bg:#fafbfc; --tk-surface:#ffffff; --tk-border:#e5e7eb; --tk-border-soft:#f1f5f9;
+    --tk-ink:#0a0e1a; --tk-ink-2:#475569; --tk-muted:#64748b; --tk-muted-2:#94a3b8;
+    --tk-blue:#2563eb; --tk-blue-soft:#eff6ff;
+    --tk-green:#059669; --tk-green-soft:#ecfdf5;
+    --tk-purple:#7c3aed; --tk-purple-soft:#f5f3ff;
+    --tk-orange:#ea580c; --tk-orange-soft:#fff7ed;
+    --tk-danger:#dc2626;
+    --tk-shadow-sm:0 1px 2px rgba(15,23,42,0.04);
+    --tk-shadow:0 1px 3px rgba(15,23,42,0.06), 0 8px 24px -8px rgba(15,23,42,0.08);
+  }
+  #viewTeamKpi .tk-page{display:flex; flex-direction:column; gap:14px;}
+  #viewTeamKpi .tk-section{background:var(--tk-surface); border:1px solid var(--tk-border); border-radius:14px; box-shadow:var(--tk-shadow-sm);}
+
+  /* MISSION */
+  #viewTeamKpi .tk-mission{padding:14px 18px; display:flex; align-items:flex-start; gap:14px; border-left:4px solid var(--tk-blue); border-radius:0 14px 14px 0; background:linear-gradient(90deg, var(--tk-blue-soft) 0%, #fff 70%);}
+  #viewTeamKpi .tk-mission-tag{font-size:10px; font-weight:800; color:#fff; background:var(--tk-blue); padding:4px 10px; border-radius:999px; letter-spacing:0.4px; white-space:nowrap; margin-top:2px;}
+  #viewTeamKpi .tk-mission-text{font-size:14px; font-weight:700; color:var(--tk-ink); line-height:1.5; letter-spacing:-0.2px;}
+
+  /* CORE KPI (3 cards) */
+  #viewTeamKpi .tk-cores{display:grid; grid-template-columns:repeat(3, 1fr); gap:12px;}
+  #viewTeamKpi .tk-core{background:var(--tk-surface); border:1px solid var(--tk-border); border-radius:14px; padding:18px 20px 16px; box-shadow:var(--tk-shadow-sm); position:relative; overflow:hidden; cursor:pointer; transition:transform 0.15s, box-shadow 0.15s, border-color 0.15s;}
+  #viewTeamKpi .tk-core:hover{transform:translateY(-2px); box-shadow:var(--tk-shadow); border-color:#cbd5e1;}
+  #viewTeamKpi .tk-core::before{content:''; position:absolute; top:0; left:0; right:0; height:3px;}
+  #viewTeamKpi .tk-core.blue::before{background:var(--tk-blue);}
+  #viewTeamKpi .tk-core.green::before{background:var(--tk-green);}
+  #viewTeamKpi .tk-core.purple::before{background:var(--tk-purple);}
+  #viewTeamKpi .tk-core-name{font-size:12px; font-weight:700; color:var(--tk-ink-2); letter-spacing:-0.1px; margin-bottom:10px;}
+  #viewTeamKpi .tk-core-values{display:flex; align-items:baseline; gap:4px; margin-bottom:10px;}
+  #viewTeamKpi .tk-core-cur{font-size:26px; font-weight:800; letter-spacing:-1px; line-height:1;}
+  #viewTeamKpi .tk-core.blue .tk-core-cur{color:var(--tk-blue);}
+  #viewTeamKpi .tk-core.green .tk-core-cur{color:var(--tk-green);}
+  #viewTeamKpi .tk-core.purple .tk-core-cur{color:var(--tk-purple);}
+  #viewTeamKpi .tk-core-slash{font-size:16px; color:var(--tk-muted-2); font-weight:600;}
+  #viewTeamKpi .tk-core-tgt{font-size:16px; color:var(--tk-muted); font-weight:700;}
+  #viewTeamKpi .tk-core-unit{font-size:12px; color:var(--tk-muted); font-weight:600; margin-left:2px;}
+  #viewTeamKpi .tk-core-bar{height:5px; background:#f1f5f9; border-radius:999px; overflow:hidden;}
+  #viewTeamKpi .tk-core-fill{height:100%; border-radius:999px; transition:width 0.4s ease;}
+  #viewTeamKpi .tk-core.blue .tk-core-fill{background:var(--tk-blue);}
+  #viewTeamKpi .tk-core.green .tk-core-fill{background:var(--tk-green);}
+  #viewTeamKpi .tk-core.purple .tk-core-fill{background:var(--tk-purple);}
+  #viewTeamKpi .tk-core-foot{display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:11px; color:var(--tk-muted); font-weight:600;}
+  #viewTeamKpi .tk-core-pct{font-weight:800; color:var(--tk-ink);}
+
+  /* MEMBER TABS */
+  #viewTeamKpi .tk-tabs-wrap{display:flex; gap:4px; padding:6px 8px; background:#f8fafc; border:1px solid var(--tk-border); border-radius:12px; flex-wrap:wrap; align-items:center;}
+  #viewTeamKpi .tk-tab{
+    background:transparent; border:none; padding:7px 16px; font-size:13px; font-weight:700;
+    color:var(--tk-muted); cursor:pointer; border-radius:8px; transition:0.15s; letter-spacing:-0.1px;
+  }
+  #viewTeamKpi .tk-tab:hover{color:var(--tk-ink); background:#fff;}
+  #viewTeamKpi .tk-tab.active{background:var(--tk-ink); color:#fff; box-shadow:var(--tk-shadow-sm);}
+  #viewTeamKpi .tk-tab-actions{margin-left:auto; display:flex; gap:6px;}
+  #viewTeamKpi .tk-tab-btn{padding:6px 12px; background:#fff; border:1px solid var(--tk-border); color:var(--tk-ink-2); border-radius:8px; font-size:11.5px; font-weight:700; cursor:pointer; transition:0.15s;}
+  #viewTeamKpi .tk-tab-btn:hover{background:var(--tk-blue-soft); color:var(--tk-blue); border-color:#bfdbfe;}
+
+  /* MEMBER PANEL */
+  #viewTeamKpi .tk-member{padding:18px;}
+  #viewTeamKpi .tk-member-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  #viewTeamKpi .tk-role{font-size:10px; font-weight:800; color:#fff; background:var(--tk-ink); padding:4px 12px; border-radius:999px; letter-spacing:0.4px;}
+  #viewTeamKpi .tk-role.kpi{background:var(--tk-green);}
+  #viewTeamKpi .tk-role.mgmt{background:var(--tk-purple);}
+
+  /* REP KPI CARD (dark gradient hero) */
+  #viewTeamKpi .tk-rep{
+    background:linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+    color:#fff; border-radius:14px; padding:18px 22px; margin-bottom:16px;
+    position:relative; overflow:hidden; box-shadow:0 8px 24px -8px rgba(15,23,42,0.3);
+  }
+  #viewTeamKpi .tk-rep::after{
+    content:''; position:absolute; right:-60px; bottom:-60px; width:200px; height:200px;
+    border-radius:50%; background:radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%); pointer-events:none;
+  }
+  #viewTeamKpi .tk-rep-label{font-size:10px; color:#a5b4fc; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;}
+  #viewTeamKpi .tk-rep-body{display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; position:relative; z-index:1;}
+  #viewTeamKpi .tk-rep-name{font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.3px;}
+  #viewTeamKpi .tk-rep-values{display:flex; align-items:baseline; gap:6px;}
+  #viewTeamKpi .tk-rep-cur{font-size:32px; font-weight:800; letter-spacing:-1.2px; line-height:1; color:#fff;}
+  #viewTeamKpi .tk-rep-slash{font-size:18px; color:rgba(255,255,255,0.4); font-weight:600;}
+  #viewTeamKpi .tk-rep-tgt{font-size:20px; font-weight:700; color:rgba(255,255,255,0.6);}
+  #viewTeamKpi .tk-rep-unit{font-size:14px; font-weight:600; color:rgba(255,255,255,0.7); margin-left:4px;}
+  #viewTeamKpi .tk-rep-prog{margin-top:12px; position:relative; z-index:1;}
+  #viewTeamKpi .tk-rep-bar{height:6px; background:rgba(255,255,255,0.12); border-radius:999px; overflow:hidden;}
+  #viewTeamKpi .tk-rep-fill{height:100%; background:linear-gradient(90deg, #60a5fa, #a78bfa); border-radius:999px; transition:width 0.5s ease;}
+  #viewTeamKpi .tk-rep-foot{margin-top:8px; font-size:12px; color:rgba(255,255,255,0.8); text-align:right; font-weight:700;}
+
+  /* SUB KPI TABLE */
+  #viewTeamKpi .tk-sub-h{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+  #viewTeamKpi .tk-sub-h-ttl{font-size:14px; font-weight:800; color:var(--tk-ink); letter-spacing:-0.2px;}
+  #viewTeamKpi .tk-sub-h-cnt{font-size:11px; color:var(--tk-blue); font-weight:800; background:var(--tk-blue-soft); padding:3px 10px; border-radius:999px;}
+  #viewTeamKpi .tk-sub-wrap{border:1px solid var(--tk-border); border-radius:12px; overflow:hidden; background:#fff;}
+  #viewTeamKpi .tk-sub-table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  #viewTeamKpi .tk-sub-table thead th{background:#fafbfc; padding:10px 14px; font-size:10.5px; font-weight:700; color:var(--tk-muted); text-align:left; letter-spacing:0.5px; text-transform:uppercase; white-space:nowrap; border-bottom:1px solid var(--tk-border);}
+  #viewTeamKpi .tk-sub-table tbody td{padding:11px 14px; border-bottom:1px solid var(--tk-border-soft); color:var(--tk-ink-2); font-weight:600; vertical-align:middle;}
+  #viewTeamKpi .tk-sub-table tbody tr:last-child td{border-bottom:0;}
+  #viewTeamKpi .tk-sub-table tbody tr:hover td{background:#fafbfc;}
+  #viewTeamKpi .tk-type{display:inline-flex; min-width:60px; justify-content:center; font-size:10px; font-weight:800; padding:3px 8px; border-radius:999px; letter-spacing:0.3px;}
+  #viewTeamKpi .tk-type.main{background:var(--tk-ink); color:#fff;}
+  #viewTeamKpi .tk-type.action{background:var(--tk-blue-soft); color:var(--tk-blue);}
+  #viewTeamKpi .tk-kpi-name{font-size:13px; font-weight:700; color:var(--tk-ink); letter-spacing:-0.1px;}
+  #viewTeamKpi .tk-formula{font-size:11px; color:var(--tk-muted); font-weight:500; line-height:1.4;}
+  #viewTeamKpi .tk-current{font-size:12px; color:var(--tk-ink); font-weight:700; white-space:nowrap;}
+  #viewTeamKpi .tk-status{display:flex; align-items:center; gap:8px; justify-content:flex-end;}
+  #viewTeamKpi .tk-status-bar{width:60px; height:5px; background:#f1f5f9; border-radius:999px; overflow:hidden;}
+  #viewTeamKpi .tk-status-fill{height:100%; background:var(--tk-blue); border-radius:999px;}
+  #viewTeamKpi .tk-status-fill.good{background:var(--tk-green);}
+  #viewTeamKpi .tk-status-fill.warn{background:var(--tk-orange);}
+  #viewTeamKpi .tk-status-fill.bad{background:var(--tk-danger);}
+  #viewTeamKpi .tk-status-pct{font-size:12px; color:var(--tk-ink); font-weight:800; min-width:42px; text-align:right;}
+
+  /* KPI POOL */
+  #viewTeamKpi .tk-pool{padding:20px 22px;}
+  #viewTeamKpi .tk-pool-h{margin-bottom:6px;}
+  #viewTeamKpi .tk-pool-ttl{font-size:14px; font-weight:800; color:var(--tk-ink); letter-spacing:-0.2px;}
+  #viewTeamKpi .tk-pool-desc{font-size:12px; color:var(--tk-muted); font-weight:500; margin-top:3px; margin-bottom:14px;}
+  #viewTeamKpi .tk-pool-group{margin-bottom:12px;}
+  #viewTeamKpi .tk-pool-group:last-child{margin-bottom:0;}
+  #viewTeamKpi .tk-pool-glabel{font-size:11px; font-weight:700; color:var(--tk-ink-2); margin-bottom:8px; display:flex; align-items:center; gap:8px;}
+  #viewTeamKpi .tk-pool-badge{font-size:9px; color:#fff; padding:3px 8px; border-radius:999px; font-weight:800; letter-spacing:0.4px;}
+  #viewTeamKpi .tk-pool-badge.orange{background:var(--tk-orange);}
+  #viewTeamKpi .tk-pool-badge.green{background:var(--tk-green);}
+  #viewTeamKpi .tk-pool-badge.blue{background:var(--tk-blue);}
+  #viewTeamKpi .tk-pool-items{display:flex; flex-wrap:wrap; gap:6px;}
+  #viewTeamKpi .tk-pool-item{background:#fff; border:1px solid var(--tk-border); border-radius:8px; padding:7px 12px; font-size:11.5px; color:var(--tk-ink-2); font-weight:600; cursor:pointer; transition:0.15s; letter-spacing:-0.1px;}
+  #viewTeamKpi .tk-pool-item:hover{border-color:var(--tk-blue); background:var(--tk-blue-soft); color:var(--tk-blue); transform:translateY(-1px);}
+  #viewTeamKpi .tk-pool-item.orange{border-left:3px solid var(--tk-orange);}
+  #viewTeamKpi .tk-pool-item.blue{border-left:3px solid var(--tk-blue);}
+  #viewTeamKpi .tk-pool-item.green{border-left:3px solid var(--tk-green);}
+  #viewTeamKpi .tk-pool-item.star::after{content:' ★'; color:var(--tk-orange); font-size:9px;}
+
+  @media (max-width:1100px){
+    #viewTeamKpi .tk-cores{grid-template-columns:1fr;}
+    #viewTeamKpi .tk-rep-body{flex-direction:column; align-items:flex-start;}
+  }
 </style>
 </head>
 <body>
@@ -599,92 +919,112 @@
     </div>
 
     <div class="sales-page">
-      <section class="sales-hero">
-        <div class="sales-hero-head">
-          <div>
-            <div class="sales-eyebrow">SALES EVIDENCE</div>
-            <div class="sales-title">총 매출과 담당자별 근거를 한 화면에서 확인</div>
-            <div class="sales-desc">계약 매출을 KPI 대상·관리자·기타 기여로 분리하고, 담당자별 매출 근거와 PT 승패 근거를 바로 확인하는 보고용 첫 화면입니다.</div>
+      <!-- HERO: 연간 누적 매출 + 진행률 도넛 -->
+      <section class="sv-hero">
+        <svg width="0" height="0" style="position:absolute;">
+          <defs>
+            <linearGradient id="sv-ring-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#34d399"/>
+              <stop offset="100%" stop-color="#6366f1"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="sv-hero-grid">
+          <div class="sv-hero-meta">
+            <div class="sv-eyebrow">2026 매출 현황</div>
+            <div class="sv-hero-title">올해 누적 계약매출</div>
+            <div class="sv-hero-value" id="pageTotalRevenue">0원</div>
+            <div class="sv-hero-sub" id="pageTotalRevenueSub">연간 230억 목표 기준</div>
+            <div class="sv-hero-sync" id="salesDataSource">계약·PT·릴레잇 기준</div>
           </div>
-          <div class="sales-sync" id="salesDataSource">계약·PT·릴레잇 기준</div>
-        </div>
-        <div class="sales-hero-grid">
-          <div class="sales-total kpi-clickable" onclick="openKpiDetail('contract')">
-            <div>
-              <div class="label">전체 계약매출</div>
-              <div class="value" id="pageTotalRevenue">0원</div>
-              <div class="sub" id="pageTotalRevenueSub">230억 목표 대비 0%</div>
+          <div class="sv-ring">
+            <svg viewBox="0 0 200 200">
+              <circle class="sv-ring-track" cx="100" cy="100" r="86"/>
+              <circle class="sv-ring-fill" id="svRingFill" cx="100" cy="100" r="86" stroke-dasharray="540" stroke-dashoffset="540"/>
+            </svg>
+            <div class="sv-ring-center">
+              <div class="sv-ring-pct" id="svRingPct">0%</div>
+              <div class="sv-ring-lbl">연간 목표 달성</div>
             </div>
-            <div class="sub">클릭하면 계약 산출 근거를 확인합니다.</div>
-          </div>
-          <div class="sales-mini">
-            <div class="label">KPI 대상 매출</div>
-            <div class="value" id="pageKpiRevenue">0원</div>
-            <div class="sub" id="pageKpiRevenueSub">영업담당자 5명 기준</div>
-          </div>
-          <div class="sales-mini danger">
-            <div class="label">남은 목표</div>
-            <div class="value" id="pageRevenueGap">0원</div>
-            <div class="sub" id="pageRevenueGapSub">남은 월 필요 매출 0원</div>
-          </div>
-          <div class="sales-mini kpi-clickable" onclick="openKpiDetail('ptrate')">
-            <div class="label">PT 승률</div>
-            <div class="value" id="pagePtRate">0%</div>
-            <div class="sub" id="pagePtSub">승패 확정 0건 · 미정 0건</div>
-          </div>
-        </div>
-        <div class="sales-alert" id="salesRiskNote">매출 목표 대비 부족분을 산정 중입니다.</div>
-        <div class="sales-split-strip">
-          <div class="sales-split-item kpi">
-            <div class="name">KPI 대상 영업담당자</div>
-            <div class="num" id="splitKpiRevenue">0원</div>
-            <div class="hint" id="splitKpiHint">한준엽·한인규·정정훈·김성민·이필선</div>
-          </div>
-          <div class="sales-split-item mgmt">
-            <div class="name">관리자 직접 기여</div>
-            <div class="num" id="splitManagerRevenue">0원</div>
-            <div class="hint" id="splitManagerHint">황윤선 기준</div>
-          </div>
-          <div class="sales-split-item other">
-            <div class="name">기타·외부·미배정</div>
-            <div class="num" id="splitOtherRevenue">0원</div>
-            <div class="hint" id="splitOtherHint">KPI 대상 외 계약 매출</div>
           </div>
         </div>
       </section>
 
-      <section class="sales-person-section">
-        <div class="sales-person-head">
-          <div>
-            <div class="ttl">담당자별 성과</div>
-            <div class="sub">담당자를 선택하면 매출과 PT 핵심 실적이 아래에 표시됩니다.</div>
+      <!-- KPI METRICS (4 cards) -->
+      <section class="sv-metrics">
+        <div class="sv-metric accent clickable" onclick="openKpiDetail('contract')">
+          <div class="sv-m-head">
+            <span class="sv-m-label">총 계약매출</span>
+            <span class="sv-m-icon accent">₩</span>
           </div>
-          <div class="evidence-count" id="salesPersonCount">0명</div>
+          <div class="sv-m-value" id="pageTotalRevenueClone">0원</div>
+          <div class="sv-m-sub" id="pageTotalRevenueSubClone">연간 230억 목표 중 0% 달성</div>
         </div>
-        <div class="sales-person-box">
-          <div class="sales-person-tabs" id="salesPersonTabs"></div>
+        <div class="sv-metric success">
+          <div class="sv-m-head">
+            <span class="sv-m-label">KPI 담당자 매출</span>
+            <span class="sv-m-icon success">✓</span>
+          </div>
+          <div class="sv-m-value success" id="pageKpiRevenue">0원</div>
+          <div class="sv-m-sub" id="pageKpiRevenueSub">영업담당자 5명 · 전체 매출의 0%</div>
+        </div>
+        <div class="sv-metric danger">
+          <div class="sv-m-head">
+            <span class="sv-m-label">목표까지 남은 금액</span>
+            <span class="sv-m-icon danger">↓</span>
+          </div>
+          <div class="sv-m-value danger" id="pageRevenueGap">0원</div>
+          <div class="sv-m-sub" id="pageRevenueGapSub">월 평균 0원씩 채워야 달성</div>
+        </div>
+        <div class="sv-metric info clickable" onclick="openKpiDetail('ptrate')">
+          <div class="sv-m-head">
+            <span class="sv-m-label">PT 승률</span>
+            <span class="sv-m-icon info">%</span>
+          </div>
+          <div class="sv-m-value" id="pagePtRate">0%</div>
+          <div class="sv-m-sub" id="pagePtSub">확정 0건 · 미정 0건</div>
+        </div>
+      </section>
+
+      <!-- RISK ALERT -->
+      <div class="sv-alert" id="salesRiskNote">매출 목표 대비 부족분을 산정 중입니다.</div>
+
+      <!-- Hidden split data (kept for JS render targets) -->
+      <div style="display:none;">
+        <span id="splitKpiRevenue"></span><span id="splitKpiHint"></span>
+        <span id="splitManagerRevenue"></span><span id="splitManagerHint"></span>
+        <span id="splitOtherRevenue"></span><span id="splitOtherHint"></span>
+        <span id="svSegKpi"></span><span id="svSegMgmt"></span><span id="svSegOther"></span>
+        <span id="svLegKpiPct"></span><span id="svLegMgmtPct"></span><span id="svLegOtherPct"></span>
+      </div>
+
+      <!-- PERFORMANCE: tabs + person detail -->
+      <section class="sv-perf">
+        <div class="sv-perf-head">
+          <div>
+            <h2 class="sv-section-title">누가 매출을 만들었나</h2>
+            <p class="sv-section-sub">담당자를 클릭하면 개인별 매출·PT 실적이 표시됩니다</p>
+          </div>
+          <div class="sv-perf-count" id="salesPersonCount">0명</div>
+        </div>
+        <div class="sv-perf-body">
+          <div class="sv-perf-tabs" id="salesPersonTabs"></div>
           <div id="salesPersonDetail"></div>
         </div>
       </section>
 
+      <!-- Hidden evidence panels (kept for JS render targets) -->
       <section class="evidence-layout">
         <div class="evidence-panel">
           <div class="evidence-head">
-            <div>
-              <div class="ttl">담당자별 매출 근거</div>
-              <div class="sub">KPI 대상 담당자를 먼저 보고, 관리자·기타 기여는 분리해서 확인합니다.</div>
-            </div>
+            <div class="ttl">담당자별 매출 근거</div>
             <div class="evidence-count" id="revenueEvidenceCount">0명</div>
           </div>
           <div class="evidence-list" id="revenueEvidenceBody"></div>
         </div>
-
         <div class="evidence-panel">
           <div class="evidence-head">
-            <div>
-              <div class="ttl">담당자별 PT 근거</div>
-              <div class="sub">PT 승률, 승·패·미정 건수와 최근 PT 이력을 함께 확인합니다.</div>
-            </div>
+            <div class="ttl">담당자별 PT 근거</div>
             <div class="evidence-count" id="ptEvidenceCount">0건</div>
           </div>
           <div class="evidence-list" id="ptEvidenceBody"></div>
@@ -694,25 +1034,12 @@
     </div>
   </div>
 
-  <!-- 🔍 릴레잇 현황 뷰 (탭 클릭 시 표시) - 임팩트 대시보드 -->
+  <!-- 영업 KPI 뷰: kpi.html(영업 KPI 관리도구)를 iframe으로 임베드하여 단일 소스로 운영 -->
   <div id="viewTeamKpi" style="display:none;">
-    <div class="period-row">
-      <span class="lbl">KPI 조회 기간</span>
-      <select class="select" id="yearSelectTeamKpi"></select>
-      <div class="chip-row" id="quarterTabsTeamKpi">
-        <button data-key="all">전체</button>
-        <button data-key="1">1Q</button>
-        <button data-key="2">2Q</button>
-        <button data-key="3">3Q</button>
-        <button data-key="4">4Q</button>
-      </div>
-      <div class="period-meta" id="teamKpiPeriodMeta"></div>
-    </div>
-    <div id="teamKpiHero"></div>
-    <div id="teamKpiFocus"></div>
-    <div id="teamKpiCards"></div>
-    <div id="teamKpiTasks"></div>
-    <div id="teamKpiDetails"></div>
+    <iframe id="kpiFrame" src="./kpi.html"
+      style="width:100%; min-height:1800px; border:none; display:block; background:transparent;"
+      title="영업 KPI 관리도구"
+      onload="autoSizeKpiFrame()"></iframe>
   </div>
 
   <div id="viewInquiry" style="display:none;">
@@ -1113,6 +1440,118 @@ function openAssigneeEvidence(name){
   if (row) openModal(row);
 }
 
+let _focusModalCtx = null;
+
+function openAssigneeFocus(name, focus){
+  _focusModalCtx = { name, focus, tab: 'all' };
+  renderFocusModal();
+  document.getElementById('modalBackdrop').classList.remove('hidden');
+}
+
+function setFocusModalTab(tab){
+  if (!_focusModalCtx) return;
+  _focusModalCtx.tab = tab;
+  renderFocusModal();
+}
+
+function renderFocusModal(){
+  if (!_focusModalCtx) return;
+  const { name, focus, tab } = _focusModalCtx;
+  const data = LATEST_DATA || buildData();
+  const r = data.rows.find(row => row.name === name);
+  if (!r) return;
+  const m = document.getElementById('modal');
+  m.classList.add('focus-modal');
+
+  let title = '', subtitle = '', tabsHtml = '', tableHtml = '';
+
+  if (focus === 'contract' || focus === 'contractCount') {
+    title = `${r.name} — 계약 근거`;
+    subtitle = `${periodLabel()} · 계약 ${r.conts.length}건 · 총 ${fmtMoney(r.cSum)}`;
+    // 분류: 상태별 (완료/진행/기타)
+    const groups = { all: [...r.conts], done: [], inprogress: [], other: [] };
+    r.conts.forEach(c => {
+      const s = String(c.status || '');
+      if (/완료|완납/.test(s)) groups.done.push(c);
+      else if (/진행|착공|시공/.test(s)) groups.inprogress.push(c);
+      else groups.other.push(c);
+    });
+    const order = [
+      ['all', '전체', groups.all],
+      ['done', '완료', groups.done],
+      ['inprogress', '진행중', groups.inprogress],
+      ['other', '기타', groups.other],
+    ].filter(([k, l, list], idx) => idx === 0 || list.length > 0);
+    tabsHtml = order.map(([k, l, list]) =>
+      `<button class="focus-modal-tab ${tab === k ? 'active' : ''}" onclick="setFocusModalTab('${k}')">${l}<span class="cnt">${list.length}</span></button>`
+    ).join('');
+    const list = (order.find(([k]) => k === tab) || order[0])[2];
+    const sorted = [...list].sort((a,b) => (b.contractAmount||0) - (a.contractAmount||0));
+    const rows = sorted.map(c => `<tr>
+      <td>${c.signedDate || '-'}</td>
+      <td><b>${escapeHtml(c.aptName || '-')}</b></td>
+      <td>${escapeHtml(c.status || '-')}</td>
+      <td class="right"><b>${fmtFullMoney(c.contractAmount || 0)}</b></td>
+    </tr>`).join('');
+    tableHtml = sorted.length
+      ? `<table class="focus-modal-table"><thead><tr><th>계약일</th><th>현장명</th><th>상태</th><th class="right">계약금액</th></tr></thead><tbody>${rows}</tbody></table>`
+      : `<div class="focus-modal-empty">해당 분류에 계약 내역이 없습니다.</div>`;
+
+  } else if (focus === 'ptrate' || focus === 'ptstatus') {
+    title = `${r.name} — PT 근거`;
+    subtitle = `${periodLabel()} · 승 ${r.win} · 패 ${r.loss} · 미정 ${r.pending} · 승률 ${r.winRate}%`;
+    const grp = { all: [...r.pts], win: [], loss: [], pending: [] };
+    r.pts.forEach(p => {
+      const tone = ptTone(p.result);
+      if (grp[tone]) grp[tone].push(p);
+    });
+    const order = [
+      ['all', '전체', grp.all, ''],
+      ['win', '승', grp.win, 'win'],
+      ['loss', '패', grp.loss, 'loss'],
+      ['pending', '미정', grp.pending, 'pending'],
+    ];
+    tabsHtml = order.map(([k, l, list, cls]) =>
+      `<button class="focus-modal-tab ${cls} ${tab === k ? 'active' : ''}" onclick="setFocusModalTab('${k}')">${l}<span class="cnt">${list.length}</span></button>`
+    ).join('');
+    const list = (order.find(([k]) => k === tab) || order[0])[2];
+    const rows = list.map(p => `<tr>
+      <td>${p.date || '-'}</td>
+      <td><b>${escapeHtml(p.siteName || '-')}</b></td>
+      <td>${escapeHtml(p.type || '-')}</td>
+      <td class="center"><span class="status-badge ${p.result === '승' ? 'win' : p.result === '패' ? 'loss' : p.result === '무' ? 'tie' : 'pending'}">${p.result || '미정'}</span></td>
+      <td>${escapeHtml(p.competitor || '-')}</td>
+    </tr>`).join('');
+    tableHtml = list.length
+      ? `<table class="focus-modal-table"><thead><tr><th>진행일</th><th>현장명</th><th>공종</th><th class="center">결과</th><th>경쟁사/사유</th></tr></thead><tbody>${rows}</tbody></table>`
+      : `<div class="focus-modal-empty">해당 분류에 PT 내역이 없습니다.</div>`;
+  }
+
+  m.innerHTML = `
+    <div class="focus-modal-head">
+      <div>
+        <div class="ttl">${escapeHtml(title)}</div>
+        <div class="sub">${escapeHtml(subtitle)}</div>
+      </div>
+      <button class="close-btn" onclick="closeFocusModal()">닫기 ✕</button>
+    </div>
+    <div class="focus-modal-tabs">${tabsHtml}</div>
+    <div class="focus-modal-body">
+      <div class="focus-modal-table-wrap">${tableHtml}</div>
+    </div>
+  `;
+}
+
+function closeFocusModal(){
+  document.getElementById('modalBackdrop').classList.add('hidden');
+  document.getElementById('modal').classList.remove('focus-modal');
+  _focusModalCtx = null;
+}
+
+function escapeHtml(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+}
+
 function selectSalesPerson(name){
   window._SALES_PERSON_SELECTED = name;
   renderSalesPersonTabs();
@@ -1124,7 +1563,7 @@ function renderSalesPersonTabs(){
   const selected = window._SALES_PERSON_SELECTED || rows[0]?.name || '';
   setHtml('salesPersonTabs', rows.map(r => {
     const isActive = r.name === selected;
-    return `<button class="sales-person-tab ${isActive ? 'active' : ''}" type="button" onclick="selectSalesPerson('${escapeAttr(r.name)}')">${escapeAttr(r.name)}</button>`;
+    return `<button class="sv-perf-tab ${isActive ? 'active' : ''}" type="button" onclick="selectSalesPerson('${escapeAttr(r.name)}')">${escapeAttr(r.name)}</button>`;
   }).join(''));
 }
 
@@ -1132,7 +1571,7 @@ function renderSalesPersonDetail(name){
   const rows = window._SALES_PERSON_ROWS || [];
   const row = rows.find(r => r.name === name) || rows[0];
   if (!row) {
-    setHtml('salesPersonDetail', '<div class="evidence-empty">표시할 담당자 데이터가 없습니다.</div>');
+    setHtml('salesPersonDetail', '<div class="sv-list-empty">표시할 담당자 데이터가 없습니다.</div>');
     return;
   }
   window._SALES_PERSON_SELECTED = row.name;
@@ -1141,42 +1580,76 @@ function renderSalesPersonDetail(name){
   const ptRate = ptClosed ? `${row.winRate}%` : '-';
   const majorContracts = [...row.conts]
     .filter(c => c.contractAmount > 0)
-    .sort((a,b) => b.contractAmount - a.contractAmount)
-    .slice(0, 3);
-  const recentPts = [...row.pts].slice(0, 3);
-  const contractLines = majorContracts.length
-    ? majorContracts.map(c => `<div class="sales-person-line"><span>${escapeAttr(compactName(c.aptName, 24))}</span><b>${fmtMoney(c.contractAmount)}</b></div>`).join('')
-    : '<div class="sales-person-line"><span class="muted">조회 기간 내 계약 매출 없음</span><b>-</b></div>';
-  const ptLines = recentPts.length
-    ? recentPts.map(p => `<div class="sales-person-line"><span>${escapeAttr(compactName(p.siteName, 24))}</span><b>${escapeAttr(p.result || '미정')}</b></div>`).join('')
-    : '<div class="sales-person-line"><span class="muted">조회 기간 내 PT 없음</span><b>-</b></div>';
+    .sort((a,b) => b.contractAmount - a.contractAmount);
+  const contractDisplay = majorContracts.slice(0, 5);
+  const contractOverflow = majorContracts.length - contractDisplay.length;
+  const contractLines = contractDisplay.length
+    ? contractDisplay.map(c => `<div class="sv-list-row"><span>${escapeAttr(compactName(c.aptName, 22))}</span><b>${fmtMoney(c.contractAmount)}</b></div>`).join('')
+      + (contractOverflow > 0 ? `<div class="sv-list-row" style="color:var(--sv-muted-2); font-weight:500;"><span>외 ${contractOverflow}건</span><span></span></div>` : '')
+    : '<div class="sv-list-empty">조회 기간 내 계약 매출 없음</div>';
+
+  // PT를 승/패/미정으로 그룹화
+  const ptGroups = { win: [], loss: [], pending: [] };
+  row.pts.forEach(p => {
+    const tone = ptTone(p.result);
+    if (ptGroups[tone]) ptGroups[tone].push(p);
+  });
+  const renderPtGroup = (key, label, list) => {
+    if (!list.length) return '';
+    const chipMax = 12;
+    const shown = list.slice(0, chipMax);
+    const extra = list.length - shown.length;
+    const chips = shown.map(p => `<span class="sv-pt-chip" title="${escapeAttr(p.siteName)}">${escapeAttr(compactName(p.siteName, 16))}</span>`).join('');
+    const overflow = extra > 0 ? `<span class="sv-pt-chip" style="color:var(--sv-muted-2);">+${extra}</span>` : '';
+    return `<div class="sv-pt-group"><div class="sv-pt-grp-tag ${key}">${label} ${list.length}</div><div class="sv-pt-chips">${chips}${overflow}</div></div>`;
+  };
+  const hasPt = ptGroups.win.length + ptGroups.loss.length + ptGroups.pending.length > 0;
+  const ptLines = hasPt
+    ? `<div class="sv-pt-groups">
+        ${renderPtGroup('win', '승', ptGroups.win)}
+        ${renderPtGroup('loss', '패', ptGroups.loss)}
+        ${renderPtGroup('pending', '미정', ptGroups.pending)}
+      </div>`
+    : '<div class="sv-list-empty">조회 기간 내 PT 없음</div>';
   setHtml('salesPersonDetail', `
-    <div class="sales-person-detail-panel">
-      <div class="sales-person-profile">
+    <div class="sv-detail">
+      <div class="sv-detail-card">
         <div>
-          <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start;">
-            <div class="sales-person-name">${escapeAttr(row.name)}</div>
-            <div class="sales-person-role ${group.key}">${group.label}</div>
+          <div class="sv-detail-top">
+            <div class="sv-detail-name">${escapeAttr(row.name)}</div>
+            <div class="sv-detail-role ${group.key}">${group.label}</div>
           </div>
-          <div class="sales-person-value">${fmtMoney(row.cSum)}</div>
-          <div class="sales-person-sub">계약 ${row.conts.length}건 · 진행 예상 ${fmtMoney(row.pContractSum)}</div>
+          <div class="sv-detail-amount">${fmtMoney(row.cSum)}</div>
+          <div class="sv-detail-meta">계약 ${row.conts.length}건 · 진행 예상 ${fmtMoney(row.pContractSum)}</div>
         </div>
-        <button class="sales-person-detail-btn" type="button" onclick="openAssigneeEvidence('${escapeAttr(row.name)}')">상세 내역 보기</button>
+        <button class="sv-detail-btn" type="button" onclick="openAssigneeEvidence('${escapeAttr(row.name)}')">상세 내역 보기 →</button>
       </div>
-      <div>
-        <div class="sales-person-metrics">
-          <div class="sales-person-metric"><span>계약매출</span><b>${fmtMoney(row.cSum)}</b></div>
-          <div class="sales-person-metric"><span>계약 건수</span><b>${row.conts.length}건</b></div>
-          <div class="sales-person-metric"><span>PT 승률</span><b>${ptRate}</b></div>
-          <div class="sales-person-metric"><span>PT 현황</span><b>${row.pts.length}건 · 미정 ${row.pending}</b></div>
+      <div class="sv-detail-right">
+        <div class="sv-stats">
+          <div class="sv-stat clickable" onclick="openAssigneeFocus('${escapeAttr(row.name)}','contract')">
+            <div class="sv-stat-lbl">계약매출<span class="sv-stat-hint">근거 →</span></div>
+            <div class="sv-stat-val">${fmtMoney(row.cSum)}</div>
+          </div>
+          <div class="sv-stat clickable" onclick="openAssigneeFocus('${escapeAttr(row.name)}','contractCount')">
+            <div class="sv-stat-lbl">계약 건수<span class="sv-stat-hint">근거 →</span></div>
+            <div class="sv-stat-val">${row.conts.length}건</div>
+          </div>
+          <div class="sv-stat clickable" onclick="openAssigneeFocus('${escapeAttr(row.name)}','ptrate')">
+            <div class="sv-stat-lbl">PT 승률<span class="sv-stat-hint">근거 →</span></div>
+            <div class="sv-stat-val ${row.winRate >= 60 ? 'success' : 'info'}">${ptRate}</div>
+          </div>
+          <div class="sv-stat clickable" onclick="openAssigneeFocus('${escapeAttr(row.name)}','ptstatus')">
+            <div class="sv-stat-lbl">PT 현황<span class="sv-stat-hint">근거 →</span></div>
+            <div class="sv-stat-val">${row.pts.length}건<span style="font-size:11px; color:#94a3b8; font-weight:600; margin-left:6px;">미정 ${row.pending}</span></div>
+          </div>
         </div>
-        <div class="sales-person-lists">
-          <div class="sales-person-listbox">
-            <div class="list-title">주요 계약 근거</div>
+        <div class="sv-lists">
+          <div class="sv-list">
+            <div class="sv-list-title">계약 근거<span class="sv-list-count">${majorContracts.length}건</span></div>
             ${contractLines}
           </div>
-          <div class="sales-person-listbox">
-            <div class="list-title">최근 PT 근거</div>
+          <div class="sv-list">
+            <div class="sv-list-title">PT 분류<span class="sv-list-count">승 ${ptGroups.win.length} · 패 ${ptGroups.loss.length} · 미정 ${ptGroups.pending.length}</span></div>
             ${ptLines}
           </div>
         </div>
@@ -1358,28 +1831,61 @@ function render(data){
   const ptRate = data.totals.ptTot > 0 ? Math.round(data.totals.ptWin / data.totals.ptTot * 100) : 0;
 
   setText('pageTotalRevenue', fmtMoney(revenue.totalRevenue));
-  setText('pageTotalRevenueSub', `연간 목표 대비 ${revenue.progressToAnnual}% · 현재시점 목표 대비 ${revenue.progressToElapsed}%`);
+  setText('pageTotalRevenueClone', fmtMoney(revenue.totalRevenue));
+  setText('pageTotalRevenueSub', `연간 230억 목표 · ${periodLabel()} 기준`);
+  setText('pageTotalRevenueSubClone', `연간 230억 목표 중 ${revenue.progressToAnnual}% 달성`);
   setText('pageKpiRevenue', fmtMoney(revenue.kpiRevenue));
-  setText('pageKpiRevenueSub', `전체 매출 중 ${revenue.kpiShare}% · ${revenue.kpiContracts.length}건`);
+  setText('pageKpiRevenueSub', `영업담당자 ${SALES_KPI_ASSIGNEES.length}명 · 전체 매출의 ${revenue.kpiShare}%`);
   setText('pageRevenueGap', fmtMoney(revenue.gap));
-  setText('pageRevenueGapSub', `남은 월 필요 매출 ${fmtMoney(revenue.requiredMonthly)}`);
+  setText('pageRevenueGapSub', `월 평균 ${fmtMoney(revenue.requiredMonthly)}씩 채워야 달성`);
   setText('pagePtRate', `${ptRate}%`);
-  setText('pagePtSub', `승패 확정 ${data.totals.ptTot}건 · 미정 ${data.totals.ptPending}건`);
+  setText('pagePtSub', `확정 ${data.totals.ptTot}건 · 미정 ${data.totals.ptPending}건`);
   setText('splitKpiRevenue', fmtMoney(revenue.kpiRevenue));
-  setText('splitKpiHint', `${SALES_KPI_ASSIGNEES.join('·')} · ${revenue.kpiShare}%`);
+  setText('splitKpiHint', `${SALES_KPI_ASSIGNEES.join('·')}`);
   setText('splitManagerRevenue', fmtMoney(revenue.managerRevenue));
-  setText('splitManagerHint', `${MANAGER_REVENUE_ASSIGNEES.join('·')} · ${revenue.managerShare}%`);
+  setText('splitManagerHint', `${MANAGER_REVENUE_ASSIGNEES.join('·')} 기준`);
   setText('splitOtherRevenue', fmtMoney(revenue.otherRevenue));
-  setText('splitOtherHint', `${revenue.otherContracts.length}건 · ${revenue.otherShare}%`);
+  setText('splitOtherHint', `KPI 대상 외 · ${revenue.otherContracts.length}건`);
+
+  // 진행률 도넛 링 (연간 목표 대비)
+  const ringPct = Math.min(100, Math.max(0, revenue.progressToAnnual || 0));
+  setText('svRingPct', `${ringPct}%`);
+  const ring = document.getElementById('svRingFill');
+  if (ring) {
+    const circumference = 2 * Math.PI * 86; // r=86
+    const offset = circumference - (circumference * ringPct / 100);
+    ring.setAttribute('stroke-dasharray', circumference.toFixed(2));
+    ring.setAttribute('stroke-dashoffset', offset.toFixed(2));
+  }
+
+  // 스택드 바 (매출 구성 비중)
+  const segKpi = document.getElementById('svSegKpi');
+  const segMgmt = document.getElementById('svSegMgmt');
+  const segOther = document.getElementById('svSegOther');
+  if (segKpi && segMgmt && segOther) {
+    if (revenue.totalRevenue > 0) {
+      segKpi.style.width = `${revenue.kpiShare}%`;
+      segMgmt.style.width = `${revenue.managerShare}%`;
+      segOther.style.width = `${revenue.otherShare}%`;
+    } else {
+      segKpi.style.width = '0%';
+      segMgmt.style.width = '0%';
+      segOther.style.width = '100%';
+    }
+  }
+  setText('svLegKpiPct', `${revenue.kpiShare}%`);
+  setText('svLegMgmtPct', `${revenue.managerShare}%`);
+  setText('svLegOtherPct', `${revenue.otherShare}%`);
+
   const riskNote = document.getElementById('salesRiskNote');
   if (riskNote) {
     const isBad = revenue.progressToElapsed < 70;
-    riskNote.className = `sales-alert${isBad ? '' : ' neutral'}`;
+    riskNote.className = `sv-alert${isBad ? '' : ' neutral'}`;
     riskNote.textContent = isBad
-      ? `목표 대비 부족: 현재시점 ${revenue.progressToElapsed}% · 남은 목표 ${fmtMoney(revenue.gap)} · 남은 월 필요 ${fmtMoney(revenue.requiredMonthly)}`
-      : `목표 추적 중: 현재시점 ${revenue.progressToElapsed}% · 누적 계약매출 ${fmtMoney(revenue.totalRevenue)}`;
+      ? `현재 진행률 ${revenue.progressToElapsed}% — 목표보다 ${fmtMoney(revenue.gap)} 부족, 월 평균 ${fmtMoney(revenue.requiredMonthly)} 추가 달성 필요`
+      : `현재 진행률 ${revenue.progressToElapsed}% — 목표 추적 중, 누적 ${fmtMoney(revenue.totalRevenue)}`;
   }
-  setText('salesDataSource', `${periodLabel()} · 계약 ${revenue.confirmedContracts.length}건 · PT ${detail.totalPts}건 · ${PT_SOURCE_STATUS}`);
+  setText('salesDataSource', `${periodLabel()} · 계약 ${revenue.confirmedContracts.length}건 · PT ${detail.totalPts}건`);
   setHtml('aiComments', generateAIComments(data));
 }
 
@@ -1441,6 +1947,7 @@ function renderChart(){
 
 function openModal(r){
   const m = document.getElementById('modal');
+  m.classList.remove('focus-modal');
   let contHtml = r.conts.map(c=>`<tr><td>${c.signedDate}</td><td>${c.aptName}</td><td>${c.status}</td><td class="right">${fmtFullMoney(c.contractAmount)}</td></tr>`).join('');
   let pipeHtml = r.pipes.map(p=>`<tr><td>${p.lastUpdated}</td><td>${p.orgName}</td><td>${p.stage}</td><td class="right">${fmtFullMoney(p.estAmount)}</td></tr>`).join('');
   let inqHtml = r.inqs.map(i=>`<tr><td>${i.date}</td><td>${i.siteName}</td><td>${i.type}</td><td>${i.status}</td><td class="center"><span class="status-badge ${i.isConverted ? 'win' : 'support'}">${i.isConverted ? '계약성공' : '진행/종결'}</span></td></tr>`).join('');
@@ -2835,7 +3342,36 @@ function renderKpiTask(t) {
       </div>
     </div>`;
 }
+function autoSizeKpiFrame() {
+  const f = document.getElementById('kpiFrame');
+  if (!f) return;
+  try {
+    const doc = f.contentDocument || (f.contentWindow && f.contentWindow.document);
+    if (!doc) return;
+    const resize = () => {
+      const h = Math.max(
+        doc.documentElement ? doc.documentElement.scrollHeight : 0,
+        doc.body ? doc.body.scrollHeight : 0
+      );
+      if (h > 0) f.style.height = (h + 24) + 'px';
+    };
+    resize();
+    try {
+      const ro = new ResizeObserver(resize);
+      if (doc.documentElement) ro.observe(doc.documentElement);
+      if (doc.body) ro.observe(doc.body);
+    } catch (_) {}
+    try { f.contentWindow.addEventListener('resize', resize); } catch (_) {}
+    setTimeout(resize, 400);
+    setTimeout(resize, 1200);
+  } catch (e) {
+    // 동일 출처 접근 실패 시 min-height fallback 사용
+  }
+}
+
 function renderTeamKpiDashboard() {
+  // 영업 KPI 뷰는 ./kpi.html iframe으로 대체됨 — 기존 DOM이 없으면 조용히 종료
+  if (!document.getElementById('teamKpiHero')) return;
   const m = getTeamKpiMetrics();
   const cfg = getTeamKpiConfig();
   const ptProgress = kpiPercent(m.ptWinRate, Number(cfg.ptWinRate) || TEAM_KPI_TARGETS.ptWinRate);
@@ -2982,51 +3518,225 @@ function renderTeamKpiDashboard() {
   };
 
   document.getElementById('teamKpiPeriodMeta').textContent = `${periodLabel()} · 보고용 KPI 진행률`;
+
+  // ── 1. 팀 미션 ──
   document.getElementById('teamKpiHero').innerHTML = `
-    <div class="kpi-mission">
-      <div class="eyebrow">팀 미션</div>
-      <div class="title">영업대행사로서 담당 고객사의 마이크로한 영업관리와 지원을 통해 매출 230억 달성</div>
+    <div class="tk-section tk-mission">
+      <span class="tk-mission-tag">팀 미션</span>
+      <div class="tk-mission-text">영업대행사로서 담당 고객사의 마이크로한 영업관리·지원을 통한 매출 230억 달성 [실행공사 120억 · 자재판매 100억 · 기타 10억]</div>
+    </div>`;
+
+  // ── 2. 팀 코어 KPI 3카드 ──
+  const otherActual = Math.max(0, m.totalRevenue - m.executionRevenue - m.materialRevenue);
+  const otherPeriodTarget = otherTarget / 12 * months.length;
+  const otherProgress = kpiPercent(otherActual, otherPeriodTarget);
+  const coreCard = (cls, name, cur, tgt, unit, pct, onclick) => `
+    <div class="tk-core ${cls}" onclick="${onclick}">
+      <div class="tk-core-name">${name}</div>
+      <div class="tk-core-values">
+        <span class="tk-core-cur">${cur}</span>
+        <span class="tk-core-slash">/</span>
+        <span class="tk-core-tgt">${tgt}</span>
+        <span class="tk-core-unit">${unit}</span>
+      </div>
+      <div class="tk-core-bar"><div class="tk-core-fill" style="width:${Math.min(pct,100)}%;"></div></div>
+      <div class="tk-core-foot">
+        <span>연간 ${tgt}${unit} 목표</span>
+        <span class="tk-core-pct">${pct}%</span>
+      </div>
     </div>`;
   document.getElementById('teamKpiFocus').innerHTML = `
-    <div class="kpi-focus">
-      <div class="kpi-focus-card" onclick="openTeamKpiDetail('revenue')" style="cursor:pointer;">
-        <div class="num">${totalProgress}%</div>
-        <div class="label">조회기간 매출 달성률</div>
-        <div class="sub">${fmtMoney(m.totalRevenue)} / ${fmtMoney(periodTarget)}</div>
-      </div>
-      <div class="kpi-focus-card" onclick="openTeamKpiDetail('elapsed')" style="cursor:pointer;">
-        <div class="num">${elapsedProgress}%</div>
-        <div class="label">현재시점 목표 대비</div>
-        <div class="sub">${fmtMoney(revenueBreakdown.totalRevenue)} / ${fmtMoney(revenueBreakdown.elapsedTarget)}</div>
-      </div>
-      <div class="kpi-focus-card" onclick="openTeamKpiDetail('assignee')" style="cursor:pointer;">
-        <div class="num">${kpiProgress}%</div>
-        <div class="label">KPI 대상 매출 달성률</div>
-        <div class="sub">${fmtMoney(revenueBreakdown.kpiRevenue)} / ${fmtMoney(kpiPeriodTarget)}</div>
-      </div>
-      <div class="kpi-focus-card" onclick="openTeamKpiDetail('pt')" style="cursor:pointer;">
-        <div class="num">${m.ptWinRate}%</div>
-        <div class="label">공법 PT 승률</div>
-        <div class="sub">${m.ptWins}/${m.closedPts.length}건 · 목표 ${cfg.ptWinRate}%</div>
+    <div class="tk-cores">
+      ${coreCard('blue', '매출 230억 달성률', (m.totalRevenue/100000000).toFixed(1), (totalTarget/100000000).toFixed(0), '억', totalProgress, "openTeamKpiDetail('revenue')")}
+      ${coreCard('green', '실행공사 매출관리', (m.executionRevenue/100000000).toFixed(1), (executionTarget/100000000).toFixed(0), '억', executionProgress, "openTeamKpiDetail('revenue')")}
+      ${coreCard('purple', '자재판매 매출관리', (m.materialRevenue/100000000).toFixed(1), (materialTarget/100000000).toFixed(0), '억', materialProgress, "openTeamKpiDetail('revenue')")}
+    </div>`;
+
+  // ── 3. 담당자 탭 ──
+  const memberList = TEAM_KPI_SALES_ASSIGNEES;
+  if (!window._TK_ACTIVE || !memberList.includes(window._TK_ACTIVE)) {
+    window._TK_ACTIVE = memberList[0];
+  }
+  const tabsHtml = memberList.map(name =>
+    `<button class="tk-tab ${name === window._TK_ACTIVE ? 'active' : ''}" onclick="selectTkMember('${escapeAttr(name)}')">${escapeAttr(name)}</button>`
+  ).join('');
+  document.getElementById('teamKpiCards').innerHTML = `
+    <div class="tk-tabs-wrap">
+      ${tabsHtml}
+      <div class="tk-tab-actions">
+        <button class="tk-tab-btn" onclick="openTeamKpiSettings()">목표 수정</button>
+        <button class="tk-tab-btn" onclick="openTeamKpiDetail('monthly')">월별표</button>
+        <button class="tk-tab-btn" onclick="openTeamKpiDetail('definitions')">KPI 산식</button>
       </div>
     </div>`;
-  document.getElementById('teamKpiCards').innerHTML = '';
+
+  // ── 4. 활성 담당자 패널 (대표 KPI 다크카드 + 세부 KPI 테이블) ──
+  renderTkMemberPanel();
+
+  // ── 5. KPI 풀 ──
+  document.getElementById('teamKpiDetails').innerHTML = `
+    <div class="tk-section tk-pool">
+      <div class="tk-pool-h">
+        <div class="tk-pool-ttl">권장 세부 KPI 풀</div>
+        <div class="tk-pool-desc">항목 클릭 시 현재 선택된 담당자의 세부 KPI 모달에서 정의를 확인합니다. (★ 회의록 핵심 지표)</div>
+      </div>
+      <div class="tk-pool-group">
+        <div class="tk-pool-glabel"><span class="tk-pool-badge orange">외부활동</span> 현장 방문 및 고객 소통 액션</div>
+        <div class="tk-pool-items">
+          <span class="tk-pool-item orange star" onclick="openTkPoolItem('견적 후 7일 내 후속조치 실행')">견적 후 7일 내 후속조치 실행</span>
+          <span class="tk-pool-item orange star" onclick="openTkPoolItem('전문 제안 자료 발송 건수')">전문 제안 자료 발송 건수</span>
+          <span class="tk-pool-item orange" onclick="openTkPoolItem('대형 현장 1차 미팅')">대형 현장 1차 미팅</span>
+          <span class="tk-pool-item orange" onclick="openTkPoolItem('하자 진단 및 현장 조사')">하자 진단 및 현장 조사</span>
+          <span class="tk-pool-item orange" onclick="openTkPoolItem('경쟁사 PT 대응 참여')">경쟁사 PT 대응 참여</span>
+        </div>
+      </div>
+      <div class="tk-pool-group">
+        <div class="tk-pool-glabel"><span class="tk-pool-badge green">성과지표</span> 실제 계약 및 수주 퀄리티</div>
+        <div class="tk-pool-items">
+          <span class="tk-pool-item green star" onclick="openTkPoolItem('진성 유입 건 대비 계약 전환율')">진성 유입 건 대비 계약 전환율</span>
+          <span class="tk-pool-item green star" onclick="openTkPoolItem('평균 PT 승률')">평균 PT 승률</span>
+          <span class="tk-pool-item green" onclick="openTkPoolItem('평균 수주 단가')">평균 수주 단가</span>
+          <span class="tk-pool-item green" onclick="openTkPoolItem('최종 수주 성공 건수')">최종 수주 성공 건수</span>
+        </div>
+      </div>
+      <div class="tk-pool-group">
+        <div class="tk-pool-glabel"><span class="tk-pool-badge blue">릴레이 CRM</span> 시스템 데이터 관리 건전성</div>
+        <div class="tk-pool-items">
+          <span class="tk-pool-item blue star" onclick="openTkPoolItem('초기 베드핏 신속 분류율')">초기 베드핏 신속 분류율</span>
+          <span class="tk-pool-item blue star" onclick="openTkPoolItem('60일 이상 정체 현장 해소율')">60일 이상 정체 현장 해소율</span>
+          <span class="tk-pool-item blue" onclick="openTkPoolItem('주간 신규 노트 작성 건수')">주간 신규 노트 작성 건수</span>
+          <span class="tk-pool-item blue" onclick="openTkPoolItem('파이프라인 단계 변경 빈도')">파이프라인 단계 변경 빈도</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function selectTkMember(name){
+  window._TK_ACTIVE = name;
+  renderTeamKpiDashboard();
+}
+
+function renderTkMemberPanel(){
+  const name = window._TK_ACTIVE;
+  if (!name) return;
+  const cfg = getTeamKpiConfig();
+  const m = getTeamKpiMetrics();
+  const months = kpiPeriodMonths();
+  const totalTarget = Number(cfg.totalRevenue) || TEAM_KPI_TARGETS.totalRevenue;
+  const assigneeAnnualTarget = Number(cfg.assigneeTargets?.[name]) || totalTarget / TEAM_KPI_SALES_ASSIGNEES.length;
+  const assigneePeriodTarget = assigneeAnnualTarget / 12 * months.length;
+  const actual = m.contracts.filter(c => c.managerName === name).reduce((s,c)=>s+c.contractAmount, 0);
+  const pipes = m.activePipeline.filter(p => p.assigneeName === name);
+  const freshPipes = pipes.filter(p => {
+    const d = new Date(p.lastUpdated);
+    return !isNaN(d.getTime()) && (Date.now() - d.getTime()) / 86400000 <= 30;
+  });
+  const pts = filterByPeriod(PTS, STATE.year, STATE.quarter, 'date').filter(p => p.ptAssignee === name);
+  const closed = pts.filter(p => p.result === '승' || p.result === '패');
+  const wins = closed.filter(p => p.result === '승').length;
+  const pendingPts = pts.filter(p => !p.result || p.result === '미정').length;
+  const inquiry = getAssigneeInquiryKpis(name);
+  const actualRate = kpiPercent(actual, assigneePeriodTarget);
+  const activityRate = pipes.length ? Math.round(freshPipes.length / pipes.length * 100) : 0;
+  const ptRate = closed.length ? Math.round(wins / closed.length * 100) : 0;
+
+  // 역할 분류
+  const roleTone = SALES_KPI_ASSIGNEES.includes(name) ? 'kpi' : MANAGER_REVENUE_ASSIGNEES.includes(name) ? 'mgmt' : '';
+  const roleLabel = SALES_KPI_ASSIGNEES.includes(name) ? 'KPI 담당' : MANAGER_REVENUE_ASSIGNEES.includes(name) ? '관리자' : '담당';
+
+  // 세부 KPI 행 정의
+  const toneClass = (pct) => pct >= 100 ? 'good' : pct >= 70 ? 'warn' : 'bad';
+  const statusCell = (pct) => `<div class="tk-status"><div class="tk-status-bar"><div class="tk-status-fill ${toneClass(pct)}" style="width:${Math.min(pct,100)}%;"></div></div><span class="tk-status-pct">${pct}%</span></div>`;
+  const followupText = inquiry.hasLive ? `${inquiry.quoteFollowed}/${inquiry.quoteTotal}건 · ${inquiry.followupRate}%` : '문의 시트 연결 대기';
+  const nextActionText = inquiry.hasLive ? `${inquiry.nextActionFilled}/${inquiry.nextActionNeeded}건 · ${inquiry.nextActionRate}%` : '다음행동 연결 대기';
+  const inquiryConvText = inquiry.hasLive ? `${inquiry.converted}/${inquiry.serious}건 · ${inquiry.seriousConvRate}%` : '문의 시트 연결 대기';
+
+  const subRows = [
+    {type:'action', cat:'성과', name:'진성문의 계약 전환율', formula:'계약 전환 건 / 확정 진성문의 건', current:inquiryConvText, pct:inquiry.seriousConvRate},
+    {type:'action', cat:'외부', name:'견적 후 7일/14일 팔로업률', formula:'견적 발송 후 후속조치 완료 건 / 견적 발송 건', current:followupText, pct:inquiry.followupRate},
+    {type:'action', cat:'외부', name:'다음 행동 기재율', formula:'진행 진성문의 중 다음행동 입력 건 / 진행 진성문의 건', current:nextActionText, pct:inquiry.nextActionRate},
+    {type:'action', cat:'릴레이', name:'릴레잇 활동률', formula:'스테이지 변경 또는 메모 작성 기준 30일 내 활동 건 / 진행 릴레잇 건', current:`${freshPipes.length}/${pipes.length}건 · ${activityRate}%`, pct:activityRate},
+    {type:'action', cat:'성과', name:'공법 PT 승률', formula:'PT 승리 건 / 승패 확정 건 (미정 별도)', current:`${wins}/${closed.length}건 · ${ptRate}% · 미정 ${pendingPts}건`, pct:ptRate},
+  ];
+
+  const subRowsHtml = subRows.map(r => `
+    <tr>
+      <td><span class="tk-type action">행동 KPI</span></td>
+      <td><div class="tk-kpi-name">${r.name}</div></td>
+      <td><div class="tk-formula">${r.formula}</div></td>
+      <td><div class="tk-current">${r.current}</div></td>
+      <td>${statusCell(r.pct)}</td>
+    </tr>`).join('');
+
   document.getElementById('teamKpiTasks').innerHTML = `
-    <div class="lead-panel">
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:16px; flex-wrap:wrap;">
-        <div>
-          <div class="panel-title">담당자별 성과</div>
-          <div class="panel-sub">담당자를 클릭하면 매출, PT, 릴레잇 활동, 후속관리 성과를 한 화면에서 확인합니다.</div>
+    <div class="tk-section tk-member">
+      <div class="tk-member-head">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span class="tk-role ${roleTone}">${roleLabel}</span>
+          <span style="font-size:18px; font-weight:800; color:#0a0e1a; letter-spacing:-0.3px;">${name}</span>
         </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button onclick="openTeamKpiSettings()" style="padding:9px 12px; border:0; border-radius:8px; background:#3b82f6; color:white; font-size:12px; font-weight:850; cursor:pointer;">목표 수정</button>
-          <button onclick="openTeamKpiDetail('definitions')" style="padding:9px 12px; border:1px solid #cbd5e1; border-radius:8px; background:white; color:#334155; font-size:12px; font-weight:850; cursor:pointer;">KPI 산식</button>
-          <button onclick="openTeamKpiDetail('monthly')" style="padding:9px 12px; border:1px solid #cbd5e1; border-radius:8px; background:white; color:#334155; font-size:12px; font-weight:850; cursor:pointer;">월별표</button>
+        <button class="tk-tab-btn" onclick="openAssigneeEvidence('${escapeAttr(name)}')">전체 백데이터 →</button>
+      </div>
+
+      <div class="tk-rep">
+        <div class="tk-rep-label">🏆 메인 성과 지표 (Core KPI)</div>
+        <div class="tk-rep-body">
+          <div class="tk-rep-name">개인 수주액 (조회기간 목표)</div>
+          <div class="tk-rep-values">
+            <span class="tk-rep-cur">${(actual/100000000).toFixed(1)}</span>
+            <span class="tk-rep-slash">/</span>
+            <span class="tk-rep-tgt">${(assigneePeriodTarget/100000000).toFixed(1)}</span>
+            <span class="tk-rep-unit">억</span>
+          </div>
+        </div>
+        <div class="tk-rep-prog">
+          <div class="tk-rep-bar"><div class="tk-rep-fill" style="width:${Math.min(actualRate,100)}%;"></div></div>
+          <div class="tk-rep-foot">${actualRate}% 달성 · 연간 ${(assigneeAnnualTarget/100000000).toFixed(1)}억 목표</div>
         </div>
       </div>
-      <div class="assignee-performance-grid">${assigneeCards}</div>
+
+      <div class="tk-sub-h">
+        <div class="tk-sub-h-ttl">대표 KPI 및 세부 KPI 리스트</div>
+        <div class="tk-sub-h-cnt">${subRows.length + 1}개 지표</div>
+      </div>
+      <div class="tk-sub-wrap">
+        <table class="tk-sub-table">
+          <thead>
+            <tr>
+              <th style="width:84px;">구분</th>
+              <th style="width:220px;">KPI</th>
+              <th>측정식</th>
+              <th style="width:200px;">현재 기준</th>
+              <th style="width:130px; text-align:right;">상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="tk-type main">대표 KPI</span></td>
+              <td><div class="tk-kpi-name">개인 수주액 (계약매출)</div></td>
+              <td><div class="tk-formula">담당자 실제 계약매출 / 담당자 조회기간 목표</div></td>
+              <td><div class="tk-current">${fmtMoney(actual)} / ${fmtMoney(assigneePeriodTarget)}</div></td>
+              <td>${statusCell(actualRate)}</td>
+            </tr>
+            ${subRowsHtml}
+          </tbody>
+        </table>
+      </div>
     </div>`;
-  document.getElementById('teamKpiDetails').innerHTML = '';
+}
+
+function openTkPoolItem(name){
+  const formula = defaultPoolFormula(name);
+  alert(`${name}\n\n측정식: ${formula}\n\n현재 선택 담당자: ${window._TK_ACTIVE || '-'}\n\n해당 지표는 세부 KPI 리스트에 자동으로 추적됩니다. 목표 조정은 [목표 수정] 버튼으로 가능합니다.`);
+}
+
+function defaultPoolFormula(name){
+  if (/노트|단계|릴레이|릴레잇|정체|베드핏|Bad-fit/.test(name)) return '스테이지 변경 또는 메모 작성 기준 30일 내 활동 건 / 진행 릴레잇 건';
+  if (/7일|14일|후속|팔로업/.test(name)) return '견적 발송 후 7일 내 1차, 14일 내 2차 후속조치 완료 건 / 견적 발송 건';
+  if (/진성|전환/.test(name)) return '계약 전환 건 / 확정 진성문의 건';
+  if (/PT|피티|승률/.test(name)) return 'PT 승리 건 / 승패 확정 건';
+  if (/수주|단가|Closed/.test(name)) return '실제 계약매출 또는 계약 건 / 담당자 목표';
+  return '담당자 실행 건 / 목표 건';
 }
 
 function openTeamKpiDetail(type) {
