@@ -2265,6 +2265,8 @@ function normalizeMeetingsData(raw) {
       id: item.id || key,
       date: String(date).slice(0, 10),
       title: item.title || item.name || item.subject || '영업회의',
+      time: item.time || '',
+      location: item.location || '',
     });
   });
   return rows.sort((a, b) => String(b.date).localeCompare(String(a.date)));
@@ -2303,7 +2305,13 @@ function renderPresentationView() {
   const sel = document.getElementById('presMeetingSelect');
   if (sel) {
     sel.innerHTML = MEETINGS.length
-      ? MEETINGS.map(m => `<option value="${m.date}" ${m.date === PRES_CUTOFF ? 'selected' : ''}>${m.date} · ${escapeHtml(m.title)}</option>`).join('')
+      ? MEETINGS.map(m => {
+          const parts = [m.date];
+          if (m.time) parts.push(m.time);
+          parts.push(escapeHtml(m.title));
+          if (m.location) parts.push(escapeHtml(m.location));
+          return `<option value="${m.date}" ${m.date === PRES_CUTOFF ? 'selected' : ''}>${parts.join(' · ')}</option>`;
+        }).join('')
       : `<option value="">(등록된 회의 없음 — 직접 입력)</option>`;
     sel.onchange = (e) => { if (e.target.value) setPresCutoff(e.target.value); };
   }
@@ -2324,9 +2332,15 @@ function renderPresentationView() {
   const pm = document.getElementById('presentationPeriodMeta');
   if (pm) {
     const meetingMatch = MEETINGS.find(m => m.date === PRES_CUTOFF);
-    pm.textContent = meetingMatch
-      ? `${meetingMatch.date} ${meetingMatch.title} 기준 · 당일 포함 업데이트`
-      : `${PRES_CUTOFF} 기준 · 당일 포함 업데이트`;
+    if (meetingMatch) {
+      const segs = [meetingMatch.date];
+      if (meetingMatch.time) segs.push(meetingMatch.time);
+      segs.push(meetingMatch.title);
+      if (meetingMatch.location) segs.push(meetingMatch.location);
+      pm.textContent = `${segs.join(' · ')} 기준 · 당일 포함 업데이트`;
+    } else {
+      pm.textContent = `${PRES_CUTOFF} 기준 · 당일 포함 업데이트`;
+    }
   }
 
   const name = PRES_SELECTED;
