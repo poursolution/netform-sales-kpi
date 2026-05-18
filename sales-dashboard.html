@@ -2011,22 +2011,75 @@ function renderChart(){
   });
 }
 
+let _assigneeModalCtx = null;
 function openModal(r){
+  _assigneeModalCtx = { row: r, tab: 'contract' };
+  renderAssigneeModal();
+  document.getElementById('modalBackdrop').classList.remove('hidden');
+}
+function setAssigneeModalTab(tab){
+  if (!_assigneeModalCtx) return;
+  _assigneeModalCtx.tab = tab;
+  renderAssigneeModal();
+}
+function closeAssigneeModal(){
+  document.getElementById('modalBackdrop').classList.add('hidden');
+  document.getElementById('modal').classList.remove('focus-modal');
+  _assigneeModalCtx = null;
+}
+function renderAssigneeModal(){
+  if (!_assigneeModalCtx) return;
+  const { row: r, tab } = _assigneeModalCtx;
   const m = document.getElementById('modal');
-  m.classList.remove('focus-modal');
-  let contHtml = r.conts.map(c=>`<tr><td>${c.signedDate}</td><td>${c.aptName}</td><td>${c.status}</td><td class="right">${fmtFullMoney(c.contractAmount)}</td></tr>`).join('');
-  let pipeHtml = r.pipes.map(p=>`<tr><td>${p.lastUpdated}</td><td>${p.orgName}</td><td>${p.stage}</td><td class="right">${fmtFullMoney(p.estAmount)}</td></tr>`).join('');
-  let inqHtml = r.inqs.map(i=>`<tr><td>${i.date}</td><td>${i.siteName}</td><td>${i.type}</td><td>${i.status}</td><td class="center"><span class="status-badge ${i.isConverted ? 'win' : 'support'}">${i.isConverted ? '계약성공' : '진행/종결'}</span></td></tr>`).join('');
-  let ptHtml = r.pts.map(p=>`<tr><td>${p.date}</td><td>${p.siteName}</td><td>${p.type}</td><td class="center"><span class="status-badge ${p.result === '승' ? 'win' : p.result === '패' ? 'loss' : p.result === '무' ? 'tie' : p.result === '미정' ? 'pending' : 'support'}">${p.result === '미정' ? '승/패 대기' : p.result}</span></td><td>${p.competitor || '-'}</td></tr>`).join('');
+  m.classList.add('focus-modal');
+
+  const tabs = [
+    { key: 'contract', label: '📊 계약',  count: r.conts.length },
+    { key: 'inquiry',  label: '📞 문의',  count: r.inqs.length },
+    { key: 'pt',       label: '🎤 PT',    count: r.pts.length },
+    { key: 'pipeline', label: '💼 파이프라인', count: r.pipes.length },
+  ];
+  const tabsHtml = tabs.map(t => `
+    <button class="focus-modal-tab ${tab === t.key ? 'active' : ''}" onclick="setAssigneeModalTab('${t.key}')">${t.label}<span class="cnt">${t.count}</span></button>
+  `).join('');
+
+  let tableHtml = '';
+  if (tab === 'contract') {
+    const sorted = [...r.conts].sort((a,b)=>(b.contractAmount||0)-(a.contractAmount||0));
+    const rows = sorted.map(c => `<tr><td>${c.signedDate||'-'}</td><td><b>${escapeHtml(c.aptName||'-')}</b></td><td>${escapeHtml(c.status||'-')}</td><td class="right"><b>${fmtFullMoney(c.contractAmount||0)}</b></td></tr>`).join('');
+    tableHtml = sorted.length
+      ? `<table class="focus-modal-table"><thead><tr><th>계약일</th><th>현장명(아파트)</th><th>상태</th><th class="right">계약금액</th></tr></thead><tbody>${rows}</tbody></table>`
+      : '<div class="focus-modal-empty">조회 기간 내 계약 내역이 없습니다.</div>';
+  } else if (tab === 'inquiry') {
+    const rows = r.inqs.map(i => `<tr><td>${i.date||'-'}</td><td><b>${escapeHtml(i.siteName||'-')}</b></td><td>${escapeHtml(i.type||'-')}</td><td>${escapeHtml(i.status||'-')}</td><td class="center"><span class="status-badge ${i.isConverted?'win':'support'}">${i.isConverted?'계약성공':'진행/종결'}</span></td></tr>`).join('');
+    tableHtml = r.inqs.length
+      ? `<table class="focus-modal-table"><thead><tr><th>접수일</th><th>현장명</th><th>공사유형</th><th>진행상태</th><th class="center">계약전환</th></tr></thead><tbody>${rows}</tbody></table>`
+      : '<div class="focus-modal-empty">조회 기간 내 문의 내역이 없습니다.</div>';
+  } else if (tab === 'pt') {
+    const rows = r.pts.map(p => `<tr><td>${p.date||'-'}</td><td><b>${escapeHtml(p.siteName||'-')}</b></td><td>${escapeHtml(p.type||'-')}</td><td class="center"><span class="status-badge ${p.result==='승'?'win':p.result==='패'?'loss':p.result==='무'?'tie':p.result==='미정'?'pending':'support'}">${p.result==='미정'?'승/패 대기':(p.result||'-')}</span></td><td>${escapeHtml(p.competitor||'-')}</td></tr>`).join('');
+    tableHtml = r.pts.length
+      ? `<table class="focus-modal-table"><thead><tr><th>진행일</th><th>현장명</th><th>공종</th><th class="center">결과</th><th>경쟁사/사유</th></tr></thead><tbody>${rows}</tbody></table>`
+      : '<div class="focus-modal-empty">조회 기간 내 PT 내역이 없습니다.</div>';
+  } else if (tab === 'pipeline') {
+    const rows = r.pipes.map(p => `<tr><td>${p.lastUpdated||'-'}</td><td><b>${escapeHtml(p.orgName||'-')}</b></td><td>${escapeHtml(p.stage||'-')}</td><td class="right"><b>${fmtFullMoney(p.estAmount||0)}</b></td></tr>`).join('');
+    tableHtml = r.pipes.length
+      ? `<table class="focus-modal-table"><thead><tr><th>최근 업데이트</th><th>영업기회명</th><th>현재 단계</th><th class="right">예상수주액</th></tr></thead><tbody>${rows}</tbody></table>`
+      : '<div class="focus-modal-empty">조회 기간 내 진행 파이프라인이 없습니다.</div>';
+  }
 
   m.innerHTML = `
-    <div class="modal-head"><div><div class="modal-title">${r.name} 담당자 실적 근거 상세</div><div class="modal-sub">${periodLabel()} 데이터 필터링 됨</div></div><button class="close-btn" onclick="document.getElementById('modalBackdrop').classList.add('hidden')">닫기 ✕</button></div>
-    <div class="modal-section-title" style="border-left-color:var(--orange)">🎤 PT 진행 백데이터 (승률 산출 및 대기 내역)</div><table class="backdata-table"><thead><tr><th>진행일</th><th>현장명</th><th>공종</th><th class="center">결과</th><th>경쟁사/사유</th></tr></thead><tbody>${ptHtml || '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:20px">조회 기간 내 PT 내역이 없습니다.</td></tr>'}</tbody></table>
-    <div class="modal-section-title" style="border-left-color:var(--purple)">📞 견적 문의 및 계약 전환 백데이터</div><table class="backdata-table"><thead><tr><th>접수일</th><th>현장명</th><th>공사유형</th><th>진행상태</th><th class="center">계약전환</th></tr></thead><tbody>${inqHtml || '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:20px">조회 기간 내 문의 내역이 없습니다.</td></tr>'}</tbody></table>
-    <div class="modal-section-title">📊 수주/계약 백데이터 (실제 엑셀 반영)</div><table class="backdata-table"><thead><tr><th>계약일</th><th>현장명(아파트)</th><th>상태</th><th class="right">계약금액</th></tr></thead><tbody>${contHtml || '<tr><td colspan="4" style="text-align:center; color:#94a3b8; padding:20px">조회 기간 내 계약 내역이 없습니다.</td></tr>'}</tbody></table>
-    <div class="modal-section-title" style="border-left-color:var(--green)">💼 진행중 파이프라인 (Relate CRM)</div><table class="backdata-table"><thead><tr><th>최근 업데이트</th><th>영업기회명</th><th>현재 단계</th><th class="right">예상수주액</th></tr></thead><tbody>${pipeHtml || '<tr><td colspan="4" style="text-align:center; color:#94a3b8; padding:20px">조회 기간 내 진행 파이프라인이 없습니다.</td></tr>'}</tbody></table>
+    <div class="focus-modal-head">
+      <div>
+        <div class="ttl">${escapeHtml(r.name)} 담당자 실적 근거 상세</div>
+        <div class="sub">${periodLabel()} 데이터 필터링 됨</div>
+      </div>
+      <button class="close-btn" onclick="closeAssigneeModal()">닫기 ✕</button>
+    </div>
+    <div class="focus-modal-tabs">${tabsHtml}</div>
+    <div class="focus-modal-body">
+      <div class="focus-modal-table-wrap">${tableHtml}</div>
+    </div>
   `;
-  document.getElementById('modalBackdrop').classList.remove('hidden');
 }
 
 function refresh(){
