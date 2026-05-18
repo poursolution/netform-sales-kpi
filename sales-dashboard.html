@@ -943,6 +943,32 @@
   .sales-page .sv-stat-val.success,
   .sales-page .sv-stat-val.info{ color:#0a0e1a; }
 
+  /* 담당자별 매출 strip — Hero 도넛 아래 한눈에 보기 */
+  .sales-page .sv-quickrev{
+    display:grid; grid-template-columns:repeat(6, minmax(0,1fr));
+    gap:8px; margin-top:-4px;
+  }
+  .sales-page .sv-qr-item{
+    background:#fff; border:1px solid var(--sv-border); border-radius:10px;
+    padding:10px 12px; text-align:center;
+    transition: border-color .12s, transform .12s;
+    cursor:pointer;
+  }
+  .sales-page .sv-qr-item:hover{ border-color:#0a0e1a; transform:translateY(-1px); }
+  .sales-page .sv-qr-name{ font-size:11px; font-weight:750; color:#6b7280; letter-spacing:0.3px; }
+  .sales-page .sv-qr-name .role{ font-size:9px; color:#9ca3af; margin-left:3px; font-weight:700; }
+  .sales-page .sv-qr-val{
+    font-size:15px; font-weight:850; color:#0a0e1a;
+    margin-top:3px; letter-spacing:-0.3px;
+  }
+  .sales-page .sv-qr-cnt{ font-size:10px; font-weight:700; color:#94a3b8; margin-top:1px; }
+  @media (max-width:900px){
+    .sales-page .sv-quickrev{ grid-template-columns:repeat(3, 1fr); }
+  }
+  @media (max-width:520px){
+    .sales-page .sv-quickrev{ grid-template-columns:repeat(2, 1fr); }
+  }
+
   /* ════════════════════════════════════════════════════════════
      4. 영업회의 발표 (viewPresentation)
      ════════════════════════════════════════════════════════════ */
@@ -1116,6 +1142,9 @@
           </div>
         </div>
       </section>
+
+      <!-- 담당자별 매출 한눈에 (컴팩트) -->
+      <section class="sv-quickrev" id="svQuickRev"></section>
 
       <!-- KPI METRICS (4 cards) -->
       <section class="sv-metrics">
@@ -2018,6 +2047,22 @@ function render(data){
   setText('pageTotalRevenueSubClone', `연간 230억 목표 중 ${revenue.progressToAnnual}% 달성`);
   setText('pageKpiRevenue', fmtMoney(revenue.kpiRevenue));
   setText('pageKpiRevenueSub', `영업담당자 ${SALES_KPI_ASSIGNEES.length}명 · 전체 매출의 ${revenue.kpiShare}%`);
+  // 담당자별 매출 한눈에 (Hero 도넛 아래 컴팩트 strip)
+  const qrEl = document.getElementById('svQuickRev');
+  if (qrEl) {
+    qrEl.innerHTML = SALES_PERSON_DISPLAY_ORDER.map(name => {
+      const conts = filterByPeriod(CONTRACTS, STATE.year, STATE.quarter, 'signedDate')
+        .filter(c => c.managerName === name && c.contractAmount > 0);
+      const sum = conts.reduce((s, c) => s + c.contractAmount, 0);
+      const isMgmt = MANAGER_REVENUE_ASSIGNEES.includes(name);
+      return `<div class="sv-qr-item" onclick="window._SALES_PERSON_SELECTED='${escapeAttr(name)}'; renderSalesPersonTabs(); renderSalesPersonDetail('${escapeAttr(name)}'); document.getElementById('salesPersonDetail')?.scrollIntoView({behavior:'smooth', block:'center'});">
+        <div class="sv-qr-name">${escapeAttr(name)}${isMgmt ? '<span class="role">관리자</span>' : ''}</div>
+        <div class="sv-qr-val">${fmtMoney(sum)}</div>
+        <div class="sv-qr-cnt">${conts.length}건</div>
+      </div>`;
+    }).join('');
+  }
+
   const inqsAll = [];
   data.rows.forEach(r => (r.inqs || []).forEach(i => inqsAll.push(i)));
   const inqTotal = inqsAll.length;
