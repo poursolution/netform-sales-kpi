@@ -1847,7 +1847,7 @@ function renderSalesPersonDetail(name){
           </div>
           <div class="sv-stat clickable" onclick="openAssigneeFocus('${escapeAttr(row.name)}','ptrate')">
             <div class="sv-stat-lbl">PT 승률<span class="sv-stat-hint">근거 →</span></div>
-            <div class="sv-stat-val ${row.winRate >= 60 ? 'success' : 'info'}">${ptRate}</div>
+            <div class="sv-stat-val ${row.winRate >= 60 ? 'success' : 'info'}">${ptRate}<span style="font-size:10px; color:#94a3b8; font-weight:700; margin-left:6px;">승 ${row.win} · 패 ${row.loss}${row.pts.filter(p => p.result === '무').length > 0 ? ` · 무 ${row.pts.filter(p => p.result === '무').length}` : ''}</span></div>
           </div>
           <div class="sv-stat clickable" onclick="openAssigneeFocus('${escapeAttr(row.name)}','ptstatus')">
             <div class="sv-stat-lbl">PT 현황<span class="sv-stat-hint">근거 →</span></div>
