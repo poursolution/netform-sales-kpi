@@ -1197,16 +1197,12 @@
 
   <!-- 영업회의 발표 뷰: Relate 기반 발표자별 영업 흐름 -->
   <div id="viewPresentation" style="display:none;">
-    <div class="period-row">
-      <span class="lbl">발표 조회 기간</span>
-      <select class="select" id="yearSelectPresentation"></select>
-      <div class="chip-row" id="quarterTabsPresentation">
-        <button data-key="all">전체</button>
-        <button data-key="1">1Q</button>
-        <button data-key="2">2Q</button>
-        <button data-key="3">3Q</button>
-        <button data-key="4">4Q</button>
-      </div>
+    <div class="period-row" style="flex-wrap:wrap;">
+      <span class="lbl">영업회의일</span>
+      <select class="select" id="presMeetingSelect"></select>
+      <span style="font-size:12px; color:var(--muted); font-weight:700;">또는 직접 입력</span>
+      <input type="date" id="presCustomDate" class="select" style="padding:6px 10px;" />
+      <button class="btn" id="presReloadBtn" onclick="syncMeetingsFromSystem(false)" style="padding:6px 12px; border:1px solid var(--border); background:#fff; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer;">새로고침</button>
       <div class="period-meta" id="presentationPeriodMeta"></div>
     </div>
     <div class="pres-presenter-bar" id="presPresenterTabs"></div>
@@ -2237,30 +2233,104 @@ function switchView(view) {
 // 4. 영업회의 발표 뷰
 // ════════════════════════════════════════════════════════════
 const PRES_PRESENTERS = ['한준엽', '이필선', '한인규', '정정훈', '김성민', '황윤선'];
+const MEETINGS_SYSTEM_URL = 'https://test-168a4-default-rtdb.asia-southeast1.firebasedatabase.app/meetings.json';
+const PRES_CUTOFF_KEY = 'pres_meeting_cutoff_v1';
 let PRES_SELECTED = '한준엽';
 let RELATE_NOTES = []; // [{assigneeName, orgName, date, content}]
+let MEETINGS = []; // [{date:'YYYY-MM-DD', title:'...', id:'...'}]
+let PRES_CUTOFF = localStorage.getItem(PRES_CUTOFF_KEY) || new Date().toISOString().slice(0, 10);
 
 function selectPresenter(name) {
   PRES_SELECTED = name;
   renderPresentationView();
 }
 
+function setPresCutoff(date) {
+  if (!date) return;
+  PRES_CUTOFF = date;
+  localStorage.setItem(PRES_CUTOFF_KEY, date);
+  renderPresentationView();
+}
+
+function normalizeMeetingsData(raw) {
+  const rows = [];
+  if (!raw) return rows;
+  // Firebase RTDB: object keyed by ID, or already an array
+  const entries = Array.isArray(raw) ? raw.map((v, i) => [i, v]) : Object.entries(raw);
+  entries.forEach(([key, item]) => {
+    if (!item || typeof item !== 'object') return;
+    const date = item.date || item.meetingDate || item.scheduledDate || item.scheduledAt || '';
+    if (!date) return;
+    rows.push({
+      id: item.id || key,
+      date: String(date).slice(0, 10),
+      title: item.title || item.name || item.subject || '영업회의',
+    });
+  });
+  return rows.sort((a, b) => String(b.date).localeCompare(String(a.date)));
+}
+
+async function syncMeetingsFromSystem(isAuto = true) {
+  try {
+    const res = await fetch(MEETINGS_SYSTEM_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`회의 시스템 응답 오류 ${res.status}`);
+    const raw = await res.json();
+    MEETINGS = normalizeMeetingsData(raw);
+    // 기본 cutoff: 오늘 기준 가장 가까운 과거 회의일이 있으면 그걸 사용
+    if (MEETINGS.length && !localStorage.getItem(PRES_CUTOFF_KEY)) {
+      const today = new Date().toISOString().slice(0, 10);
+      const latestPast = MEETINGS.find(m => m.date <= today) || MEETINGS[0];
+      PRES_CUTOFF = latestPast.date;
+    }
+    if (!isAuto) {
+      alert(`회의 일정 동기화 완료 — ${MEETINGS.length}건`);
+    }
+  } catch (err) {
+    console.warn('회의 시스템 연동 실패 — 수동 날짜 입력으로 폴백:', err.message);
+    MEETINGS = [];
+    if (!isAuto) {
+      alert(`회의 시스템 연동 실패: ${err.message}\n수동 날짜 입력으로 사용해주세요.`);
+    }
+  }
+  if (currentView === 'presentation') renderPresentationView();
+}
+
 function renderPresentationView() {
   const tabsEl = document.getElementById('presPresenterTabs');
   if (!tabsEl) return;
-  // 발표자 탭
+
+  // 회의 드롭다운 동기화
+  const sel = document.getElementById('presMeetingSelect');
+  if (sel) {
+    sel.innerHTML = MEETINGS.length
+      ? MEETINGS.map(m => `<option value="${m.date}" ${m.date === PRES_CUTOFF ? 'selected' : ''}>${m.date} · ${escapeHtml(m.title)}</option>`).join('')
+      : `<option value="">(등록된 회의 없음 — 직접 입력)</option>`;
+    sel.onchange = (e) => { if (e.target.value) setPresCutoff(e.target.value); };
+  }
+  const customDateEl = document.getElementById('presCustomDate');
+  if (customDateEl) {
+    customDateEl.value = PRES_CUTOFF;
+    customDateEl.onchange = (e) => { if (e.target.value) setPresCutoff(e.target.value); };
+  }
+  // 발표자 탭 — 회의일 cutoff 기준으로 카운트
+  const cutoffFilter = (arr, field) => arr.filter(x => (x[field] || '') <= PRES_CUTOFF);
   tabsEl.innerHTML = PRES_PRESENTERS.map(name => {
     const isMgmt = name === '황윤선';
-    const pipes = filterByPeriod(PIPELINE, STATE.year, STATE.quarter, 'lastUpdated').filter(p => p.assigneeName === name);
+    const pipes = cutoffFilter(PIPELINE, 'lastUpdated').filter(p => p.assigneeName === name);
     return `<button class="pres-presenter-tab ${PRES_SELECTED === name ? 'active' : ''} ${isMgmt ? 'mgmt' : ''}" onclick="selectPresenter('${escapeAttr(name)}')">${escapeAttr(name)}${isMgmt ? ' <span class="badge">관리자</span>' : ''} <span class="badge">${pipes.length}</span></button>`;
   }).join('');
 
   // 기간 메타
   const pm = document.getElementById('presentationPeriodMeta');
-  if (pm) pm.textContent = `${periodLabel()} 기준`;
+  if (pm) {
+    const meetingMatch = MEETINGS.find(m => m.date === PRES_CUTOFF);
+    pm.textContent = meetingMatch
+      ? `${meetingMatch.date} ${meetingMatch.title} 기준 · 당일 포함 업데이트`
+      : `${PRES_CUTOFF} 기준 · 당일 포함 업데이트`;
+  }
 
   const name = PRES_SELECTED;
-  const pipes = filterByPeriod(PIPELINE, STATE.year, STATE.quarter, 'lastUpdated').filter(p => p.assigneeName === name);
+  const pipes = cutoffFilter(PIPELINE, 'lastUpdated').filter(p => p.assigneeName === name);
   const stageGroups = { contract: [], sales: [], lost: [], other: [] };
   pipes.forEach(p => {
     const g = getRelateStageGroup(p.stage);
@@ -2334,14 +2404,14 @@ function renderPresentationView() {
     </div>
   `;
 
-  // 시간순 타임라인 (생성/업데이트/노트)
+  // 시간순 타임라인 (생성/업데이트/노트) — cutoff 이하만 포함
   const tlEl = document.getElementById('presTimeline');
   const events = [];
   pipes.forEach(p => {
-    if (p.createdDate) events.push({ date: p.createdDate, type: 'create', org: p.orgName, body: `현재 단계: ${p.stage || '-'} · 예상 ${fmtMoney(p.estAmount || 0)}` });
-    if (p.lastUpdated && p.lastUpdated !== p.createdDate) events.push({ date: p.lastUpdated, type: 'update', org: p.orgName, body: `단계: ${p.stage || '-'}` });
+    if (p.createdDate && p.createdDate <= PRES_CUTOFF) events.push({ date: p.createdDate, type: 'create', org: p.orgName, body: `현재 단계: ${p.stage || '-'} · 예상 ${fmtMoney(p.estAmount || 0)}` });
+    if (p.lastUpdated && p.lastUpdated !== p.createdDate && p.lastUpdated <= PRES_CUTOFF) events.push({ date: p.lastUpdated, type: 'update', org: p.orgName, body: `단계: ${p.stage || '-'}` });
   });
-  RELATE_NOTES.filter(n => n.assigneeName === name).forEach(n => {
+  RELATE_NOTES.filter(n => n.assigneeName === name && (n.date || '') <= PRES_CUTOFF).forEach(n => {
     events.push({ date: n.date, type: 'note', org: n.orgName, body: n.content });
   });
   events.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
@@ -4554,22 +4624,8 @@ window.onload = () => {
       refresh();
     });
   }
-  // 영업회의 발표 뷰 period-row wiring
-  const ysPr = document.getElementById('yearSelectPresentation');
-  if (ysPr) {
-    yearOpts.forEach(([v, label]) => { const o = document.createElement('option'); o.value = v; o.textContent = label; if(v === STATE.year) o.selected = true; ysPr.appendChild(o); });
-    ysPr.onchange = (e) => { const v = e.target.value; STATE.year = v === 'all' ? 'all' : Number(v); const ys = document.getElementById('yearSelect'); if (ys) ys.value = v; refresh(); };
-  }
-  const qtPr = document.getElementById('quarterTabsPresentation');
-  if (qtPr) {
-    qtPr.addEventListener('click', e => {
-      if(e.target.tagName !== 'BUTTON') return;
-      qtPr.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      STATE.quarter = e.target.dataset.key === 'all' ? 'all' : Number(e.target.dataset.key);
-      refresh();
-    });
-  }
+  // 영업회의 발표 뷰 — 회의 일정 자동 동기화 (회의 시스템 등록 데이터 사용)
+  syncMeetingsFromSystem(true);
 };
 
 
