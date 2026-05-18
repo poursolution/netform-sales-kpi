@@ -1000,15 +1000,28 @@
   .pres-stage-label.sales{ background:#fef3c7; color:#92400e; }
   .pres-deal-list{ display:grid; grid-template-columns:1fr; gap:6px; }
   .pres-deal{
-    display:grid; grid-template-columns:1fr auto auto;
-    gap:12px; align-items:center;
-    padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:#fafbfc;
+    border:1px solid var(--border); border-radius:8px; background:#fafbfc;
+    cursor:pointer; transition: background .12s, border-color .12s;
   }
   .pres-deal:hover{ background:#fff; border-color:#cbd5e1; }
+  .pres-deal.expanded{ background:#fff; border-color:#0a0e1a; }
+  .pres-deal-row{
+    display:grid; grid-template-columns:1fr auto auto 24px;
+    gap:12px; align-items:center;
+    padding:10px 12px;
+  }
   .pres-deal-name{ font-size:13px; font-weight:700; color:#0a0e1a; }
+  .pres-deal-noteh{ font-size:11px; color:#6b7280; font-weight:600; margin-left:4px; }
+  .pres-deal.expanded .pres-deal-noteh{ color:#0a0e1a; }
   .pres-deal-meta{ font-size:11px; color:#6b7280; font-weight:600; margin-top:2px; }
   .pres-deal-stage{ font-size:11px; font-weight:700; padding:3px 8px; border-radius:6px; background:#fff; border:1px solid var(--border); color:#374151; white-space:nowrap; }
   .pres-deal-amt{ font-size:13px; font-weight:850; color:#0a0e1a; white-space:nowrap; }
+  .pres-deal-caret{ font-size:13px; color:#94a3b8; font-weight:800; text-align:center; }
+  .pres-deal.expanded .pres-deal-caret{ color:#0a0e1a; }
+  .pres-deal-detail{
+    padding:12px 16px 14px; border-top:1px solid #e5e7eb; background:#fff;
+  }
+  .pres-deal-detail-head{ font-size:11px; color:#6b7280; font-weight:750; margin-bottom:10px; letter-spacing:0.2px; }
   .pres-empty{ font-size:12px; color:#94a3b8; font-weight:600; text-align:center; padding:20px; }
 
   .pres-timeline{ position:relative; }
@@ -2390,23 +2403,58 @@ function renderPresentationView() {
     </div>
   `;
 
-  // 현재 영업 흐름 (단계별)
+  // 현재 영업 흐름 (단계별) — 각 영업기회 카드 클릭 시 노트/이벤트 인라인 펼치기
   const flowEl = document.getElementById('presFlow');
-  const renderDealList = arr => arr.length
-    ? `<div class="pres-deal-list">${arr.sort((a, b) => (b.estAmount || 0) - (a.estAmount || 0)).map(p => `
-        <div class="pres-deal">
+  const renderDealCard = (p) => {
+    const dealId = p.entryId || `${p.orgName}_${p.createdDate}`;
+    const isExpanded = PRES_EXPANDED.has(dealId);
+    // 이 영업기회의 이벤트 (생성/업데이트/노트)
+    const events = [];
+    if (p.createdDate && p.createdDate <= PRES_CUTOFF) events.push({ date: p.createdDate, type: 'create', body: `영업기회 생성 · 예상 ${fmtMoney(p.estAmount || 0)}` });
+    if (p.lastUpdated && p.lastUpdated !== p.createdDate && p.lastUpdated <= PRES_CUTOFF) events.push({ date: p.lastUpdated, type: 'update', body: `최근 업데이트 · 현재 단계: ${p.stage || '-'}` });
+    if (p.entryId) {
+      RELATE_NOTES.filter(n => n.entryId === p.entryId && (n.date || '') <= PRES_CUTOFF).forEach(n => {
+        events.push({ date: n.date, time: n.time, type: 'note', body: n.content, author: n.author });
+      });
+    }
+    events.sort((a, b) => (b.date + ' ' + (b.time || '')).localeCompare(a.date + ' ' + (a.time || '')));
+    const noteCount = events.filter(e => e.type === 'note').length;
+    const expandedHtml = isExpanded ? `
+      <div class="pres-deal-detail">
+        <div class="pres-deal-detail-head">
+          <span>전체 활동 ${events.length}건 · 노트 ${noteCount}건</span>
+        </div>
+        ${events.length ? `<div class="pres-timeline">${events.map(e => `
+          <div class="pres-tl-item event-${e.type}">
+            <div class="pres-tl-dot"></div>
+            <div class="pres-tl-date">${e.date || '-'}${e.time ? ' ' + e.time : ''}
+              <span class="pres-tl-tag ${e.type}">${e.type === 'create' ? '생성' : e.type === 'update' ? '업데이트' : '노트'}</span>
+              ${e.author ? `<span style="margin-left:6px; color:#94a3b8; font-weight:650;">· ${escapeHtml(e.author)}</span>` : ''}
+            </div>
+            <div class="pres-tl-body">${escapeHtml(e.body || '')}</div>
+          </div>`).join('')}</div>` : '<div class="pres-empty">기록된 활동·노트가 없습니다. (worker proxy 재배포 후 노트가 함께 동기화됩니다)</div>'}
+      </div>` : '';
+    return `
+      <div class="pres-deal ${isExpanded ? 'expanded' : ''}" onclick="togglePresDeal('${escapeAttr(dealId)}')">
+        <div class="pres-deal-row">
           <div>
-            <div class="pres-deal-name">${escapeHtml(p.orgName || '-')}</div>
+            <div class="pres-deal-name">${escapeHtml(p.orgName || '-')} <span class="pres-deal-noteh">${noteCount > 0 ? `· 노트 ${noteCount}건` : '· 노트 없음'}</span></div>
             <div class="pres-deal-meta">생성 ${p.createdDate || '-'} · 최근 업데이트 ${p.lastUpdated || '-'}${p.brand ? ` · ${escapeHtml(p.brand)}` : ''}</div>
           </div>
           <div class="pres-deal-stage">${escapeHtml(p.stage || '-')}</div>
           <div class="pres-deal-amt">${fmtMoney(p.estAmount || 0)}</div>
-        </div>`).join('')}</div>`
+          <div class="pres-deal-caret">${isExpanded ? '▾' : '▸'}</div>
+        </div>
+        ${expandedHtml}
+      </div>`;
+  };
+  const renderDealList = arr => arr.length
+    ? `<div class="pres-deal-list">${arr.sort((a, b) => (b.estAmount || 0) - (a.estAmount || 0)).map(renderDealCard).join('')}</div>`
     : '<div class="pres-empty">해당 단계의 영업기회가 없습니다.</div>';
 
   flowEl.innerHTML = `
     <div class="pres-flow-section">
-      <div class="pres-section-title">진행 중 영업 흐름 <span class="ct">${pipes.length}건</span></div>
+      <div class="pres-section-title">진행 중 영업 흐름 — 카드 클릭 시 노트·활동 펼치기 <span class="ct">${pipes.length}건</span></div>
       <div class="pres-stage-group">
         <div class="pres-stage-label contract">계약·시공 단계 · ${stageGroups.contract.length}건</div>
         ${renderDealList(stageGroups.contract)}
@@ -2418,34 +2466,16 @@ function renderPresentationView() {
     </div>
   `;
 
-  // 시간순 타임라인 (생성/업데이트/노트) — cutoff 이하만 포함
+  // 기존 통합 타임라인은 제거 (카드 인라인으로 통합됨)
   const tlEl = document.getElementById('presTimeline');
-  const events = [];
-  pipes.forEach(p => {
-    if (p.createdDate && p.createdDate <= PRES_CUTOFF) events.push({ date: p.createdDate, type: 'create', org: p.orgName, body: `현재 단계: ${p.stage || '-'} · 예상 ${fmtMoney(p.estAmount || 0)}` });
-    if (p.lastUpdated && p.lastUpdated !== p.createdDate && p.lastUpdated <= PRES_CUTOFF) events.push({ date: p.lastUpdated, type: 'update', org: p.orgName, body: `단계: ${p.stage || '-'}` });
-  });
-  RELATE_NOTES.filter(n => n.assigneeName === name && (n.date || '') <= PRES_CUTOFF).forEach(n => {
-    events.push({ date: n.date, type: 'note', org: n.orgName, body: n.content });
-  });
-  events.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-  const evHtml = events.length
-    ? events.map(e => `
-        <div class="pres-tl-item event-${e.type}">
-          <div class="pres-tl-dot"></div>
-          <div class="pres-tl-date">${e.date || '-'}
-            <span class="pres-tl-tag ${e.type}">${e.type === 'create' ? '생성' : e.type === 'update' ? '업데이트' : '노트'}</span>
-          </div>
-          <div class="pres-tl-title">${escapeHtml(e.org || '-')}</div>
-          <div class="pres-tl-body">${escapeHtml(e.body || '')}</div>
-        </div>`).join('')
-    : '<div class="pres-empty">표시할 활동 이력이 없습니다.</div>';
-  tlEl.innerHTML = `
-    <div class="pres-flow-section">
-      <div class="pres-section-title">행동·노트 흐름 <span class="ct">${events.length}건</span></div>
-      <div class="pres-timeline">${evHtml}</div>
-    </div>
-  `;
+  if (tlEl) tlEl.innerHTML = '';
+}
+
+let PRES_EXPANDED = new Set();
+function togglePresDeal(dealId) {
+  if (PRES_EXPANDED.has(dealId)) PRES_EXPANDED.delete(dealId);
+  else PRES_EXPANDED.add(dealId);
+  renderPresentationView();
 }
 
 // Relate 노트 best-effort fetch — entries 가져온 뒤 각 entry 의 노트를 추가로 호출
@@ -3360,6 +3390,7 @@ async function fetchRelateDealsFromProxy(proxyUrl, isAuto = false) {
   if (!Array.isArray(payload.pipeline)) throw new Error('공용 Relate 응답에 pipeline 배열이 없습니다');
 
   PIPELINE = payload.pipeline.map(item => ({
+    entryId: String(item.entryId || item.id || ''),
     assigneeName: item.assigneeName || '미정',
     stage: item.stage || '영업·관계',
     orgName: item.orgName || item.name || '미정',
@@ -3368,6 +3399,17 @@ async function fetchRelateDealsFromProxy(proxyUrl, isAuto = false) {
     estAmount: Number(item.estAmount) || 0,
     brand: normalizeBrand(item.brand || item.processName || ''),
   })).sort((a, b) => b.lastUpdated.localeCompare(a.lastUpdated));
+
+  // Relate 노트 (worker proxy 가 함께 내려준 경우)
+  if (Array.isArray(payload.notes)) {
+    RELATE_NOTES = payload.notes.map(n => ({
+      entryId: String(n.entryId || ''),
+      date: n.date || '',
+      time: n.time || '',
+      content: n.content || '',
+      author: n.author || '',
+    }));
+  }
 
   if (loader) loader.style.display = 'none';
   if (!isAuto) {
@@ -3513,8 +3555,8 @@ async function fetchRelateDeals(isAuto = false) {
     const newPipeline = allEntries.map(entry => {
       const amt = (entry.one_time_value_cents || 0) + (entry.recurring_value_cents || 0);
       const orgName = entry.entryable_type === 'Organization'
-        ? (_orgCache[entry.entryable_id] || `(조직 ${entry.entryable_id})`)
-        : (entry.key || `entry ${entry.id}`);
+        ? (_orgCache[entry.entryable_id] || entry.key || entry.name || `(조직 ${entry.entryable_id})`)
+        : (entry.key || entry.name || `entry ${entry.id}`);
       const assigneeName = entry.assignee?.name || entry.assignee?.email || '미정';
       const statusName = entry.status || '';
       const statusType = statusTypeMap[statusName] || 'active';
@@ -3522,6 +3564,7 @@ async function fetchRelateDeals(isAuto = false) {
       const updatedDate = entry.updated_at ? entry.updated_at.split('T')[0] : todayStr;
       const createdDate = entry.created_at ? entry.created_at.split('T')[0] : updatedDate;
       return {
+        entryId: String(entry.id),
         assigneeName, stage,
         orgName: orgName || `(영업기회 ${entry.id})`,
         lastUpdated: updatedDate,

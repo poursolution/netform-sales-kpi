@@ -163,7 +163,7 @@ async function buildRelatePipeline(env) {
   entriesByProcess.forEach(({ pid, entries }) => {
     if (excludedPids.has(pid)) return;
     const processName = processNameMap[pid] || pid;
-    entries.forEach(entry => allEntries.push({ ...entry, _processName: processName }));
+    entries.forEach(entry => allEntries.push({ ...entry, _processName: processName, _listId: pid }));
   });
 
   const orgCache = {};
@@ -173,26 +173,66 @@ async function buildRelatePipeline(env) {
       .map(entry => entry.entryable_id)
   )];
 
-  await parallelLimit(neededOrgIds, 8, async orgId => {
-    try {
-      const result = await relateFetch(`/organizations/${orgId}`, apiKey);
-      orgCache[orgId] = result.data?.name || result.name || `(조직 ${orgId})`;
-    } catch {
-      orgCache[orgId] = `(조직 ${orgId})`;
+  // 조직명 조회 — 동시 4개로 낮추고 실패 시 2회 재시도 (rate-limit 회피)
+  await parallelLimit(neededOrgIds, 4, async orgId => {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const result = await relateFetch(`/organizations/${orgId}`, apiKey);
+        const name = result.data?.name || result.name;
+        if (name) {
+          orgCache[orgId] = name;
+          return;
+        }
+      } catch {}
+      if (attempt < 2) await new Promise(r => setTimeout(r, 400 * (attempt + 1)));
     }
+    orgCache[orgId] = null; // 실패 표시 — pipeline 빌더에서 entry.key 폴백
   });
+
+  // 영업기회별 노트 fetch — 동시 4개, 실패 시 빈 배열
+  const allNotes = [];
+  await parallelLimit(allEntries, 4, async entry => {
+    if (!entry._listId || !entry.id) return;
+    try {
+      const notes = await relateFetchAll(`/lists/${entry._listId}/entries/${entry.id}/notes`, apiKey);
+      notes.forEach(note => {
+        const rawContent = note.content || note.body || note.text || note.note || "";
+        // HTML 태그 제거 + 줄바꿈 보존
+        const content = String(rawContent)
+          .replace(/<br\s*\/?>/gi, "\n")
+          .replace(/<\/(p|div|li)>/gi, "\n")
+          .replace(/<[^>]+>/g, "")
+          .replace(/&nbsp;/g, " ")
+          .replace(/&amp;/g, "&")
+          .replace(/&lt;/g, "<")
+          .replace(/&gt;/g, ">")
+          .trim();
+        if (!content) return;
+        const at = note.created_at || note.updated_at || "";
+        allNotes.push({
+          entryId: String(entry.id),
+          date: at ? at.split("T")[0] : "",
+          time: at ? (at.split("T")[1] || "").slice(0, 5) : "",
+          content,
+          author: note.user?.name || note.user?.email || note.author || "",
+        });
+      });
+    } catch {}
+  });
+  allNotes.sort((a, b) => String(b.date + " " + (b.time || "")).localeCompare(String(a.date + " " + (a.time || ""))));
 
   const today = new Date().toISOString().split("T")[0];
   const pipeline = allEntries.map(entry => {
     const amount = (entry.one_time_value_cents || 0) + (entry.recurring_value_cents || 0);
     const orgName = entry.entryable_type === "Organization"
-      ? (orgCache[entry.entryable_id] || `(조직 ${entry.entryable_id})`)
-      : (entry.key || `entry ${entry.id}`);
+      ? (orgCache[entry.entryable_id] || entry.key || entry.name || `(조직 ${entry.entryable_id})`)
+      : (entry.key || entry.name || `entry ${entry.id}`);
     const statusName = entry.status || "";
     const statusType = statusTypeMap[statusName] || "active";
     const updatedDate = entry.updated_at ? entry.updated_at.split("T")[0] : today;
     const createdDate = entry.created_at ? entry.created_at.split("T")[0] : updatedDate;
     return {
+      entryId: String(entry.id),
       assigneeName: entry.assignee?.name || entry.assignee?.email || "미정",
       stage: mapStatusToStage(statusName, statusType),
       orgName,
@@ -211,7 +251,9 @@ async function buildRelatePipeline(env) {
     skippedProcesses: [...new Set(skippedProcesses)].filter(Boolean),
     entryCount: pipeline.length,
     organizationCount: neededOrgIds.length,
+    noteCount: allNotes.length,
     pipeline,
+    notes: allNotes,
   };
 }
 
