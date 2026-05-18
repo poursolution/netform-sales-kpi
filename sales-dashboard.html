@@ -1692,8 +1692,8 @@ function renderSalesPersonDetail(name){
             <div class="sv-stat-val">${fmtMoney(row.cSum)}</div>
           </div>
           <div class="sv-stat clickable" onclick="openAssigneeFocus('${escapeAttr(row.name)}','contractCount')">
-            <div class="sv-stat-lbl">계약 건수<span class="sv-stat-hint">근거 →</span></div>
-            <div class="sv-stat-val">${row.conts.length}건</div>
+            <div class="sv-stat-lbl">계약·입찰 항목<span class="sv-stat-hint">근거 →</span></div>
+            <div class="sv-stat-val">${row.conts.length}건<span style="font-size:10px; color:#94a3b8; font-weight:700; margin-left:6px;">확정 ${row.conts.filter(c => (c.contractAmount||0) > 0).length} · 입찰 ${row.conts.filter(c => !c.contractAmount || c.contractAmount === 0).length}</span></div>
           </div>
           <div class="sv-stat clickable" onclick="openAssigneeFocus('${escapeAttr(row.name)}','ptrate')">
             <div class="sv-stat-lbl">PT 승률<span class="sv-stat-hint">근거 →</span></div>
