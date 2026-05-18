@@ -880,6 +880,50 @@
     #viewTeamKpi .tk-cores{grid-template-columns:1fr;}
     #viewTeamKpi .tk-rep-body{flex-direction:column; align-items:flex-start;}
   }
+
+  /* ════════════════════════════════════════════════════════════
+     매출 현황(1번 탭) MONOCHROME 테마 — 검정/흰색/그레이스케일
+     ════════════════════════════════════════════════════════════ */
+  .sales-page{
+    --sv-accent:#0a0e1a;       --sv-accent-soft:#f3f4f6;
+    --sv-success:#1f2937;      --sv-success-soft:#f3f4f6;
+    --sv-warn:#4b5563;         --sv-warn-soft:#f9fafb;
+    --sv-danger:#0a0e1a;       --sv-danger-soft:#f3f4f6;
+    --sv-info:#374151;         --sv-info-soft:#f3f4f6;
+  }
+  /* Hero(어두운 패널) — 컬러 액센트 제거 */
+  .sales-page .sv-hero{ background:linear-gradient(135deg, #000000 0%, #1f2937 100%); }
+  .sales-page .sv-hero::before{ background:radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%); }
+  .sales-page .sv-hero-meta .sv-eyebrow{ color:#d1d5db; }
+  .sales-page .sv-hero-title{ color:#e5e7eb; }
+  .sales-page .sv-hero-sub{ color:#9ca3af; }
+  .sales-page .sv-hero-sync{ color:#e5e7eb; background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.12); }
+  .sales-page .sv-hero-sync::before{ background:#ffffff; box-shadow:0 0 0 3px rgba(255,255,255,0.18); }
+  .sales-page .sv-ring-track{ stroke:rgba(255,255,255,0.10); }
+  .sales-page .sv-ring-fill{ stroke:#ffffff; }
+  .sales-page .sv-ring-lbl{ color:#9ca3af; }
+  /* Metric value의 컬러 클래스 — 모두 검정으로 통일 */
+  .sales-page .sv-m-value.accent,
+  .sales-page .sv-m-value.success,
+  .sales-page .sv-m-value.danger,
+  .sales-page .sv-m-value.info{ color:#0a0e1a; }
+  /* Alert — 빨간색 → 검정 외곽선 */
+  .sales-page .sv-alert{
+    border-color:#0a0e1a; background:#f9fafb; color:#0a0e1a;
+  }
+  .sales-page .sv-alert::before{ background:#0a0e1a; color:#fff; }
+  .sales-page .sv-alert.neutral{ border-color:#d1d5db; background:#f9fafb; color:#0a0e1a; }
+  .sales-page .sv-alert.neutral::before{ background:#0a0e1a; color:#fff; }
+  /* 담당자 디테일 카드 — 역할 뱃지 모노크롬화 */
+  .sales-page .sv-detail-role.kpi  { background:rgba(255,255,255,0.14); color:#ffffff; border:1px solid rgba(255,255,255,0.30); }
+  .sales-page .sv-detail-role.mgmt { background:rgba(255,255,255,0.08); color:#e5e7eb; border:1px solid rgba(255,255,255,0.18); }
+  .sales-page .sv-detail-role.other{ background:rgba(255,255,255,0.04); color:#cbd5e1; border:1px solid rgba(255,255,255,0.10); }
+  /* Stat 값 컬러 — 모노크롬 */
+  .sales-page .sv-stat-val.success,
+  .sales-page .sv-stat-val.info{ color:#0a0e1a; }
+  /* sv-detail-card(어두운 카드)도 단색 무채색 그라데이션으로 통일 */
+  .sales-page .sv-detail-card{ background:linear-gradient(135deg,#000000 0%,#1f2937 100%) !important; }
+  .sales-page .sv-detail-card::after{ background:radial-gradient(circle at top right, rgba(255,255,255,0.05) 0%, transparent 60%) !important; }
 </style>
 </head>
 <body>
@@ -1037,9 +1081,8 @@
   <!-- 영업 KPI 뷰: kpi.html(영업 KPI 관리도구)를 iframe으로 임베드하여 단일 소스로 운영 -->
   <div id="viewTeamKpi" style="display:none;">
     <iframe id="kpiFrame" src="./kpi.html"
-      style="width:100%; min-height:1800px; border:none; display:block; background:transparent;"
-      title="영업 KPI 관리도구"
-      onload="autoSizeKpiFrame()"></iframe>
+      style="width:100%; height:calc(100vh - 200px); min-height:720px; border:1px solid var(--border); border-radius:14px; display:block; background:transparent;"
+      title="영업 KPI 관리도구"></iframe>
   </div>
 
   <div id="viewInquiry" style="display:none;">
@@ -3342,32 +3385,8 @@ function renderKpiTask(t) {
       </div>
     </div>`;
 }
-function autoSizeKpiFrame() {
-  const f = document.getElementById('kpiFrame');
-  if (!f) return;
-  try {
-    const doc = f.contentDocument || (f.contentWindow && f.contentWindow.document);
-    if (!doc) return;
-    const resize = () => {
-      const h = Math.max(
-        doc.documentElement ? doc.documentElement.scrollHeight : 0,
-        doc.body ? doc.body.scrollHeight : 0
-      );
-      if (h > 0) f.style.height = (h + 24) + 'px';
-    };
-    resize();
-    try {
-      const ro = new ResizeObserver(resize);
-      if (doc.documentElement) ro.observe(doc.documentElement);
-      if (doc.body) ro.observe(doc.body);
-    } catch (_) {}
-    try { f.contentWindow.addEventListener('resize', resize); } catch (_) {}
-    setTimeout(resize, 400);
-    setTimeout(resize, 1200);
-  } catch (e) {
-    // 동일 출처 접근 실패 시 min-height fallback 사용
-  }
-}
+// 영업 KPI iframe은 viewport 높이로 고정해 내부 스크롤을 사용 — 자동 리사이즈는 피드백 루프 위험으로 비활성화
+function autoSizeKpiFrame() { /* no-op */ }
 
 function renderTeamKpiDashboard() {
   // 영업 KPI 뷰는 ./kpi.html iframe으로 대체됨 — 기존 DOM이 없으면 조용히 종료
