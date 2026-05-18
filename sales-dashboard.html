@@ -942,6 +942,97 @@
   /* Stat 값 컬러 */
   .sales-page .sv-stat-val.success,
   .sales-page .sv-stat-val.info{ color:#0a0e1a; }
+
+  /* ════════════════════════════════════════════════════════════
+     4. 영업회의 발표 (viewPresentation)
+     ════════════════════════════════════════════════════════════ */
+  #viewPresentation { display:flex; flex-direction:column; gap:18px; }
+  .pres-presenter-bar{
+    display:flex; flex-wrap:wrap; gap:6px;
+    background:#fff; border:1px solid var(--border); border-radius:12px;
+    padding:8px; box-shadow:0 1px 3px rgba(15,23,42,0.04);
+  }
+  .pres-presenter-tab{
+    padding:9px 16px; border:1px solid var(--border); background:#fff;
+    color:#475569; border-radius:8px; font-size:13.5px; font-weight:750;
+    cursor:pointer; display:inline-flex; align-items:center; gap:6px;
+    transition:all .15s;
+  }
+  .pres-presenter-tab:hover{ background:#f3f4f6; color:#0a0e1a; }
+  .pres-presenter-tab.active{ background:#0a0e1a; color:#fff; border-color:#0a0e1a; }
+  .pres-presenter-tab .badge{
+    font-size:10px; padding:2px 7px; border-radius:999px;
+    background:rgba(255,255,255,0.15); color:#fff; font-weight:800; letter-spacing:0.3px;
+  }
+  .pres-presenter-tab:not(.active) .badge{ background:#f3f4f6; color:#6b7280; }
+  .pres-presenter-tab.mgmt:not(.active){ border-style:dashed; }
+  .pres-presenter-tab.mgmt:not(.active) .badge{ background:#fef3c7; color:#92400e; }
+
+  .pres-summary-card{
+    background:#fff; border:1px solid var(--border); border-radius:14px;
+    padding:20px 22px; box-shadow:0 1px 3px rgba(15,23,42,0.04);
+  }
+  .pres-summary-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
+  .pres-summary-title{ font-size:16px; font-weight:850; color:#0a0e1a; letter-spacing:-0.3px; }
+  .pres-summary-sub{ font-size:12px; color:#6b7280; font-weight:600; }
+  .pres-metrics{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+  .pres-metric{
+    border:1px solid var(--border); border-radius:10px; padding:12px 14px; background:#fafbfc;
+  }
+  .pres-metric .lbl{ font-size:11px; color:#6b7280; font-weight:750; letter-spacing:0.3px; text-transform:uppercase; }
+  .pres-metric .val{ font-size:20px; font-weight:900; color:#0a0e1a; margin-top:4px; letter-spacing:-0.5px; }
+  .pres-metric .sub{ font-size:11px; color:#6b7280; font-weight:650; margin-top:3px; }
+
+  .pres-flow-section{
+    background:#fff; border:1px solid var(--border); border-radius:14px;
+    padding:20px 22px; box-shadow:0 1px 3px rgba(15,23,42,0.04);
+  }
+  .pres-section-title{ font-size:14px; font-weight:850; color:#0a0e1a; letter-spacing:-0.2px; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .pres-section-title .ct{ font-size:11px; color:#6b7280; font-weight:700; padding:2px 8px; border-radius:999px; background:#f3f4f6; }
+  .pres-stage-group{ margin-bottom:14px; }
+  .pres-stage-group:last-child{ margin-bottom:0; }
+  .pres-stage-label{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800;
+    background:#f3f4f6; color:#374151; margin-bottom:8px;
+  }
+  .pres-stage-label.contract{ background:#e0e7ff; color:#3730a3; }
+  .pres-stage-label.sales{ background:#fef3c7; color:#92400e; }
+  .pres-deal-list{ display:grid; grid-template-columns:1fr; gap:6px; }
+  .pres-deal{
+    display:grid; grid-template-columns:1fr auto auto;
+    gap:12px; align-items:center;
+    padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:#fafbfc;
+  }
+  .pres-deal:hover{ background:#fff; border-color:#cbd5e1; }
+  .pres-deal-name{ font-size:13px; font-weight:700; color:#0a0e1a; }
+  .pres-deal-meta{ font-size:11px; color:#6b7280; font-weight:600; margin-top:2px; }
+  .pres-deal-stage{ font-size:11px; font-weight:700; padding:3px 8px; border-radius:6px; background:#fff; border:1px solid var(--border); color:#374151; white-space:nowrap; }
+  .pres-deal-amt{ font-size:13px; font-weight:850; color:#0a0e1a; white-space:nowrap; }
+  .pres-empty{ font-size:12px; color:#94a3b8; font-weight:600; text-align:center; padding:20px; }
+
+  .pres-timeline{ position:relative; }
+  .pres-timeline::before{
+    content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background:#e5e7eb;
+  }
+  .pres-tl-item{
+    position:relative; padding-left:28px; padding-bottom:14px;
+  }
+  .pres-tl-item:last-child{ padding-bottom:0; }
+  .pres-tl-dot{
+    position:absolute; left:3px; top:3px; width:12px; height:12px; border-radius:50%;
+    background:#fff; border:2px solid #0a0e1a; z-index:1;
+  }
+  .pres-tl-item.event-create .pres-tl-dot{ border-color:#059669; }
+  .pres-tl-item.event-update .pres-tl-dot{ border-color:#2563eb; }
+  .pres-tl-item.event-note .pres-tl-dot{ border-color:#7c3aed; background:#7c3aed; }
+  .pres-tl-date{ font-size:11px; font-weight:850; color:#6b7280; letter-spacing:0.3px; }
+  .pres-tl-tag{ display:inline-block; font-size:10px; font-weight:800; padding:1px 7px; border-radius:999px; margin-left:6px; }
+  .pres-tl-tag.create{ background:#d1fae5; color:#065f46; }
+  .pres-tl-tag.update{ background:#dbeafe; color:#1e3a8a; }
+  .pres-tl-tag.note{ background:#ede9fe; color:#5b21b6; }
+  .pres-tl-title{ font-size:13px; font-weight:700; color:#0a0e1a; margin-top:2px; }
+  .pres-tl-body{ font-size:12px; color:#475569; font-weight:600; margin-top:3px; line-height:1.5; white-space:pre-wrap; }
 </style>
 </head>
 <body>
@@ -963,6 +1054,7 @@
       <button class="active" id="tabMain" onclick="switchView('main')">1. 매출 현황</button>
       <button id="tabRelate" onclick="switchView('relate')">2. 릴레잇 현황</button>
       <button id="tabTeamKpi" onclick="switchView('teamKpi')">3. 영업 KPI</button>
+      <button id="tabPresentation" onclick="switchView('presentation')">4. 영업회의 발표</button>
     </div>
   </div>
 
@@ -1101,6 +1193,26 @@
     <iframe id="kpiFrame" src="./kpi.html"
       style="width:100%; height:calc(100vh - 200px); min-height:720px; border:1px solid var(--border); border-radius:14px; display:block; background:transparent;"
       title="영업 KPI 관리도구"></iframe>
+  </div>
+
+  <!-- 영업회의 발표 뷰: Relate 기반 발표자별 영업 흐름 -->
+  <div id="viewPresentation" style="display:none;">
+    <div class="period-row">
+      <span class="lbl">발표 조회 기간</span>
+      <select class="select" id="yearSelectPresentation"></select>
+      <div class="chip-row" id="quarterTabsPresentation">
+        <button data-key="all">전체</button>
+        <button data-key="1">1Q</button>
+        <button data-key="2">2Q</button>
+        <button data-key="3">3Q</button>
+        <button data-key="4">4Q</button>
+      </div>
+      <div class="period-meta" id="presentationPeriodMeta"></div>
+    </div>
+    <div class="pres-presenter-bar" id="presPresenterTabs"></div>
+    <div id="presSummary"></div>
+    <div id="presFlow"></div>
+    <div id="presTimeline"></div>
   </div>
 
   <div id="viewInquiry" style="display:none;">
@@ -2092,6 +2204,7 @@ function refresh(){
   if (currentView === 'teamKpi') renderTeamKpiDashboard();
   if (currentView === 'relate') renderRelateAnalysis(data);
   if (currentView === 'inquiry') renderInquiryDashboard();
+  if (currentView === 'presentation') renderPresentationView();
 }
 
 // 화면 전환 (탭 클릭 시)
@@ -2102,18 +2215,164 @@ function switchView(view) {
   document.getElementById('viewTeamKpi').style.display = view === 'teamKpi' ? '' : 'none';
   document.getElementById('viewRelate').style.display = view === 'relate' ? '' : 'none';
   document.getElementById('viewInquiry').style.display = view === 'inquiry' ? '' : 'none';
+  const vp = document.getElementById('viewPresentation');
+  if (vp) vp.style.display = view === 'presentation' ? '' : 'none';
   document.getElementById('tabMain').classList.toggle('active', view === 'main');
   document.getElementById('tabTeamKpi').classList.toggle('active', view === 'teamKpi');
   document.getElementById('tabRelate').classList.toggle('active', view === 'relate');
   document.getElementById('tabInquiry')?.classList.toggle('active', view === 'inquiry');
+  document.getElementById('tabPresentation')?.classList.toggle('active', view === 'presentation');
   // 릴레잇 뷰로 전환 시 데이터 렌더링
   if (view === 'teamKpi') renderTeamKpiDashboard();
   if (view === 'relate' && LATEST_DATA) renderRelateAnalysis(LATEST_DATA);
   if (view === 'inquiry') renderInquiryDashboard();
+  if (view === 'presentation') renderPresentationView();
   // 메인 뷰로 돌아갈 때 차트 강제 재렌더 (캔버스 크기 깨짐 방지)
   if (view === 'main') renderChart();
   // 페이지 상단으로 스크롤
   window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ════════════════════════════════════════════════════════════
+// 4. 영업회의 발표 뷰
+// ════════════════════════════════════════════════════════════
+const PRES_PRESENTERS = ['한준엽', '이필선', '한인규', '정정훈', '김성민', '황윤선'];
+let PRES_SELECTED = '한준엽';
+let RELATE_NOTES = []; // [{assigneeName, orgName, date, content}]
+
+function selectPresenter(name) {
+  PRES_SELECTED = name;
+  renderPresentationView();
+}
+
+function renderPresentationView() {
+  const tabsEl = document.getElementById('presPresenterTabs');
+  if (!tabsEl) return;
+  // 발표자 탭
+  tabsEl.innerHTML = PRES_PRESENTERS.map(name => {
+    const isMgmt = name === '황윤선';
+    const pipes = filterByPeriod(PIPELINE, STATE.year, STATE.quarter, 'lastUpdated').filter(p => p.assigneeName === name);
+    return `<button class="pres-presenter-tab ${PRES_SELECTED === name ? 'active' : ''} ${isMgmt ? 'mgmt' : ''}" onclick="selectPresenter('${escapeAttr(name)}')">${escapeAttr(name)}${isMgmt ? ' <span class="badge">관리자</span>' : ''} <span class="badge">${pipes.length}</span></button>`;
+  }).join('');
+
+  // 기간 메타
+  const pm = document.getElementById('presentationPeriodMeta');
+  if (pm) pm.textContent = `${periodLabel()} 기준`;
+
+  const name = PRES_SELECTED;
+  const pipes = filterByPeriod(PIPELINE, STATE.year, STATE.quarter, 'lastUpdated').filter(p => p.assigneeName === name);
+  const stageGroups = { contract: [], sales: [], lost: [], other: [] };
+  pipes.forEach(p => {
+    const g = getRelateStageGroup(p.stage);
+    if (stageGroups[g]) stageGroups[g].push(p);
+    else stageGroups.other.push(p);
+  });
+  const totalAmt = pipes.reduce((s, p) => s + (p.estAmount || 0), 0);
+  const contractAmt = stageGroups.contract.reduce((s, p) => s + (p.estAmount || 0), 0);
+  const salesAmt = stageGroups.sales.reduce((s, p) => s + (p.estAmount || 0), 0);
+
+  // 요약 카드
+  const summaryEl = document.getElementById('presSummary');
+  summaryEl.innerHTML = `
+    <div class="pres-summary-card">
+      <div class="pres-summary-head">
+        <div>
+          <div class="pres-summary-title">${escapeHtml(name)} · 영업 활동 요약</div>
+          <div class="pres-summary-sub">${periodLabel()} · 릴레잇(Relate) 파이프라인 기준 · 발표용</div>
+        </div>
+      </div>
+      <div class="pres-metrics">
+        <div class="pres-metric">
+          <div class="lbl">담당 영업기회</div>
+          <div class="val">${pipes.length}건</div>
+          <div class="sub">패배·실패 제외</div>
+        </div>
+        <div class="pres-metric">
+          <div class="lbl">예상 총액</div>
+          <div class="val">${fmtMoney(totalAmt)}</div>
+          <div class="sub">합산 예상수주액</div>
+        </div>
+        <div class="pres-metric">
+          <div class="lbl">계약·시공 단계</div>
+          <div class="val">${stageGroups.contract.length}건</div>
+          <div class="sub">${fmtMoney(contractAmt)}</div>
+        </div>
+        <div class="pres-metric">
+          <div class="lbl">영업·관계 단계</div>
+          <div class="val">${stageGroups.sales.length}건</div>
+          <div class="sub">${fmtMoney(salesAmt)}</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // 현재 영업 흐름 (단계별)
+  const flowEl = document.getElementById('presFlow');
+  const renderDealList = arr => arr.length
+    ? `<div class="pres-deal-list">${arr.sort((a, b) => (b.estAmount || 0) - (a.estAmount || 0)).map(p => `
+        <div class="pres-deal">
+          <div>
+            <div class="pres-deal-name">${escapeHtml(p.orgName || '-')}</div>
+            <div class="pres-deal-meta">생성 ${p.createdDate || '-'} · 최근 업데이트 ${p.lastUpdated || '-'}${p.brand ? ` · ${escapeHtml(p.brand)}` : ''}</div>
+          </div>
+          <div class="pres-deal-stage">${escapeHtml(p.stage || '-')}</div>
+          <div class="pres-deal-amt">${fmtMoney(p.estAmount || 0)}</div>
+        </div>`).join('')}</div>`
+    : '<div class="pres-empty">해당 단계의 영업기회가 없습니다.</div>';
+
+  flowEl.innerHTML = `
+    <div class="pres-flow-section">
+      <div class="pres-section-title">진행 중 영업 흐름 <span class="ct">${pipes.length}건</span></div>
+      <div class="pres-stage-group">
+        <div class="pres-stage-label contract">계약·시공 단계 · ${stageGroups.contract.length}건</div>
+        ${renderDealList(stageGroups.contract)}
+      </div>
+      <div class="pres-stage-group">
+        <div class="pres-stage-label sales">영업·관계 단계 · ${stageGroups.sales.length}건</div>
+        ${renderDealList(stageGroups.sales)}
+      </div>
+    </div>
+  `;
+
+  // 시간순 타임라인 (생성/업데이트/노트)
+  const tlEl = document.getElementById('presTimeline');
+  const events = [];
+  pipes.forEach(p => {
+    if (p.createdDate) events.push({ date: p.createdDate, type: 'create', org: p.orgName, body: `현재 단계: ${p.stage || '-'} · 예상 ${fmtMoney(p.estAmount || 0)}` });
+    if (p.lastUpdated && p.lastUpdated !== p.createdDate) events.push({ date: p.lastUpdated, type: 'update', org: p.orgName, body: `단계: ${p.stage || '-'}` });
+  });
+  RELATE_NOTES.filter(n => n.assigneeName === name).forEach(n => {
+    events.push({ date: n.date, type: 'note', org: n.orgName, body: n.content });
+  });
+  events.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  const evHtml = events.length
+    ? events.map(e => `
+        <div class="pres-tl-item event-${e.type}">
+          <div class="pres-tl-dot"></div>
+          <div class="pres-tl-date">${e.date || '-'}
+            <span class="pres-tl-tag ${e.type}">${e.type === 'create' ? '생성' : e.type === 'update' ? '업데이트' : '노트'}</span>
+          </div>
+          <div class="pres-tl-title">${escapeHtml(e.org || '-')}</div>
+          <div class="pres-tl-body">${escapeHtml(e.body || '')}</div>
+        </div>`).join('')
+    : '<div class="pres-empty">표시할 활동 이력이 없습니다.</div>';
+  tlEl.innerHTML = `
+    <div class="pres-flow-section">
+      <div class="pres-section-title">행동·노트 흐름 <span class="ct">${events.length}건</span></div>
+      <div class="pres-timeline">${evHtml}</div>
+    </div>
+  `;
+}
+
+// Relate 노트 best-effort fetch — entries 가져온 뒤 각 entry 의 노트를 추가로 호출
+// 실패해도 PIPELINE 기반 타임라인은 동작
+async function fetchRelateNotesBestEffort() {
+  // Worker proxy 또는 API key 가 있을 때만 시도
+  const cfg = getRelateConfig();
+  if (!cfg.apiKey && !cfg.proxyUrl) return;
+  // 일단 PIPELINE 의 영업기회 ID 가 있어야 노트 fetch 가능 — 현재 PIPELINE 변환에서 entry ID 를 안 보관 중
+  // 향후 worker 가 노트를 함께 내려주도록 확장 가능. 지금은 no-op.
+  return;
 }
 
 function renderRelateAnalysis(data) {
@@ -4291,6 +4550,22 @@ window.onload = () => {
       e.target.style.background = '#eff6ff';
       e.target.style.borderColor = '#93c5fd';
       e.target.style.color = '#1d4ed8';
+      STATE.quarter = e.target.dataset.key === 'all' ? 'all' : Number(e.target.dataset.key);
+      refresh();
+    });
+  }
+  // 영업회의 발표 뷰 period-row wiring
+  const ysPr = document.getElementById('yearSelectPresentation');
+  if (ysPr) {
+    yearOpts.forEach(([v, label]) => { const o = document.createElement('option'); o.value = v; o.textContent = label; if(v === STATE.year) o.selected = true; ysPr.appendChild(o); });
+    ysPr.onchange = (e) => { const v = e.target.value; STATE.year = v === 'all' ? 'all' : Number(v); const ys = document.getElementById('yearSelect'); if (ys) ys.value = v; refresh(); };
+  }
+  const qtPr = document.getElementById('quarterTabsPresentation');
+  if (qtPr) {
+    qtPr.addEventListener('click', e => {
+      if(e.target.tagName !== 'BUTTON') return;
+      qtPr.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
       STATE.quarter = e.target.dataset.key === 'all' ? 'all' : Number(e.target.dataset.key);
       refresh();
     });
