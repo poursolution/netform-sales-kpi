@@ -2034,10 +2034,10 @@ function renderAssigneeModal(){
   m.classList.add('focus-modal');
 
   const tabs = [
-    { key: 'contract', label: '📊 계약',  count: r.conts.length },
-    { key: 'inquiry',  label: '📞 문의',  count: r.inqs.length },
-    { key: 'pt',       label: '🎤 PT',    count: r.pts.length },
-    { key: 'pipeline', label: '💼 파이프라인', count: r.pipes.length },
+    { key: 'contract', label: '계약',  count: r.conts.length },
+    { key: 'inquiry',  label: '문의',  count: r.inqs.length },
+    { key: 'pt',       label: 'PT',    count: r.pts.length },
+    { key: 'pipeline', label: '파이프라인', count: r.pipes.length },
   ];
   const tabsHtml = tabs.map(t => `
     <button class="focus-modal-tab ${tab === t.key ? 'active' : ''}" onclick="setAssigneeModalTab('${t.key}')">${t.label}<span class="cnt">${t.count}</span></button>
