@@ -876,6 +876,40 @@
   }
   .editor-field { display: flex; flex-direction: column; gap: 7px; }
   .editor-field.full { grid-column: 1 / -1; }
+  .editor-advanced {
+    grid-column: 1 / -1;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #FAFBFF;
+    padding: 12px 16px;
+  }
+  .editor-advanced > summary {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 850;
+    color: var(--ink-2);
+    list-style: none;
+    padding: 4px 0;
+    user-select: none;
+  }
+  .editor-advanced > summary::-webkit-details-marker { display: none; }
+  .editor-advanced > summary::before {
+    content: '▸';
+    display: inline-block;
+    margin-right: 8px;
+    color: var(--ink-3);
+    transition: transform 0.15s;
+  }
+  .editor-advanced[open] > summary::before { transform: rotate(90deg); }
+  .editor-advanced > summary:hover { color: var(--blue); }
+  .editor-advanced-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+  }
   .editor-label { font-size: 12px; font-weight: 850; color: var(--ink-2); }
   .editor-input,
   .editor-textarea,
@@ -1029,82 +1063,87 @@
         <label class="editor-label" for="kpiEditorUnit">단위</label>
         <input class="editor-input" id="kpiEditorUnit" placeholder="%, 건/월, 억" />
       </div>
-      <div class="editor-field">
-        <label class="editor-label" for="kpiEditorKind">KPI 운영 구분</label>
-        <select class="editor-select" id="kpiEditorKind">
-          <option value="required">필수 결과 KPI</option>
-          <option value="choice">선택 행동 KPI</option>
-          <option value="focus">분기 집중 KPI</option>
-          <option value="team">팀 KPI</option>
-        </select>
-      </div>
-      <div class="editor-field">
-        <label class="editor-label" for="kpiEditorCycle">측정 주기</label>
-        <select class="editor-select" id="kpiEditorCycle">
-          <option value="월간">월간</option>
-          <option value="분기">분기</option>
-          <option value="누적">누적</option>
-          <option value="연간">연간</option>
-        </select>
-      </div>
-      <div class="editor-field">
-        <label class="editor-label" for="kpiEditorSource">데이터 출처</label>
-        <select class="editor-select" id="kpiEditorSource">
-          <option value="문의시트">문의시트</option>
-          <option value="릴레잇">릴레잇</option>
-          <option value="메일">메일</option>
-          <option value="캘린더">캘린더</option>
-          <option value="수기">수기</option>
-          <option value="복합">복합</option>
-        </select>
-      </div>
-      <div class="editor-field">
-        <label class="editor-label" for="kpiEditorEvidence">증빙 수준</label>
-        <select class="editor-select" id="kpiEditorEvidence">
-          <option value="self">자기입력</option>
-          <option value="system">시스템증빙</option>
-          <option value="manager">관리자확인</option>
-          <option value="none">증빙없음</option>
-        </select>
-      </div>
-      <div class="editor-field">
-        <label class="editor-label" for="kpiEditorReviewer">검토자</label>
-        <input class="editor-input" id="kpiEditorReviewer" placeholder="송보람 / 백업 운영자" />
-      </div>
-      <div class="editor-field">
-        <label class="editor-label" for="kpiEditorStatus">상태</label>
-        <select class="editor-select" id="kpiEditorStatus">
-          <option value="입력전">입력전</option>
-          <option value="입력완료">입력완료</option>
-          <option value="검토필요">검토필요</option>
-          <option value="확정">확정</option>
-        </select>
-      </div>
-      <div class="editor-field">
-        <label class="editor-label" for="kpiEditorZeroPolicy">분모 0 처리</label>
-        <select class="editor-select" id="kpiEditorZeroPolicy">
-          <option value="N/A">N/A</option>
-          <option value="0%">0%</option>
-          <option value="100%">100%</option>
-          <option value="제외">제외</option>
-        </select>
-      </div>
-      <div class="editor-field full">
-        <label class="editor-label" for="kpiEditorProof">증빙 기준</label>
-        <textarea class="editor-textarea" id="kpiEditorProof" placeholder="예: 캘린더 일정 + 사후 미팅 메모, 메일 발송 기록, PT 자료/회의록"></textarea>
-      </div>
-      <div class="editor-field" id="kpiEditorOwnerProposalField">
-        <label class="editor-label" for="kpiEditorOwnerProposal">담당자 제안 KPI</label>
-        <input class="editor-input" id="kpiEditorOwnerProposal" />
-      </div>
-      <div class="editor-field" id="kpiEditorAdminProposalField">
-        <label class="editor-label" for="kpiEditorAdminProposal">관리자 제안 KPI</label>
-        <input class="editor-input" id="kpiEditorAdminProposal" />
-      </div>
-      <div class="editor-field full" id="kpiEditorAgreementField">
-        <label class="editor-label" for="kpiEditorAgreement">최종 합의 사유</label>
-        <textarea class="editor-textarea" id="kpiEditorAgreement" placeholder="이번 분기 집중 과제로 선택한 이유와 기대 행동"></textarea>
-      </div>
+      <details class="editor-advanced">
+        <summary>고급 옵션 (운영 분류·데이터 출처·증빙·합의) — 필요할 때만 펼쳐서 입력</summary>
+        <div class="editor-advanced-body">
+          <div class="editor-field">
+            <label class="editor-label" for="kpiEditorKind">KPI 운영 구분</label>
+            <select class="editor-select" id="kpiEditorKind">
+              <option value="required">필수 결과 KPI</option>
+              <option value="choice">선택 행동 KPI</option>
+              <option value="focus">분기 집중 KPI</option>
+              <option value="team">팀 KPI</option>
+            </select>
+          </div>
+          <div class="editor-field">
+            <label class="editor-label" for="kpiEditorCycle">측정 주기</label>
+            <select class="editor-select" id="kpiEditorCycle">
+              <option value="월간">월간</option>
+              <option value="분기">분기</option>
+              <option value="누적">누적</option>
+              <option value="연간">연간</option>
+            </select>
+          </div>
+          <div class="editor-field">
+            <label class="editor-label" for="kpiEditorSource">데이터 출처</label>
+            <select class="editor-select" id="kpiEditorSource">
+              <option value="문의시트">문의시트</option>
+              <option value="릴레잇">릴레잇</option>
+              <option value="메일">메일</option>
+              <option value="캘린더">캘린더</option>
+              <option value="수기">수기</option>
+              <option value="복합">복합</option>
+            </select>
+          </div>
+          <div class="editor-field">
+            <label class="editor-label" for="kpiEditorEvidence">증빙 수준</label>
+            <select class="editor-select" id="kpiEditorEvidence">
+              <option value="self">자기입력</option>
+              <option value="system">시스템증빙</option>
+              <option value="manager">관리자확인</option>
+              <option value="none">증빙없음</option>
+            </select>
+          </div>
+          <div class="editor-field">
+            <label class="editor-label" for="kpiEditorReviewer">검토자</label>
+            <input class="editor-input" id="kpiEditorReviewer" placeholder="송보람 / 백업 운영자" />
+          </div>
+          <div class="editor-field">
+            <label class="editor-label" for="kpiEditorStatus">상태</label>
+            <select class="editor-select" id="kpiEditorStatus">
+              <option value="입력전">입력전</option>
+              <option value="입력완료">입력완료</option>
+              <option value="검토필요">검토필요</option>
+              <option value="확정">확정</option>
+            </select>
+          </div>
+          <div class="editor-field">
+            <label class="editor-label" for="kpiEditorZeroPolicy">분모 0 처리</label>
+            <select class="editor-select" id="kpiEditorZeroPolicy">
+              <option value="N/A">N/A</option>
+              <option value="0%">0%</option>
+              <option value="100%">100%</option>
+              <option value="제외">제외</option>
+            </select>
+          </div>
+          <div class="editor-field full">
+            <label class="editor-label" for="kpiEditorProof">증빙 기준</label>
+            <textarea class="editor-textarea" id="kpiEditorProof" placeholder="예: 캘린더 일정 + 사후 미팅 메모, 메일 발송 기록, PT 자료/회의록"></textarea>
+          </div>
+          <div class="editor-field" id="kpiEditorOwnerProposalField">
+            <label class="editor-label" for="kpiEditorOwnerProposal">담당자 제안 KPI</label>
+            <input class="editor-input" id="kpiEditorOwnerProposal" />
+          </div>
+          <div class="editor-field" id="kpiEditorAdminProposalField">
+            <label class="editor-label" for="kpiEditorAdminProposal">관리자 제안 KPI</label>
+            <input class="editor-input" id="kpiEditorAdminProposal" />
+          </div>
+          <div class="editor-field full" id="kpiEditorAgreementField">
+            <label class="editor-label" for="kpiEditorAgreement">최종 합의 사유</label>
+            <textarea class="editor-textarea" id="kpiEditorAgreement" placeholder="이번 분기 집중 과제로 선택한 이유와 기대 행동"></textarea>
+          </div>
+        </div>
+      </details>
     </div>
     <div class="kpi-editor-actions">
       <button type="button" class="btn" onclick="closeKpiEditor()">취소</button>
@@ -2823,7 +2862,8 @@ renderKpiPool();
 window.addEventListener('storage', event => {
   if (event.key === SALES_LIVE_KPI_KEY) syncSalesLiveKpis({ render: true });
 });
-setInterval(() => syncSalesLiveKpis({ render: true }), 5000);
+// 5초 자동 폴링 비활성화 — 다른 탭의 storage 이벤트로만 동기화 (입력 중 깜빡임 방지)
+// setInterval(() => syncSalesLiveKpis({ render: true }), 5000);
 </script>
 </body>
 </html>
