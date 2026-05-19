@@ -189,70 +189,9 @@ async function buildRelatePipeline(env) {
     orgCache[orgId] = null; // 실패 표시 — pipeline 빌더에서 entry.key 폴백
   });
 
-  // 영업기회별 노트 fetch — 여러 endpoint 패턴 시도 + 진단 정보 수집
+  // 노트는 별도 endpoint(/relate/notes)에서 ondemand fetch — Cloudflare subrequest 한도(50/호출) 회피
   const allNotes = [];
-  const noteDiag = { tried: {}, errors: [], firstSuccess: null, emptyCount: 0 };
-  const NOTE_ENDPOINT_PATTERNS = [
-    (e) => `/lists/${e._listId}/entries/${e.id}/notes`,
-    (e) => `/entries/${e.id}/notes`,
-    (e) => `/notes?entryable_type=Entry&entryable_id=${e.id}`,
-    (e) => `/notes?entry_id=${e.id}`,
-  ];
-  // Phase 1: 첫 entry 로 어떤 패턴이 동작하는지 탐색
-  let workingPatternIdx = 0;
-  if (allEntries.length > 0) {
-    const probe = allEntries[0];
-    for (let i = 0; i < NOTE_ENDPOINT_PATTERNS.length; i++) {
-      const path = NOTE_ENDPOINT_PATTERNS[i](probe);
-      noteDiag.tried[path] = null;
-      try {
-        const r = await relateFetch(path, apiKey);
-        const data = Array.isArray(r?.data) ? r.data : (Array.isArray(r) ? r : null);
-        noteDiag.tried[path] = data ? `ok (${data.length})` : 'no data field';
-        if (data) {
-          workingPatternIdx = i;
-          noteDiag.firstSuccess = path;
-          break;
-        }
-      } catch (err) {
-        noteDiag.tried[path] = `error: ${String(err?.message || err).slice(0, 80)}`;
-      }
-    }
-  }
-  const noteEndpointFn = NOTE_ENDPOINT_PATTERNS[workingPatternIdx];
-  // Phase 2: 동작 확인된 패턴으로 전체 entries 노트 수집
-  await parallelLimit(allEntries, 4, async entry => {
-    if (!entry._listId || !entry.id) return;
-    try {
-      const notes = await relateFetchAll(noteEndpointFn(entry), apiKey);
-      if (notes.length === 0) noteDiag.emptyCount++;
-      notes.forEach(note => {
-        const rawContent = note.content || note.body || note.text || note.note || "";
-        // HTML 태그 제거 + 줄바꿈 보존
-        const content = String(rawContent)
-          .replace(/<br\s*\/?>/gi, "\n")
-          .replace(/<\/(p|div|li)>/gi, "\n")
-          .replace(/<[^>]+>/g, "")
-          .replace(/&nbsp;/g, " ")
-          .replace(/&amp;/g, "&")
-          .replace(/&lt;/g, "<")
-          .replace(/&gt;/g, ">")
-          .trim();
-        if (!content) return;
-        const at = note.created_at || note.updated_at || "";
-        allNotes.push({
-          entryId: String(entry.id),
-          date: at ? at.split("T")[0] : "",
-          time: at ? (at.split("T")[1] || "").slice(0, 5) : "",
-          content,
-          author: note.user?.name || note.user?.email || note.author || "",
-        });
-      });
-    } catch (err) {
-      if (noteDiag.errors.length < 5) noteDiag.errors.push({ entryId: String(entry.id), err: String(err?.message || err).slice(0, 120) });
-    }
-  });
-  allNotes.sort((a, b) => String(b.date + " " + (b.time || "")).localeCompare(String(a.date + " " + (a.time || ""))));
+  const noteDiag = { mode: 'ondemand-only', message: '/relate/notes?entryId=X&listId=Y 로 카드 펼침 시 개별 fetch' };
 
   const today = new Date().toISOString().split("T")[0];
   // 가능한 모든 이름 후보 필드를 순회 — 비어있지 않은 첫 값을 반환
@@ -288,6 +227,7 @@ async function buildRelatePipeline(env) {
     const createdDate = entry.created_at ? entry.created_at.split("T")[0] : updatedDate;
     return {
       entryId: String(entry.id),
+      listId: String(entry._listId || ""),
       assigneeName: entry.assignee?.name || entry.assignee?.email || "미정",
       stage: mapStatusToStage(statusName, statusType),
       orgName,
@@ -322,6 +262,62 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === "/" || url.pathname === "/health") {
       return json({ ok: true, service: "netform-relate-proxy" }, 200, request, env);
+    }
+
+    // 노트 ondemand fetch: /relate/notes?entryId=X&listId=Y
+    if (url.pathname === "/relate/notes") {
+      const entryId = url.searchParams.get("entryId");
+      const listId = url.searchParams.get("listId");
+      if (!entryId) return json({ ok: false, error: "entryId required" }, 400, request, env);
+      if (!env.RELATE_API_KEY) return json({ ok: false, error: "RELATE_API_KEY missing" }, 500, request, env);
+      const candidates = [
+        listId ? `/lists/${listId}/entries/${entryId}/notes` : null,
+        `/entries/${entryId}/notes`,
+        `/notes?entryable_type=Entry&entryable_id=${entryId}`,
+        `/notes?entry_id=${entryId}`,
+      ].filter(Boolean);
+      let notes = null;
+      let usedPath = null;
+      let lastErr = null;
+      for (const path of candidates) {
+        try {
+          const r = await relateFetchAll(path, env.RELATE_API_KEY);
+          if (Array.isArray(r)) {
+            notes = r;
+            usedPath = path;
+            break;
+          }
+        } catch (err) {
+          lastErr = String(err?.message || err).slice(0, 200);
+        }
+      }
+      if (!notes) {
+        return json({ ok: false, entryId, error: lastErr || "all endpoints failed", tried: candidates }, 502, request, env);
+      }
+      const cleaned = notes.map(note => {
+        const rawContent = note.content || note.body || note.text || note.note || "";
+        const content = String(rawContent)
+          .replace(/<br\s*\/?>/gi, "\n")
+          .replace(/<\/(p|div|li)>/gi, "\n")
+          .replace(/<[^>]+>/g, "")
+          .replace(/&nbsp;/g, " ")
+          .replace(/&amp;/g, "&")
+          .replace(/&lt;/g, "<")
+          .replace(/&gt;/g, ">")
+          .trim();
+        const at = note.created_at || note.updated_at || "";
+        return {
+          entryId: String(entryId),
+          date: at ? at.split("T")[0] : "",
+          time: at ? (at.split("T")[1] || "").slice(0, 5) : "",
+          content,
+          author: note.user?.name || note.user?.email || note.author || "",
+        };
+      }).filter(n => n.content);
+      cleaned.sort((a, b) => String(b.date + " " + (b.time || "")).localeCompare(String(a.date + " " + (a.time || ""))));
+      return json({ ok: true, entryId, source: usedPath, count: cleaned.length, notes: cleaned }, 200, request, env, {
+        "Cache-Control": "public, max-age=120",
+      });
     }
 
     if (url.pathname !== "/relate/pipeline") {

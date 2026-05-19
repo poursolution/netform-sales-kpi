@@ -2525,20 +2525,45 @@ function renderPresentationView() {
 let PRES_EXPANDED = new Set();
 function togglePresDeal(dealId) {
   if (PRES_EXPANDED.has(dealId)) PRES_EXPANDED.delete(dealId);
-  else PRES_EXPANDED.add(dealId);
+  else {
+    PRES_EXPANDED.add(dealId);
+    // 펼침 시 노트 ondemand fetch (Cloudflare subrequest 한도 우회)
+    fetchOndemandNotesForDeal(dealId);
+  }
   renderPresentationView();
 }
 
-// Relate 노트 best-effort fetch — entries 가져온 뒤 각 entry 의 노트를 추가로 호출
-// 실패해도 PIPELINE 기반 타임라인은 동작
-async function fetchRelateNotesBestEffort() {
-  // Worker proxy 또는 API key 가 있을 때만 시도
-  const cfg = getRelateConfig();
-  if (!cfg.apiKey && !cfg.proxyUrl) return;
-  // 일단 PIPELINE 의 영업기회 ID 가 있어야 노트 fetch 가능 — 현재 PIPELINE 변환에서 entry ID 를 안 보관 중
-  // 향후 worker 가 노트를 함께 내려주도록 확장 가능. 지금은 no-op.
-  return;
+const PRES_NOTES_LOADING = new Set();
+const PRES_NOTES_FETCHED = new Set();
+async function fetchOndemandNotesForDeal(dealId) {
+  // dealId 가 entryId 와 일치하지 않을 수 있어 PIPELINE 에서 찾음
+  const pipe = PIPELINE.find(p => (p.entryId && (p.entryId === dealId || p.entryId + '|' + (p.assigneeName || '') === dealId)) ||
+                                  p.orgName === dealId);
+  if (!pipe || !pipe.entryId) return;
+  if (PRES_NOTES_FETCHED.has(pipe.entryId) || PRES_NOTES_LOADING.has(pipe.entryId)) return;
+  PRES_NOTES_LOADING.add(pipe.entryId);
+  try {
+    const cfg = getRelateConfig();
+    if (!cfg.proxyUrl) return;
+    const proxy = cfg.proxyUrl.replace(/\/+$/, '');
+    const q = new URLSearchParams({ entryId: pipe.entryId });
+    if (pipe.listId) q.set('listId', pipe.listId);
+    const res = await fetch(`${proxy}/relate/notes?${q.toString()}`, { headers: { 'Accept': 'application/json' } });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.ok || !Array.isArray(data.notes)) return;
+    // 기존 RELATE_NOTES 에서 같은 entryId 노트 제거 후 새로 추가
+    RELATE_NOTES = RELATE_NOTES.filter(n => n.entryId !== pipe.entryId).concat(data.notes);
+    PRES_NOTES_FETCHED.add(pipe.entryId);
+    renderPresentationView();
+  } catch (err) {
+    console.warn('ondemand 노트 fetch 실패:', err.message);
+  } finally {
+    PRES_NOTES_LOADING.delete(pipe.entryId);
+  }
 }
+
+async function fetchRelateNotesBestEffort() { /* no-op — ondemand 로 대체 */ }
 
 function renderRelateAnalysis(data) {
   const t = data.totals;
@@ -3460,6 +3485,7 @@ async function fetchRelateDealsFromProxy(proxyUrl, isAuto = false) {
 
   PIPELINE = payload.pipeline.map(item => ({
     entryId: String(item.entryId || item.id || ''),
+    listId: String(item.listId || ''),
     assigneeName: item.assigneeName || '미정',
     stage: item.stage || '영업·관계',
     orgName: item.orgName || item.name || '미정',
