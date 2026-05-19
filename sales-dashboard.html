@@ -2412,7 +2412,7 @@ function printPresentationSheet() {
   }
   const w = window.open('', '_blank');
   if (!w) { alert('팝업이 차단되었습니다. 브라우저 팝업 허용 후 다시 시도해주세요.'); return; }
-  // </script> 가 부모 페이지 파서를 끊지 않도록 string 으로 별도 작성
+  // closing script tag 토큰이 부모 페이지 파서를 끊지 않도록 string 분할로 작성
   const printScript = '<' + 'script>setTimeout(function(){window.focus();window.print();},600);<' + '/script>';
   const headHtml = `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
 <title>${presenter} 영업회의 사전 발표자료 — ${cutoffMeta}</title>
