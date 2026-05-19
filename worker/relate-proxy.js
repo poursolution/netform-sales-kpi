@@ -189,12 +189,43 @@ async function buildRelatePipeline(env) {
     orgCache[orgId] = null; // 실패 표시 — pipeline 빌더에서 entry.key 폴백
   });
 
-  // 영업기회별 노트 fetch — 동시 4개, 실패 시 빈 배열
+  // 영업기회별 노트 fetch — 여러 endpoint 패턴 시도 + 진단 정보 수집
   const allNotes = [];
+  const noteDiag = { tried: {}, errors: [], firstSuccess: null, emptyCount: 0 };
+  const NOTE_ENDPOINT_PATTERNS = [
+    (e) => `/lists/${e._listId}/entries/${e.id}/notes`,
+    (e) => `/entries/${e.id}/notes`,
+    (e) => `/notes?entryable_type=Entry&entryable_id=${e.id}`,
+    (e) => `/notes?entry_id=${e.id}`,
+  ];
+  // Phase 1: 첫 entry 로 어떤 패턴이 동작하는지 탐색
+  let workingPatternIdx = 0;
+  if (allEntries.length > 0) {
+    const probe = allEntries[0];
+    for (let i = 0; i < NOTE_ENDPOINT_PATTERNS.length; i++) {
+      const path = NOTE_ENDPOINT_PATTERNS[i](probe);
+      noteDiag.tried[path] = null;
+      try {
+        const r = await relateFetch(path, apiKey);
+        const data = Array.isArray(r?.data) ? r.data : (Array.isArray(r) ? r : null);
+        noteDiag.tried[path] = data ? `ok (${data.length})` : 'no data field';
+        if (data) {
+          workingPatternIdx = i;
+          noteDiag.firstSuccess = path;
+          break;
+        }
+      } catch (err) {
+        noteDiag.tried[path] = `error: ${String(err?.message || err).slice(0, 80)}`;
+      }
+    }
+  }
+  const noteEndpointFn = NOTE_ENDPOINT_PATTERNS[workingPatternIdx];
+  // Phase 2: 동작 확인된 패턴으로 전체 entries 노트 수집
   await parallelLimit(allEntries, 4, async entry => {
     if (!entry._listId || !entry.id) return;
     try {
-      const notes = await relateFetchAll(`/lists/${entry._listId}/entries/${entry.id}/notes`, apiKey);
+      const notes = await relateFetchAll(noteEndpointFn(entry), apiKey);
+      if (notes.length === 0) noteDiag.emptyCount++;
       notes.forEach(note => {
         const rawContent = note.content || note.body || note.text || note.note || "";
         // HTML 태그 제거 + 줄바꿈 보존
@@ -217,7 +248,9 @@ async function buildRelatePipeline(env) {
           author: note.user?.name || note.user?.email || note.author || "",
         });
       });
-    } catch {}
+    } catch (err) {
+      if (noteDiag.errors.length < 5) noteDiag.errors.push({ entryId: String(entry.id), err: String(err?.message || err).slice(0, 120) });
+    }
   });
   allNotes.sort((a, b) => String(b.date + " " + (b.time || "")).localeCompare(String(a.date + " " + (a.time || ""))));
 
@@ -274,6 +307,7 @@ async function buildRelatePipeline(env) {
     entryCount: pipeline.length,
     organizationCount: neededOrgIds.length,
     noteCount: allNotes.length,
+    noteDiag,
     pipeline,
     notes: allNotes,
   };
