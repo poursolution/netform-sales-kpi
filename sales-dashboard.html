@@ -1002,7 +1002,9 @@
   .pres-summary-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
   .pres-summary-title{ font-size:16px; font-weight:850; color:#0a0e1a; letter-spacing:-0.3px; }
   .pres-summary-sub{ font-size:12px; color:#6b7280; font-weight:600; }
-  .pres-metrics{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+  .pres-metrics{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; }
+  @media (max-width:1100px){ .pres-metrics{ grid-template-columns:repeat(3,1fr); } }
+  @media (max-width:700px){ .pres-metrics{ grid-template-columns:repeat(2,1fr); } }
   .pres-metric{
     border:1px solid var(--border); border-radius:10px; padding:12px 14px; background:#fafbfc;
   }
@@ -1025,6 +1027,7 @@
   }
   .pres-stage-label.contract{ background:#e0e7ff; color:#3730a3; }
   .pres-stage-label.sales{ background:#fef3c7; color:#92400e; }
+  .pres-stage-label.won{ background:#d1fae5; color:#065f46; }
   .pres-deal-list{ display:grid; grid-template-columns:1fr; gap:6px; }
   .pres-deal{
     border:1px solid var(--border); border-radius:8px; background:#fafbfc;
@@ -2405,15 +2408,14 @@ function renderPresentationView() {
   }
   // 발표자 탭 — 회의일 cutoff 기준으로 카운트
   const cutoffFilter = (arr, field) => arr.filter(x => (x[field] || '') <= PRES_CUTOFF);
+  const isPresLost = (p) => /수주.*실패|패배|탈락|낙찰.*실패|Closed.*Lost|Bad.*fit|부적합/i.test(p.stage || '');
+  const isPresWon = (p) => /수주.*성공|Closed.*Won/i.test(p.stage || '');
   tabsEl.innerHTML = PRES_PRESENTERS.map(name => {
     const isMgmt = name === '황윤선';
     const pipes = cutoffFilter(PIPELINE, 'lastUpdated').filter(p => p.assigneeName === name);
-    // 진행 중 영업기회만 카운트 (Closed Won/Lost·Bad fit 제외) — 발표 화면의 "진행 중 영업 흐름" 건수와 일치
-    const activePipes = pipes.filter(p => {
-      const g = getRelateStageGroup(p.stage);
-      return g === 'contract' || g === 'sales';
-    });
-    return `<button class="pres-presenter-tab ${PRES_SELECTED === name ? 'active' : ''} ${isMgmt ? 'mgmt' : ''}" onclick="selectPresenter('${escapeAttr(name)}')">${escapeAttr(name)}${isMgmt ? ' <span class="badge">관리자</span>' : ''} <span class="badge" title="진행 중 ${activePipes.length}건 / 전체 ${pipes.length}건">${activePipes.length}</span></button>`;
+    // 수주실패(Bad fit/Closed Lost)만 제외, 수주성공(Closed Won)은 포함 — 발표 화면 표시와 일치
+    const shownPipes = pipes.filter(p => !isPresLost(p));
+    return `<button class="pres-presenter-tab ${PRES_SELECTED === name ? 'active' : ''} ${isMgmt ? 'mgmt' : ''}" onclick="selectPresenter('${escapeAttr(name)}')">${escapeAttr(name)}${isMgmt ? ' <span class="badge">관리자</span>' : ''} <span class="badge" title="표시 ${shownPipes.length}건 (수주성공 포함) / 수주실패 제외 / 전체 ${pipes.length}건">${shownPipes.length}</span></button>`;
   }).join('');
 
   // 기간 메타
@@ -2433,15 +2435,22 @@ function renderPresentationView() {
 
   const name = PRES_SELECTED;
   const pipes = cutoffFilter(PIPELINE, 'lastUpdated').filter(p => p.assigneeName === name);
-  const stageGroups = { contract: [], sales: [], lost: [], other: [] };
+  // 발표 화면: 수주성공(won)은 별도 그룹으로 분리 표시, 수주실패(lost)는 완전 제외
+  const stageGroups = { sales: [], contract: [], won: [], lost: [], other: [] };
   pipes.forEach(p => {
+    if (isPresLost(p)) { stageGroups.lost.push(p); return; }
+    if (isPresWon(p)) { stageGroups.won.push(p); return; }
     const g = getRelateStageGroup(p.stage);
-    if (stageGroups[g]) stageGroups[g].push(p);
+    if (g === 'contract') stageGroups.contract.push(p);
+    else if (g === 'sales') stageGroups.sales.push(p);
     else stageGroups.other.push(p);
   });
-  const totalAmt = pipes.reduce((s, p) => s + (p.estAmount || 0), 0);
+  // 표시 대상 (lost 제외) 합산
+  const shownPipes = pipes.filter(p => !isPresLost(p));
+  const totalAmt = shownPipes.reduce((s, p) => s + (p.estAmount || 0), 0);
   const contractAmt = stageGroups.contract.reduce((s, p) => s + (p.estAmount || 0), 0);
   const salesAmt = stageGroups.sales.reduce((s, p) => s + (p.estAmount || 0), 0);
+  const wonAmt = stageGroups.won.reduce((s, p) => s + (p.estAmount || 0), 0);
 
   // 요약 카드
   const summaryEl = document.getElementById('presSummary');
@@ -2456,8 +2465,8 @@ function renderPresentationView() {
       <div class="pres-metrics">
         <div class="pres-metric">
           <div class="lbl">담당 영업기회</div>
-          <div class="val">${pipes.length}건</div>
-          <div class="sub">패배·실패 제외</div>
+          <div class="val">${shownPipes.length}건</div>
+          <div class="sub">수주실패 제외 · 수주성공 포함</div>
         </div>
         <div class="pres-metric">
           <div class="lbl">예상 총액</div>
@@ -2473,6 +2482,11 @@ function renderPresentationView() {
           <div class="lbl">계약·시공 단계</div>
           <div class="val">${stageGroups.contract.length}건</div>
           <div class="sub">${fmtMoney(contractAmt)}</div>
+        </div>
+        <div class="pres-metric">
+          <div class="lbl">수주 성공</div>
+          <div class="val">${stageGroups.won.length}건</div>
+          <div class="sub">${fmtMoney(wonAmt)}</div>
         </div>
       </div>
     </div>
@@ -2535,7 +2549,7 @@ function renderPresentationView() {
 
   flowEl.innerHTML = `
     <div class="pres-flow-section">
-      <div class="pres-section-title">진행 중 영업 흐름 — 카드 클릭 시 노트·활동 펼치기 <span class="ct">${pipes.length}건</span></div>
+      <div class="pres-section-title">진행 중 영업 흐름 — 카드 클릭 시 노트·활동 펼치기 <span class="ct">${shownPipes.length}건 (수주실패 제외)</span></div>
       <div class="pres-stage-group">
         <div class="pres-stage-label sales">영업·관계 단계 · ${stageGroups.sales.length}건</div>
         ${renderDealList(stageGroups.sales)}
@@ -2544,6 +2558,11 @@ function renderPresentationView() {
         <div class="pres-stage-label contract">계약·시공 단계 · ${stageGroups.contract.length}건</div>
         ${renderDealList(stageGroups.contract)}
       </div>
+      ${stageGroups.won.length ? `
+      <div class="pres-stage-group">
+        <div class="pres-stage-label won">수주 성공 · ${stageGroups.won.length}건</div>
+        ${renderDealList(stageGroups.won)}
+      </div>` : ''}
     </div>
   `;
 
