@@ -265,6 +265,21 @@ export default {
       return json({ ok: true, service: "netform-relate-proxy" }, 200, request, env);
     }
 
+    // 전체 organization 목록 fetch — 클라이언트에서 organizationId → name 매핑
+    // (개별 /organizations/{id} 호출은 subrequest 한도(50) 때문에 pipeline 안에서 모두 못 함)
+    if (url.pathname === "/relate/organizations") {
+      if (!env.RELATE_API_KEY) return json({ ok: false, error: "RELATE_API_KEY missing" }, 500, request, env);
+      try {
+        const raw = await relateFetchAll('/organizations', env.RELATE_API_KEY);
+        const orgs = raw.map(o => ({ id: String(o.id || ""), name: o.name || o.title || "" })).filter(o => o.id);
+        return json({ ok: true, count: orgs.length, orgs }, 200, request, env, {
+          "Cache-Control": "public, max-age=600",
+        });
+      } catch (err) {
+        return json({ ok: false, error: String(err?.message || err).slice(0, 300) }, 502, request, env);
+      }
+    }
+
     // 전체 노트 fetch — orgId 별 그룹화는 클라이언트에서 (Relate API 의 /notes 는 organization_id 로 묶임)
     if (url.pathname === "/relate/notes") {
       if (!env.RELATE_API_KEY) return json({ ok: false, error: "RELATE_API_KEY missing" }, 500, request, env);
