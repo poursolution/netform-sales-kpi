@@ -228,6 +228,7 @@ async function buildRelatePipeline(env) {
     return {
       entryId: String(entry.id),
       listId: String(entry._listId || ""),
+      organizationId: entry.entryable_type === "Organization" ? String(entry.entryable_id || "") : "",
       assigneeName: entry.assignee?.name || entry.assignee?.email || "미정",
       stage: mapStatusToStage(statusName, statusType),
       orgName,
@@ -264,60 +265,39 @@ export default {
       return json({ ok: true, service: "netform-relate-proxy" }, 200, request, env);
     }
 
-    // 노트 ondemand fetch: /relate/notes?entryId=X&listId=Y
+    // 전체 노트 fetch — orgId 별 그룹화는 클라이언트에서 (Relate API 의 /notes 는 organization_id 로 묶임)
     if (url.pathname === "/relate/notes") {
-      const entryId = url.searchParams.get("entryId");
-      const listId = url.searchParams.get("listId");
-      if (!entryId) return json({ ok: false, error: "entryId required" }, 400, request, env);
       if (!env.RELATE_API_KEY) return json({ ok: false, error: "RELATE_API_KEY missing" }, 500, request, env);
-      const candidates = [
-        listId ? `/lists/${listId}/entries/${entryId}/notes` : null,
-        `/entries/${entryId}/notes`,
-        `/notes?entryable_type=Entry&entryable_id=${entryId}`,
-        `/notes?entry_id=${entryId}`,
-      ].filter(Boolean);
-      let notes = null;
-      let usedPath = null;
-      let lastErr = null;
-      for (const path of candidates) {
-        try {
-          const r = await relateFetchAll(path, env.RELATE_API_KEY);
-          if (Array.isArray(r)) {
-            notes = r;
-            usedPath = path;
-            break;
-          }
-        } catch (err) {
-          lastErr = String(err?.message || err).slice(0, 200);
-        }
+      try {
+        const raw = await relateFetchAll('/notes', env.RELATE_API_KEY);
+        const cleaned = raw.map(note => {
+          const rawContent = note.body || note.content || note.text || note.note || "";
+          const content = String(rawContent)
+            .replace(/<br\s*\/?>/gi, "\n")
+            .replace(/<\/(p|div|li)>/gi, "\n")
+            .replace(/<[^>]+>/g, "")
+            .replace(/&nbsp;/g, " ")
+            .replace(/&amp;/g, "&")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .trim();
+          const at = note.posted_at || note.created_at || note.updated_at || "";
+          return {
+            id: String(note.id || ""),
+            organizationId: String(note.organization_id || ""),
+            date: at ? at.split("T")[0] : "",
+            time: at ? (at.split("T")[1] || "").slice(0, 5) : "",
+            content,
+            author: note.user?.name || note.user?.email || note.author || "",
+          };
+        }).filter(n => n.content && n.organizationId);
+        cleaned.sort((a, b) => String(b.date + " " + (b.time || "")).localeCompare(String(a.date + " " + (a.time || ""))));
+        return json({ ok: true, count: cleaned.length, notes: cleaned }, 200, request, env, {
+          "Cache-Control": "public, max-age=300",
+        });
+      } catch (err) {
+        return json({ ok: false, error: String(err?.message || err).slice(0, 300) }, 502, request, env);
       }
-      if (!notes) {
-        return json({ ok: false, entryId, error: lastErr || "all endpoints failed", tried: candidates }, 502, request, env);
-      }
-      const cleaned = notes.map(note => {
-        const rawContent = note.content || note.body || note.text || note.note || "";
-        const content = String(rawContent)
-          .replace(/<br\s*\/?>/gi, "\n")
-          .replace(/<\/(p|div|li)>/gi, "\n")
-          .replace(/<[^>]+>/g, "")
-          .replace(/&nbsp;/g, " ")
-          .replace(/&amp;/g, "&")
-          .replace(/&lt;/g, "<")
-          .replace(/&gt;/g, ">")
-          .trim();
-        const at = note.created_at || note.updated_at || "";
-        return {
-          entryId: String(entryId),
-          date: at ? at.split("T")[0] : "",
-          time: at ? (at.split("T")[1] || "").slice(0, 5) : "",
-          content,
-          author: note.user?.name || note.user?.email || note.author || "",
-        };
-      }).filter(n => n.content);
-      cleaned.sort((a, b) => String(b.date + " " + (b.time || "")).localeCompare(String(a.date + " " + (a.time || ""))));
-      return json({ ok: true, entryId, source: usedPath, count: cleaned.length, notes: cleaned }, 200, request, env, {
-        "Cache-Control": "public, max-age=120",
-      });
     }
 
     if (url.pathname !== "/relate/pipeline") {

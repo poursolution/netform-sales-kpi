@@ -2457,8 +2457,8 @@ function renderPresentationView() {
     const events = [];
     if (p.createdDate && p.createdDate <= PRES_CUTOFF) events.push({ date: p.createdDate, type: 'create', body: `영업기회 생성 · 예상 ${fmtMoney(p.estAmount || 0)}` });
     if (p.lastUpdated && p.lastUpdated !== p.createdDate && p.lastUpdated <= PRES_CUTOFF) events.push({ date: p.lastUpdated, type: 'update', body: `최근 업데이트 · 현재 단계: ${p.stage || '-'}` });
-    if (p.entryId) {
-      RELATE_NOTES.filter(n => n.entryId === p.entryId && (n.date || '') <= PRES_CUTOFF).forEach(n => {
+    if (p.organizationId) {
+      RELATE_NOTES.filter(n => n.organizationId === p.organizationId && (n.date || '') <= PRES_CUTOFF).forEach(n => {
         events.push({ date: n.date, time: n.time, type: 'note', body: n.content, author: n.author });
       });
     }
@@ -2525,45 +2525,39 @@ function renderPresentationView() {
 let PRES_EXPANDED = new Set();
 function togglePresDeal(dealId) {
   if (PRES_EXPANDED.has(dealId)) PRES_EXPANDED.delete(dealId);
-  else {
-    PRES_EXPANDED.add(dealId);
-    // 펼침 시 노트 ondemand fetch (Cloudflare subrequest 한도 우회)
-    fetchOndemandNotesForDeal(dealId);
-  }
+  else PRES_EXPANDED.add(dealId);
   renderPresentationView();
 }
 
-const PRES_NOTES_LOADING = new Set();
-const PRES_NOTES_FETCHED = new Set();
-async function fetchOndemandNotesForDeal(dealId) {
-  // dealId 가 entryId 와 일치하지 않을 수 있어 PIPELINE 에서 찾음
-  const pipe = PIPELINE.find(p => (p.entryId && (p.entryId === dealId || p.entryId + '|' + (p.assigneeName || '') === dealId)) ||
-                                  p.orgName === dealId);
-  if (!pipe || !pipe.entryId) return;
-  if (PRES_NOTES_FETCHED.has(pipe.entryId) || PRES_NOTES_LOADING.has(pipe.entryId)) return;
-  PRES_NOTES_LOADING.add(pipe.entryId);
+// 전체 Relate 노트(orgId 별) — fetchRelateDealsFromProxy 가 호출
+let RELATE_NOTES_LOADED = false;
+async function fetchAllRelateNotes(proxyUrlRaw) {
+  const proxy = String(proxyUrlRaw || '').replace(/\/+$/, '');
+  if (!proxy) return;
   try {
-    const cfg = getRelateConfig();
-    if (!cfg.proxyUrl) return;
-    const proxy = cfg.proxyUrl.replace(/\/+$/, '');
-    const q = new URLSearchParams({ entryId: pipe.entryId });
-    if (pipe.listId) q.set('listId', pipe.listId);
-    const res = await fetch(`${proxy}/relate/notes?${q.toString()}`, { headers: { 'Accept': 'application/json' } });
-    if (!res.ok) return;
+    const res = await fetch(`${proxy}/relate/notes`, { headers: { 'Accept': 'application/json' } });
+    if (!res.ok) {
+      console.warn('전체 노트 fetch 실패:', res.status);
+      return;
+    }
     const data = await res.json();
     if (!data.ok || !Array.isArray(data.notes)) return;
-    // 기존 RELATE_NOTES 에서 같은 entryId 노트 제거 후 새로 추가
-    RELATE_NOTES = RELATE_NOTES.filter(n => n.entryId !== pipe.entryId).concat(data.notes);
-    PRES_NOTES_FETCHED.add(pipe.entryId);
-    renderPresentationView();
+    // 노트는 organization 기준 → pipe 의 organizationId 와 매칭
+    RELATE_NOTES = data.notes.map(n => ({
+      organizationId: n.organizationId,
+      date: n.date,
+      time: n.time,
+      content: n.content,
+      author: n.author,
+    }));
+    RELATE_NOTES_LOADED = true;
+    if (currentView === 'presentation') renderPresentationView();
   } catch (err) {
-    console.warn('ondemand 노트 fetch 실패:', err.message);
-  } finally {
-    PRES_NOTES_LOADING.delete(pipe.entryId);
+    console.warn('전체 노트 fetch 오류:', err.message);
   }
 }
 
-async function fetchRelateNotesBestEffort() { /* no-op — ondemand 로 대체 */ }
+async function fetchRelateNotesBestEffort() { /* no-op — fetchAllRelateNotes 로 대체 */ }
 
 function renderRelateAnalysis(data) {
   const t = data.totals;
@@ -3486,6 +3480,7 @@ async function fetchRelateDealsFromProxy(proxyUrl, isAuto = false) {
   PIPELINE = payload.pipeline.map(item => ({
     entryId: String(item.entryId || item.id || ''),
     listId: String(item.listId || ''),
+    organizationId: String(item.organizationId || ''),
     assigneeName: item.assigneeName || '미정',
     stage: item.stage || '영업·관계',
     orgName: item.orgName || item.name || '미정',
@@ -3494,6 +3489,9 @@ async function fetchRelateDealsFromProxy(proxyUrl, isAuto = false) {
     estAmount: Number(item.estAmount) || 0,
     brand: normalizeBrand(item.brand || item.processName || ''),
   })).sort((a, b) => b.lastUpdated.localeCompare(a.lastUpdated));
+
+  // 전체 노트 1회 fetch (organization_id 별 인덱싱) — Cloudflare subrequest 한도 회피용 별도 invocation
+  fetchAllRelateNotes(cleanProxyUrl);
 
   // Relate 노트 (worker proxy 가 함께 내려준 경우)
   if (Array.isArray(payload.notes)) {
