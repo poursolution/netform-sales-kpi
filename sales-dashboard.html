@@ -2479,12 +2479,18 @@ function renderPresentationView() {
             <div class="pres-tl-body">${escapeHtml(e.body || '')}</div>
           </div>`).join('')}</div>` : '<div class="pres-empty">기록된 활동·노트가 없습니다. (worker proxy 재배포 후 노트가 함께 동기화됩니다)</div>'}
       </div>` : '';
+    const isOrgMissing = !p.orgName || /^\(조직 |^\(현장명 미등록|^\(미확인|entry \w/.test(String(p.orgName));
+    const orgIdMatch = String(p.orgName || '').match(/[\w-]{6,}/);
+    const displayName = isOrgMissing
+      ? `<span style="color:#b45309; font-weight:850;">⚠ 현장명 미등록</span>${orgIdMatch ? `<span style="font-size:10px; color:#94a3b8; font-weight:650; margin-left:6px;">ID ${orgIdMatch[0]}</span>` : ''}`
+      : escapeHtml(p.orgName || '-');
+    const missingHint = isOrgMissing ? ' · <span style="color:#b45309; font-weight:700;">Relate에서 조직명 입력 필요</span>' : '';
     return `
-      <div class="pres-deal ${isExpanded ? 'expanded' : ''}" onclick="togglePresDeal('${escapeAttr(dealId)}')">
+      <div class="pres-deal ${isExpanded ? 'expanded' : ''}" onclick="togglePresDeal('${escapeAttr(dealId)}')"${isOrgMissing ? ' style="background:#fffbeb; border-color:#fcd34d;"' : ''}>
         <div class="pres-deal-row">
           <div>
-            <div class="pres-deal-name">${escapeHtml(p.orgName || '-')} <span class="pres-deal-noteh">${noteCount > 0 ? `· 노트 ${noteCount}건` : '· 노트 없음'}</span></div>
-            <div class="pres-deal-meta">생성 ${p.createdDate || '-'} · 최근 업데이트 ${p.lastUpdated || '-'}${p.brand ? ` · ${escapeHtml(p.brand)}` : ''}</div>
+            <div class="pres-deal-name">${displayName} <span class="pres-deal-noteh">${noteCount > 0 ? `· 노트 ${noteCount}건` : '· 노트 없음'}</span></div>
+            <div class="pres-deal-meta">생성 ${p.createdDate || '-'} · 최근 업데이트 ${p.lastUpdated || '-'}${p.brand ? ` · ${escapeHtml(p.brand)}` : ''}${missingHint}</div>
           </div>
           <div class="pres-deal-stage">${escapeHtml(p.stage || '-')}</div>
           <div class="pres-deal-amt">${fmtMoney(p.estAmount || 0)}</div>

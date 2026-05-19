@@ -222,11 +222,33 @@ async function buildRelatePipeline(env) {
   allNotes.sort((a, b) => String(b.date + " " + (b.time || "")).localeCompare(String(a.date + " " + (a.time || ""))));
 
   const today = new Date().toISOString().split("T")[0];
+  // 가능한 모든 이름 후보 필드를 순회 — 비어있지 않은 첫 값을 반환
+  const pickName = (...candidates) => {
+    for (const c of candidates) {
+      if (c == null) continue;
+      const s = String(c).trim();
+      if (s) return s;
+    }
+    return "";
+  };
   const pipeline = allEntries.map(entry => {
     const amount = (entry.one_time_value_cents || 0) + (entry.recurring_value_cents || 0);
-    const orgName = entry.entryable_type === "Organization"
-      ? (orgCache[entry.entryable_id] || entry.key || entry.name || `(조직 ${entry.entryable_id})`)
-      : (entry.key || entry.name || `entry ${entry.id}`);
+    const cachedOrg = entry.entryable_type === "Organization" ? orgCache[entry.entryable_id] : null;
+    const fallbackName = pickName(
+      cachedOrg,
+      entry.entryable?.name,
+      entry.entryable?.title,
+      entry.organization?.name,
+      entry.title,
+      entry.name,
+      entry.key,
+      entry.label,
+      entry.summary
+    );
+    const orgName = fallbackName
+      || (entry.entryable_type === "Organization"
+        ? `(현장명 미등록 · ${entry.entryable_id})`
+        : `(미확인 · entry ${entry.id})`);
     const statusName = entry.status || "";
     const statusType = statusTypeMap[statusName] || "active";
     const updatedDate = entry.updated_at ? entry.updated_at.split("T")[0] : today;
