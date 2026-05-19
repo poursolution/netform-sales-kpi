@@ -2460,14 +2460,14 @@ function renderPresentationView() {
           <div class="sub">합산 예상수주액</div>
         </div>
         <div class="pres-metric">
-          <div class="lbl">계약·시공 단계</div>
-          <div class="val">${stageGroups.contract.length}건</div>
-          <div class="sub">${fmtMoney(contractAmt)}</div>
-        </div>
-        <div class="pres-metric">
           <div class="lbl">영업·관계 단계</div>
           <div class="val">${stageGroups.sales.length}건</div>
           <div class="sub">${fmtMoney(salesAmt)}</div>
+        </div>
+        <div class="pres-metric">
+          <div class="lbl">계약·시공 단계</div>
+          <div class="val">${stageGroups.contract.length}건</div>
+          <div class="sub">${fmtMoney(contractAmt)}</div>
         </div>
       </div>
     </div>
@@ -2532,12 +2532,12 @@ function renderPresentationView() {
     <div class="pres-flow-section">
       <div class="pres-section-title">진행 중 영업 흐름 — 카드 클릭 시 노트·활동 펼치기 <span class="ct">${pipes.length}건</span></div>
       <div class="pres-stage-group">
-        <div class="pres-stage-label contract">계약·시공 단계 · ${stageGroups.contract.length}건</div>
-        ${renderDealList(stageGroups.contract)}
-      </div>
-      <div class="pres-stage-group">
         <div class="pres-stage-label sales">영업·관계 단계 · ${stageGroups.sales.length}건</div>
         ${renderDealList(stageGroups.sales)}
+      </div>
+      <div class="pres-stage-group">
+        <div class="pres-stage-label contract">계약·시공 단계 · ${stageGroups.contract.length}건</div>
+        ${renderDealList(stageGroups.contract)}
       </div>
     </div>
   `;
