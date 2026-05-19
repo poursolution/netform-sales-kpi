@@ -1309,6 +1309,7 @@
       <span style="font-size:12px; color:var(--muted); font-weight:700;">또는 직접 입력</span>
       <input type="date" id="presCustomDate" class="select" style="padding:6px 10px;" />
       <button class="btn" id="presReloadBtn" onclick="syncMeetingsFromSystem(false)" style="padding:6px 12px; border:1px solid var(--border); background:#fff; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer;">새로고침</button>
+      <button class="btn" onclick="printPresentationSheet()" style="padding:6px 12px; border:1px solid #0a0e1a; background:#0a0e1a; color:#fff; border-radius:6px; font-size:12px; font-weight:800; cursor:pointer; margin-left:auto;">🖨️ 발표 자료 인쇄 / PDF 저장</button>
       <div class="period-meta" id="presentationPeriodMeta"></div>
     </div>
     <div class="pres-presenter-bar" id="presPresenterTabs"></div>
@@ -2388,6 +2389,57 @@ let PRES_STAGE_OPEN = (() => {
 if (PRES_STAGE_OPEN.sales === undefined) PRES_STAGE_OPEN.sales = true;
 if (PRES_STAGE_OPEN.contract === undefined) PRES_STAGE_OPEN.contract = true;
 if (PRES_STAGE_OPEN.won === undefined) PRES_STAGE_OPEN.won = false;
+function printPresentationSheet() {
+  const viewEl = document.getElementById('viewPresentation');
+  if (!viewEl) return;
+  const presenter = PRES_SELECTED || '발표자';
+  const cutoffMeta = document.getElementById('presentationPeriodMeta')?.textContent || '';
+  // viewPresentation 의 현재 DOM 클론 — details open 등 상태 그대로
+  const clone = viewEl.cloneNode(true);
+  // 인쇄에 불필요한 요소 제거: 발표자 탭바, 컨트롤 행
+  const tabs = clone.querySelector('#presPresenterTabs');
+  if (tabs) tabs.remove();
+  const periodRow = clone.querySelector('.period-row');
+  if (periodRow) periodRow.remove();
+  // 모든 details 펼치기 (인쇄용)
+  clone.querySelectorAll('details').forEach(d => d.setAttribute('open', ''));
+  // 현재 페이지의 스타일을 복사
+  let css = '';
+  for (const sheet of Array.from(document.styleSheets)) {
+    try {
+      for (const rule of Array.from(sheet.cssRules || [])) css += rule.cssText + '\n';
+    } catch (_) {}
+  }
+  const w = window.open('', '_blank');
+  if (!w) { alert('팝업이 차단되었습니다. 브라우저 팝업 허용 후 다시 시도해주세요.'); return; }
+  w.document.write(`<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
+<title>${presenter} 영업회의 사전 발표자료 — ${cutoffMeta}</title>
+<style>
+${css}
+body { padding: 24px 32px; background:#fff; margin:0; }
+.print-head { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:18px; padding-bottom:14px; border-bottom:2px solid #0a0e1a; }
+.print-title { font-size:22px; font-weight:900; color:#0a0e1a; letter-spacing:-0.5px; }
+.print-meta { font-size:12px; color:#6b7280; font-weight:700; }
+.pres-deal-caret, .pres-collapsible-hint { display:none !important; }
+@media print {
+  @page { size:A4; margin:10mm; }
+  .pres-deal { break-inside: avoid; }
+  .pres-stage-group { break-inside: avoid-page; }
+}
+</style></head><body>
+<div class="print-head">
+  <div>
+    <div class="print-title">${presenter} — 영업회의 사전 발표자료</div>
+    <div class="print-meta" style="margin-top:4px;">${cutoffMeta}</div>
+  </div>
+  <div class="print-meta">출력일시 ${new Date().toLocaleString('ko-KR')}</div>
+</div>
+${clone.innerHTML}
+<script>setTimeout(() => { window.focus(); window.print(); }, 600);</script>
+</body></html>`);
+  w.document.close();
+}
+
 function togglePresStage(key, open) {
   PRES_STAGE_OPEN[key] = !!open;
   try { localStorage.setItem(PRES_STAGE_OPEN_KEY, JSON.stringify(PRES_STAGE_OPEN)); } catch {}
