@@ -2554,8 +2554,22 @@ function togglePresDeal(dealId) {
   renderPresentationView();
 }
 
-// 전체 Relate organization 이름 매핑 — fetchRelateDealsFromProxy 가 호출
+// 전체 Relate organization 이름 매핑 — fetchRelateDealsFromProxy 와 병렬 호출 가능
 let RELATE_ORG_NAMES = {}; // {organizationId: name}
+function applyOrgNamesToPipeline() {
+  if (!Object.keys(RELATE_ORG_NAMES).length || !Array.isArray(PIPELINE)) return 0;
+  let updated = 0;
+  PIPELINE.forEach(p => {
+    if (p.organizationId && RELATE_ORG_NAMES[p.organizationId]) {
+      const realName = RELATE_ORG_NAMES[p.organizationId];
+      if (/^DEAL-|^entry |^\(현장명 미등록|^\(미확인|^\(조직 /.test(p.orgName) || !p.orgName) {
+        p.orgName = realName;
+        updated++;
+      }
+    }
+  });
+  return updated;
+}
 async function fetchAllRelateOrgs(proxyUrlRaw) {
   const proxy = String(proxyUrlRaw || '').replace(/\/+$/, '');
   if (!proxy) return;
@@ -2566,19 +2580,8 @@ async function fetchAllRelateOrgs(proxyUrlRaw) {
     if (!data.ok || !Array.isArray(data.orgs)) return;
     RELATE_ORG_NAMES = {};
     data.orgs.forEach(o => { if (o.id) RELATE_ORG_NAMES[o.id] = o.name || ''; });
-    // PIPELINE 각 영업기회의 orgName 을 organization 실명으로 덮어쓰기 (DEAL-XXX 폴백 제거)
-    let updated = 0;
-    PIPELINE.forEach(p => {
-      if (p.organizationId && RELATE_ORG_NAMES[p.organizationId]) {
-        const realName = RELATE_ORG_NAMES[p.organizationId];
-        // 워커 폴백(DEAL-/entry/(현장명 미등록/(미확인)이 아니면 그대로 둠
-        if (/^DEAL-|^entry |^\(현장명 미등록|^\(미확인|^\(조직 /.test(p.orgName) || !p.orgName) {
-          p.orgName = realName;
-          updated++;
-        }
-      }
-    });
-    console.log(`organization 이름 매핑 완료 — ${updated}/${PIPELINE.length} 업데이트`);
+    const updated = applyOrgNamesToPipeline();
+    console.log(`organization 이름 매핑 완료 — ${updated}/${(PIPELINE||[]).length} 업데이트`);
     if (currentView === 'presentation') renderPresentationView();
     if (currentView === 'relate' && LATEST_DATA) renderRelateAnalysis(LATEST_DATA);
   } catch (err) {
@@ -3528,6 +3531,10 @@ async function fetchRelateDealsFromProxy(proxyUrl, isAuto = false) {
     loader.textContent = '⚡ 공용 Relate 데이터 동기화...';
   }
 
+  // 3개 endpoint 동시 출발 — orgs/notes 는 fire-and-forget, pipeline 만 await
+  fetchAllRelateOrgs(cleanProxyUrl);
+  fetchAllRelateNotes(cleanProxyUrl);
+
   const endpoint = `${cleanProxyUrl}/relate/pipeline${isAuto ? '' : '?refresh=1'}`;
   const response = await fetch(endpoint, { headers: { 'Accept': 'application/json' } });
   if (!response.ok) throw new Error(`공용 Relate 연동 ${response.status}`);
@@ -3547,10 +3554,8 @@ async function fetchRelateDealsFromProxy(proxyUrl, isAuto = false) {
     brand: normalizeBrand(item.brand || item.processName || ''),
   })).sort((a, b) => b.lastUpdated.localeCompare(a.lastUpdated));
 
-  // 전체 노트 1회 fetch (organization_id 별 인덱싱) — Cloudflare subrequest 한도 회피용 별도 invocation
-  fetchAllRelateNotes(cleanProxyUrl);
-  // 전체 organization 이름 1회 fetch + PIPELINE.orgName 덮어쓰기
-  fetchAllRelateOrgs(cleanProxyUrl);
+  // PIPELINE 빌드 직후 — orgs 가 이미 도착했을 수도 있으니 즉시 매핑 시도
+  applyOrgNamesToPipeline();
 
   // Relate 노트 (worker proxy 가 함께 내려준 경우)
   if (Array.isArray(payload.notes)) {

@@ -166,32 +166,17 @@ async function buildRelatePipeline(env) {
     entries.forEach(entry => allEntries.push({ ...entry, _processName: processName, _listId: pid }));
   });
 
+  // organization 이름 조회는 별도 /relate/organizations endpoint에서 paginate 일괄 fetch
+  // (pipeline 안에서 individual /organizations/{id} 호출은 Cloudflare 50 subrequest 한도 무조건 초과 → 시간만 낭비)
   const orgCache = {};
   const neededOrgIds = [...new Set(
     allEntries
       .filter(entry => entry.entryable_type === "Organization" && entry.entryable_id)
       .map(entry => entry.entryable_id)
   )];
-
-  // 조직명 조회 — 동시 4개로 낮추고 실패 시 2회 재시도 (rate-limit 회피)
-  await parallelLimit(neededOrgIds, 4, async orgId => {
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        const result = await relateFetch(`/organizations/${orgId}`, apiKey);
-        const name = result.data?.name || result.name;
-        if (name) {
-          orgCache[orgId] = name;
-          return;
-        }
-      } catch {}
-      if (attempt < 2) await new Promise(r => setTimeout(r, 400 * (attempt + 1)));
-    }
-    orgCache[orgId] = null; // 실패 표시 — pipeline 빌더에서 entry.key 폴백
-  });
-
-  // 노트는 별도 endpoint(/relate/notes)에서 ondemand fetch — Cloudflare subrequest 한도(50/호출) 회피
+  // 노트도 별도 endpoint
   const allNotes = [];
-  const noteDiag = { mode: 'ondemand-only', message: '/relate/notes?entryId=X&listId=Y 로 카드 펼침 시 개별 fetch' };
+  const noteDiag = { mode: 'separate-endpoint', message: '클라이언트가 /relate/organizations, /relate/notes 를 병렬 호출' };
 
   const today = new Date().toISOString().split("T")[0];
   // 가능한 모든 이름 후보 필드를 순회 — 비어있지 않은 첫 값을 반환
