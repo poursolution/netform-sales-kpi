@@ -3364,7 +3364,9 @@ function openKpiDetail(type) {
 
 // 경영진 보고서 (인쇄/PDF 저장 가능한 새 창)
 function openExecutiveReport() {
-  const data = LATEST_DATA || buildData();
+  // 항상 최신 buildData 결과를 사용 (LATEST_DATA 가 stale 일 수 있음 — 매번 갱신 보장)
+  const data = buildData();
+  LATEST_DATA = data;
   const t = data.totals;
   const winR = t.ptTot>0 ? Math.round(t.ptWin/t.ptTot*100) : 0;
   const convR = t.est>0 ? Math.round(t.cont/t.est*100) : 0;
