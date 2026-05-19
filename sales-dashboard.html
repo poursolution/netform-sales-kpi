@@ -1028,6 +1028,15 @@
   .pres-stage-label.contract{ background:#e0e7ff; color:#3730a3; }
   .pres-stage-label.sales{ background:#fef3c7; color:#92400e; }
   .pres-stage-label.won{ background:#d1fae5; color:#065f46; }
+  .pres-substage{ margin:10px 0 14px; }
+  .pres-substage:first-child{ margin-top:0; }
+  .pres-substage-label{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:11px; font-weight:800; color:#374151; letter-spacing:0.2px;
+    padding:3px 9px; border:1px solid #d1d5db; border-radius:6px; background:#fff;
+    margin-bottom:6px;
+  }
+  .pres-substage-label .ct{ font-size:10px; color:#6b7280; font-weight:700; padding:1px 6px; background:#f3f4f6; border-radius:999px; }
   .pres-deal-list{ display:grid; grid-template-columns:1fr; gap:6px; }
   .pres-deal{
     border:1px solid var(--border); border-radius:8px; background:#fafbfc;
@@ -2544,7 +2553,26 @@ function renderPresentationView() {
       </div>`;
   };
   const renderDealList = arr => arr.length
-    ? `<div class="pres-deal-list">${arr.sort((a, b) => (b.estAmount || 0) - (a.estAmount || 0)).map(renderDealCard).join('')}</div>`
+    ? (() => {
+        // 세부 stage 별로 그룹핑 + 각 그룹 내 lastUpdated DESC 정렬
+        const byStage = {};
+        arr.forEach(p => {
+          const k = (p.stage || '(미정)').trim() || '(미정)';
+          (byStage[k] = byStage[k] || []).push(p);
+        });
+        Object.keys(byStage).forEach(k => {
+          byStage[k].sort((a,b) => String(b.lastUpdated || '').localeCompare(String(a.lastUpdated || '')));
+        });
+        // sub-group 순서: 최신 업데이트가 빠른 그룹부터
+        const subKeys = Object.keys(byStage).sort((a,b) =>
+          String(byStage[b][0]?.lastUpdated || '').localeCompare(String(byStage[a][0]?.lastUpdated || ''))
+        );
+        return subKeys.map(k => `
+          <div class="pres-substage">
+            <div class="pres-substage-label">${escapeHtml(k)} <span class="ct">${byStage[k].length}</span></div>
+            <div class="pres-deal-list">${byStage[k].map(renderDealCard).join('')}</div>
+          </div>`).join('');
+      })()
     : '<div class="pres-empty">해당 단계의 영업기회가 없습니다.</div>';
 
   flowEl.innerHTML = `
