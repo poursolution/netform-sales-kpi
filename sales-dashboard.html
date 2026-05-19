@@ -2408,7 +2408,12 @@ function renderPresentationView() {
   tabsEl.innerHTML = PRES_PRESENTERS.map(name => {
     const isMgmt = name === '황윤선';
     const pipes = cutoffFilter(PIPELINE, 'lastUpdated').filter(p => p.assigneeName === name);
-    return `<button class="pres-presenter-tab ${PRES_SELECTED === name ? 'active' : ''} ${isMgmt ? 'mgmt' : ''}" onclick="selectPresenter('${escapeAttr(name)}')">${escapeAttr(name)}${isMgmt ? ' <span class="badge">관리자</span>' : ''} <span class="badge">${pipes.length}</span></button>`;
+    // 진행 중 영업기회만 카운트 (Closed Won/Lost·Bad fit 제외) — 발표 화면의 "진행 중 영업 흐름" 건수와 일치
+    const activePipes = pipes.filter(p => {
+      const g = getRelateStageGroup(p.stage);
+      return g === 'contract' || g === 'sales';
+    });
+    return `<button class="pres-presenter-tab ${PRES_SELECTED === name ? 'active' : ''} ${isMgmt ? 'mgmt' : ''}" onclick="selectPresenter('${escapeAttr(name)}')">${escapeAttr(name)}${isMgmt ? ' <span class="badge">관리자</span>' : ''} <span class="badge" title="진행 중 ${activePipes.length}건 / 전체 ${pipes.length}건">${activePipes.length}</span></button>`;
   }).join('');
 
   // 기간 메타
