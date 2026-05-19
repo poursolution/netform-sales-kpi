@@ -386,8 +386,9 @@
   .focus-modal-tab.win.active{background:#059669; border-color:#059669;}
   .focus-modal-tab.loss.active{background:#dc2626; border-color:#dc2626;}
   .focus-modal-tab.pending.active{background:#2563eb; border-color:#2563eb;}
-  .focus-modal-body{flex:1; overflow:hidden; padding:0; display:flex; flex-direction:column;}
-  .focus-modal-table-wrap{flex:1; overflow-y:auto; padding:0 24px 24px;}
+  .focus-modal-body{flex:1; overflow:hidden; padding:0; display:flex; flex-direction:column; min-height:520px;}
+  .focus-modal-table-wrap{flex:1; overflow-y:auto; padding:0 24px 24px; min-height:520px;}
+  .focus-modal-empty{padding:120px 24px; text-align:center;}
   .focus-modal-table{width:100%; border-collapse:separate; border-spacing:0; font-size:13px;}
   .focus-modal-table thead th{
     position:sticky; top:0; z-index:1;
@@ -1738,6 +1739,16 @@ function renderFocusModal(){
       : `<div class="focus-modal-empty">해당 분류에 PT 내역이 없습니다.</div>`;
   }
 
+  // 부분 업데이트: 같은 (name, focus) 모달이 이미 열려있으면 head 는 유지하고 tabs/table 만 교체
+  const focusKey = `${name}|${focus}`;
+  if (m.dataset.focusKey === focusKey && m.querySelector('.focus-modal-head')) {
+    const tabsEl = m.querySelector('.focus-modal-tabs');
+    if (tabsEl) tabsEl.innerHTML = tabsHtml;
+    const wrap = m.querySelector('.focus-modal-table-wrap');
+    if (wrap) wrap.innerHTML = tableHtml;
+    return;
+  }
+  m.dataset.focusKey = focusKey;
   m.innerHTML = `
     <div class="focus-modal-head">
       <div>
@@ -1755,7 +1766,9 @@ function renderFocusModal(){
 
 function closeFocusModal(){
   document.getElementById('modalBackdrop').classList.add('hidden');
-  document.getElementById('modal').classList.remove('focus-modal');
+  const m = document.getElementById('modal');
+  m.classList.remove('focus-modal');
+  delete m.dataset.focusKey;
   _focusModalCtx = null;
 }
 
@@ -2190,7 +2203,9 @@ function setAssigneeModalTab(tab){
 }
 function closeAssigneeModal(){
   document.getElementById('modalBackdrop').classList.add('hidden');
-  document.getElementById('modal').classList.remove('focus-modal');
+  const m = document.getElementById('modal');
+  m.classList.remove('focus-modal');
+  delete m.dataset.focusKey;
   _assigneeModalCtx = null;
 }
 function renderAssigneeModal(){
@@ -2233,6 +2248,16 @@ function renderAssigneeModal(){
       : '<div class="focus-modal-empty">조회 기간 내 진행 파이프라인이 없습니다.</div>';
   }
 
+  // 부분 업데이트: 같은 담당자 모달이 이미 열려있으면 head 유지 + tabs/table 만 교체
+  const assigneeKey = `assignee:${r.name}`;
+  if (m.dataset.focusKey === assigneeKey && m.querySelector('.focus-modal-head')) {
+    const tabsEl = m.querySelector('.focus-modal-tabs');
+    if (tabsEl) tabsEl.innerHTML = tabsHtml;
+    const wrap = m.querySelector('.focus-modal-table-wrap');
+    if (wrap) wrap.innerHTML = tableHtml;
+    return;
+  }
+  m.dataset.focusKey = assigneeKey;
   m.innerHTML = `
     <div class="focus-modal-head">
       <div>
