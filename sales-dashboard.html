@@ -943,25 +943,25 @@
   .sales-page .sv-stat-val.success,
   .sales-page .sv-stat-val.info{ color:#0a0e1a; }
 
-  /* 담당자별 매출 strip — Hero 도넛 아래 한눈에 보기 */
+  /* 담당자별 매출 strip — "누가 매출을 만들었나" 바로 위, 컴팩트 */
   .sales-page .sv-quickrev{
     display:grid; grid-template-columns:repeat(6, minmax(0,1fr));
-    gap:8px; margin-top:-4px;
+    gap:6px; margin-bottom:-4px;
   }
   .sales-page .sv-qr-item{
-    background:#fff; border:1px solid var(--sv-border); border-radius:10px;
-    padding:10px 12px; text-align:center;
+    background:#fff; border:1px solid var(--sv-border); border-radius:8px;
+    padding:7px 10px; text-align:center;
     transition: border-color .12s, transform .12s;
     cursor:pointer;
   }
   .sales-page .sv-qr-item:hover{ border-color:#0a0e1a; transform:translateY(-1px); }
-  .sales-page .sv-qr-name{ font-size:11px; font-weight:750; color:#6b7280; letter-spacing:0.3px; }
+  .sales-page .sv-qr-name{ font-size:11px; font-weight:750; color:#6b7280; letter-spacing:0.3px; line-height:1.2; }
   .sales-page .sv-qr-name .role{ font-size:9px; color:#9ca3af; margin-left:3px; font-weight:700; }
   .sales-page .sv-qr-val{
-    font-size:15px; font-weight:850; color:#0a0e1a;
-    margin-top:3px; letter-spacing:-0.3px;
+    font-size:14px; font-weight:850; color:#0a0e1a;
+    margin-top:2px; letter-spacing:-0.3px; line-height:1.1;
   }
-  .sales-page .sv-qr-cnt{ font-size:10px; font-weight:700; color:#94a3b8; margin-top:1px; }
+  .sales-page .sv-qr-cnt{ font-size:10px; font-weight:700; color:#94a3b8; margin-top:1px; line-height:1.1; }
   @media (max-width:900px){
     .sales-page .sv-quickrev{ grid-template-columns:repeat(3, 1fr); }
   }
@@ -1143,9 +1143,6 @@
         </div>
       </section>
 
-      <!-- 담당자별 매출 한눈에 (컴팩트) -->
-      <section class="sv-quickrev" id="svQuickRev"></section>
-
       <!-- KPI METRICS (4 cards) -->
       <section class="sv-metrics">
         <div class="sv-metric accent clickable" onclick="openKpiDetail('contract')">
@@ -1193,6 +1190,9 @@
         <span id="svSegKpi"></span><span id="svSegMgmt"></span><span id="svSegOther"></span>
         <span id="svLegKpiPct"></span><span id="svLegMgmtPct"></span><span id="svLegOtherPct"></span>
       </div>
+
+      <!-- 담당자별 매출 한눈에 (컴팩트) -->
+      <section class="sv-quickrev" id="svQuickRev"></section>
 
       <!-- PERFORMANCE: tabs + person detail -->
       <section class="sv-perf">
