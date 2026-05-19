@@ -8,45 +8,7 @@
 <style>
   :root{ --bg:#f8fafc; --surface:#ffffff; --text:#0f172a; --muted:#64748b; --border:#e2e8f0; --line:#f1f5f9; --pri:#2563eb; --pri-soft:#eff6ff; --orange:#f59e0b; --purple:#8b5cf6; --green:#10b981; --red:#ef4444; --hm-high:#dcfce7; --hm-mid:#fef08a; --hm-low:#ffedd5; --hm-zero:#fee2e2; --hm-none:#f8fafc; --nav-active:#1e293b; }
   *{box-sizing:border-box} html,body{margin:0;padding:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
-  .wrap{padding:24px 36px 80px; max-width: 1440px; margin: 0 auto 0 200px;}
-  /* 좌측 고정 사이드바 (4개 탭) */
-  .sidenav{
-    position:fixed; left:0; top:0; bottom:0; width:200px; z-index:50;
-    background:#0a0e1a; color:#cbd5e1;
-    display:flex; flex-direction:column; gap:8px;
-    padding:24px 14px; box-sizing:border-box;
-    box-shadow:1px 0 0 #1f2937;
-  }
-  .sidenav-brand{
-    font-family:'Fraunces','Times New Roman',serif; font-weight:900; font-size:18px;
-    color:#fff; letter-spacing:-0.4px; margin-bottom:18px; padding:0 6px;
-  }
-  .sidenav-brand span{
-    display:block; font-family:inherit; font-weight:600; font-size:12px;
-    color:#94a3b8; letter-spacing:0; margin-top:2px;
-  }
-  .sidenav-tabs{ display:flex; flex-direction:column; gap:2px; }
-  .sidenav-tabs button{
-    background:transparent; border:none; color:#cbd5e1;
-    padding:11px 12px; border-radius:8px; text-align:left;
-    font-size:13.5px; font-weight:700; cursor:pointer;
-    transition:background .12s, color .12s;
-    display:flex; align-items:center; gap:10px;
-  }
-  .sidenav-tabs button:hover{ background:rgba(255,255,255,0.06); color:#fff; }
-  .sidenav-tabs button.active{ background:#2563eb; color:#fff; }
-  .sidenav-num{
-    display:inline-flex; align-items:center; justify-content:center;
-    width:20px; height:20px; border-radius:50%; background:rgba(255,255,255,0.10);
-    font-size:11px; font-weight:850; flex-shrink:0;
-  }
-  .sidenav-tabs button.active .sidenav-num{ background:rgba(255,255,255,0.18); }
-  @media (max-width:900px){
-    .sidenav{ position:relative; width:auto; height:auto; flex-direction:row; padding:10px 14px; }
-    .wrap{ margin-left:0; }
-    .sidenav-brand{ display:none; }
-    .sidenav-tabs{ flex-direction:row; flex-wrap:wrap; }
-  }
+  .wrap{padding:24px 36px 80px; max-width: 1440px; margin: 0 auto;}
   .header{display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; gap:20px; flex-wrap:wrap}
   .brand{font-size:22px; font-weight:800; color:#0f172a; letter-spacing:-0.5px}
   .brand .tag{font-size:11px; padding:3px 8px; border-radius:6px; background:#1e293b; color:#fff; font-weight:700; margin-left:8px; vertical-align:middle}
@@ -1141,16 +1103,6 @@
 <div id="loader">🔄 파이프라인 데이터 자동 동기화 중...</div>
 <div id="customTooltip"></div>
 
-<aside class="sidenav">
-  <div class="sidenav-brand">POUR<br><span>영업운영시스템</span></div>
-  <nav class="sidenav-tabs">
-    <button class="active" id="tabMain" onclick="switchView('main')"><span class="sidenav-num">1</span>매출 현황</button>
-    <button id="tabRelate" onclick="switchView('relate')"><span class="sidenav-num">2</span>릴레잇 현황</button>
-    <button id="tabTeamKpi" onclick="switchView('teamKpi')"><span class="sidenav-num">3</span>영업 KPI</button>
-    <button id="tabPresentation" onclick="switchView('presentation')"><span class="sidenav-num">4</span>영업회의 발표</button>
-  </nav>
-</aside>
-
 <div class="wrap">
   <div class="header">
     <div class="brand">영업매출현황 데이터 <span class="tag">경영진 실시간 대시보드</span></div>
@@ -1158,6 +1110,15 @@
       <button class="head-btn" onclick="openRelateSettings()" id="btnRelateKey">⚙️ Relate 공용 연동</button>
       <button class="head-btn" onclick="openInquirySettings()" id="btnInquirySheet">문의 시트 연결</button>
       <button class="head-btn dark" onclick="openExecutiveReport()">📄 경영진 보고서 보기 / 인쇄</button>
+    </div>
+  </div>
+
+  <div class="navrow">
+    <div class="tabs">
+      <button class="active" id="tabMain" onclick="switchView('main')">1. 매출 현황</button>
+      <button id="tabRelate" onclick="switchView('relate')">2. 릴레잇 현황</button>
+      <button id="tabTeamKpi" onclick="switchView('teamKpi')">3. 영업 KPI</button>
+      <button id="tabPresentation" onclick="switchView('presentation')">4. 영업회의 발표</button>
     </div>
   </div>
 
@@ -1309,7 +1270,6 @@
       <span style="font-size:12px; color:var(--muted); font-weight:700;">또는 직접 입력</span>
       <input type="date" id="presCustomDate" class="select" style="padding:6px 10px;" />
       <button class="btn" id="presReloadBtn" onclick="syncMeetingsFromSystem(false)" style="padding:6px 12px; border:1px solid var(--border); background:#fff; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer;">새로고침</button>
-      <button class="btn" onclick="printPresentationSheet()" style="padding:6px 12px; border:1px solid #0a0e1a; background:#0a0e1a; color:#fff; border-radius:6px; font-size:12px; font-weight:800; cursor:pointer; margin-left:auto;">🖨️ 발표 자료 인쇄 / PDF 저장</button>
       <div class="period-meta" id="presentationPeriodMeta"></div>
     </div>
     <div class="pres-presenter-bar" id="presPresenterTabs"></div>
@@ -2389,59 +2349,6 @@ let PRES_STAGE_OPEN = (() => {
 if (PRES_STAGE_OPEN.sales === undefined) PRES_STAGE_OPEN.sales = true;
 if (PRES_STAGE_OPEN.contract === undefined) PRES_STAGE_OPEN.contract = true;
 if (PRES_STAGE_OPEN.won === undefined) PRES_STAGE_OPEN.won = false;
-function printPresentationSheet() {
-  const viewEl = document.getElementById('viewPresentation');
-  if (!viewEl) return;
-  const presenter = PRES_SELECTED || '발표자';
-  const cutoffMeta = document.getElementById('presentationPeriodMeta')?.textContent || '';
-  // viewPresentation 의 현재 DOM 클론 — details open 등 상태 그대로
-  const clone = viewEl.cloneNode(true);
-  // 인쇄에 불필요한 요소 제거: 발표자 탭바, 컨트롤 행
-  const tabs = clone.querySelector('#presPresenterTabs');
-  if (tabs) tabs.remove();
-  const periodRow = clone.querySelector('.period-row');
-  if (periodRow) periodRow.remove();
-  // 모든 details 펼치기 (인쇄용)
-  clone.querySelectorAll('details').forEach(d => d.setAttribute('open', ''));
-  // 현재 페이지의 스타일을 복사
-  let css = '';
-  for (const sheet of Array.from(document.styleSheets)) {
-    try {
-      for (const rule of Array.from(sheet.cssRules || [])) css += rule.cssText + '\n';
-    } catch (_) {}
-  }
-  const w = window.open('', '_blank');
-  if (!w) { alert('팝업이 차단되었습니다. 브라우저 팝업 허용 후 다시 시도해주세요.'); return; }
-  // closing script tag 토큰이 부모 페이지 파서를 끊지 않도록 string 분할로 작성
-  const printScript = '<' + 'script>setTimeout(function(){window.focus();window.print();},600);<' + '/script>';
-  const headHtml = `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8">
-<title>${presenter} 영업회의 사전 발표자료 — ${cutoffMeta}</title>
-<style>
-${css}
-body { padding: 24px 32px; background:#fff; margin:0; }
-.print-head { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:18px; padding-bottom:14px; border-bottom:2px solid #0a0e1a; }
-.print-title { font-size:22px; font-weight:900; color:#0a0e1a; letter-spacing:-0.5px; }
-.print-meta { font-size:12px; color:#6b7280; font-weight:700; }
-.pres-deal-caret, .pres-collapsible-hint { display:none !important; }
-@media print {
-  @page { size:A4; margin:10mm; }
-  .pres-deal { break-inside: avoid; }
-  .pres-stage-group { break-inside: avoid-page; }
-}
-</style></head><body>
-<div class="print-head">
-  <div>
-    <div class="print-title">${presenter} — 영업회의 사전 발표자료</div>
-    <div class="print-meta" style="margin-top:4px;">${cutoffMeta}</div>
-  </div>
-  <div class="print-meta">출력일시 ${new Date().toLocaleString('ko-KR')}</div>
-</div>
-${clone.innerHTML}
-`;
-  w.document.write(headHtml + printScript + '</body></html>');
-  w.document.close();
-}
-
 function togglePresStage(key, open) {
   PRES_STAGE_OPEN[key] = !!open;
   try { localStorage.setItem(PRES_STAGE_OPEN_KEY, JSON.stringify(PRES_STAGE_OPEN)); } catch {}
@@ -3418,9 +3325,7 @@ function openKpiDetail(type) {
 
 // 경영진 보고서 (인쇄/PDF 저장 가능한 새 창)
 function openExecutiveReport() {
-  // 항상 최신 buildData 결과를 사용 (LATEST_DATA 가 stale 일 수 있음 — 매번 갱신 보장)
-  const data = buildData();
-  LATEST_DATA = data;
+  const data = LATEST_DATA || buildData();
   const t = data.totals;
   const winR = t.ptTot>0 ? Math.round(t.ptWin/t.ptTot*100) : 0;
   const convR = t.est>0 ? Math.round(t.cont/t.est*100) : 0;
