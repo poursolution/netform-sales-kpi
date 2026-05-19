@@ -4730,6 +4730,68 @@ function normalizeInquiryRows(rows) {
     };
   }).filter(r => r.date || r.siteName || r.managerName);
 }
+// S3-Nexus n8n webhook 으로부터 실시간 견적문의 동기화 (CORS 허용 origin: poursolution.github.io)
+const NEXUS_INQUIRY_URL = 'https://nfrnd.app.n8n.cloud/webhook/inbound-sheet-data';
+function parseNexusInquiryDate(s) {
+  if (!s) return '';
+  // 형식: "2026. 5. 19. AM 11:43:15" 또는 "2026. 5. 19."
+  const m = String(s).match(/(\d{4})\.\s*(\d{1,2})\.\s*(\d{1,2})/);
+  if (!m) return '';
+  return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;
+}
+function inferNexusInquiryStatus(item) {
+  if (item['배정일시']) return '배정완료';
+  if (item['전화응대자']) return '전화응대 완료';
+  if (item['특이사항']) return '접수';
+  return '접수';
+}
+function isInquiryConverted(siteName, inqDate) {
+  if (!siteName || String(siteName).length < 3 || !inqDate) return false;
+  const norm = s => String(s || '').replace(/[\s\[\]()\-·]/g,'').toLowerCase();
+  const nSite = norm(siteName);
+  if (nSite.length < 3) return false;
+  return CONTRACTS.some(c => {
+    if (!c.aptName || !c.contractAmount) return false;
+    const nApt = norm(c.aptName);
+    if (nApt.length < 3) return false;
+    const match = (nApt === nSite) || (nApt.length >= 5 && nSite.length >= 5 && (nApt.includes(nSite) || nSite.includes(nApt)));
+    return match && c.signedDate >= inqDate;
+  });
+}
+async function syncInquiriesFromNexus(isAuto = true) {
+  const loader = document.getElementById('loader');
+  try {
+    if (!isAuto) { loader.style.display = 'flex'; loader.textContent = 'S3-Nexus 견적문의 동기화 중...'; }
+    const res = await fetch(NEXUS_INQUIRY_URL, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const payload = await res.json();
+    if (!payload || !Array.isArray(payload.data)) throw new Error('데이터 배열이 없습니다');
+    const mapped = payload.data.map(item => {
+      const date = parseNexusInquiryDate(item['접수일시']);
+      const siteName = item['현장명'] || '';
+      return {
+        date,
+        siteName,
+        type: item['공사유형'] || '',
+        managerName: item['담당자'] || '',
+        status: inferNexusInquiryStatus(item),
+        isConverted: isInquiryConverted(siteName, date),
+      };
+    }).filter(x => x.date);
+    mapped.sort((a, b) => b.date.localeCompare(a.date));
+    INQUIRIES = mapped;
+    if (loader && !isAuto) {
+      loader.style.display = 'none';
+      alert(`S3-Nexus 동기화 완료 — ${mapped.length}건 (계약 전환 ${mapped.filter(i => i.isConverted).length}건)`);
+    }
+    refresh();
+  } catch (err) {
+    console.warn('S3-Nexus 견적문의 동기화 실패:', err.message);
+    if (loader) loader.style.display = 'none';
+    if (!isAuto) alert(`동기화 실패: ${err.message}`);
+  }
+}
+
 async function syncInquirySheet(isAuto = false) {
   const cfg = getInquiryConfig();
   if (!cfg.csvUrl) {
@@ -4906,6 +4968,7 @@ window.onload = () => {
   fetchRelateDeals(true);
   syncPtSchedulesFromSystem();
   syncInquirySheet(true);
+  syncInquiriesFromNexus(true);  // S3-Nexus n8n webhook 실시간 견적문의 동기화 (페이지 로드 시 자동)
   // 릴레잇 뷰 자체 period-row wiring
   const ysRl = document.getElementById('yearSelectRelate');
   if (ysRl) {
