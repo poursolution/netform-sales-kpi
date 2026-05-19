@@ -2340,6 +2340,19 @@ function switchView(view) {
 // 4. 영업회의 발표 뷰
 // ════════════════════════════════════════════════════════════
 const PRES_PRESENTERS = ['한준엽', '이필선', '한인규', '정정훈', '김성민', '황윤선'];
+const PRES_STAGE_OPEN_KEY = 'pres_stage_open_v1';
+let PRES_STAGE_OPEN = (() => {
+  try { return JSON.parse(localStorage.getItem(PRES_STAGE_OPEN_KEY) || '{}') || {}; }
+  catch { return {}; }
+})();
+// 기본값: 영업·관계/계약·시공은 펼침, 수주성공은 접힘
+if (PRES_STAGE_OPEN.sales === undefined) PRES_STAGE_OPEN.sales = true;
+if (PRES_STAGE_OPEN.contract === undefined) PRES_STAGE_OPEN.contract = true;
+if (PRES_STAGE_OPEN.won === undefined) PRES_STAGE_OPEN.won = false;
+function togglePresStage(key, open) {
+  PRES_STAGE_OPEN[key] = !!open;
+  try { localStorage.setItem(PRES_STAGE_OPEN_KEY, JSON.stringify(PRES_STAGE_OPEN)); } catch {}
+}
 const MEETINGS_SYSTEM_URL = 'https://test-168a4-default-rtdb.asia-southeast1.firebasedatabase.app/meetings.json';
 const PRES_CUTOFF_KEY = 'pres_meeting_cutoff_v1';
 let PRES_SELECTED = '한준엽';
@@ -2587,22 +2600,29 @@ function renderPresentationView() {
       })()
     : '<div class="pres-empty">해당 단계의 영업기회가 없습니다.</div>';
 
+  const sOpen = PRES_STAGE_OPEN.sales !== false;
+  const cOpen = PRES_STAGE_OPEN.contract !== false;
+  const wOpen = PRES_STAGE_OPEN.won === true;
   flowEl.innerHTML = `
     <div class="pres-flow-section">
       <div class="pres-section-title">진행 중 영업 흐름 — 카드 클릭 시 노트·활동 펼치기 <span class="ct">${shownPipes.length}건 (수주실패 제외)</span></div>
-      <div class="pres-stage-group">
-        <div class="pres-stage-label sales">영업·관계 단계 · ${stageGroups.sales.length}건</div>
-        ${renderDealList(stageGroups.sales)}
-      </div>
-      <div class="pres-stage-group">
-        <div class="pres-stage-label contract">계약·시공 단계 · ${stageGroups.contract.length}건</div>
-        ${renderDealList(stageGroups.contract)}
-      </div>
+      <details class="pres-stage-group pres-collapsible" ${sOpen ? 'open' : ''} ontoggle="togglePresStage('sales', this.open)">
+        <summary>
+          <span class="pres-stage-label sales">영업·관계 단계 · ${stageGroups.sales.length}건</span>
+        </summary>
+        <div class="pres-collapsible-body">${renderDealList(stageGroups.sales)}</div>
+      </details>
+      <details class="pres-stage-group pres-collapsible" ${cOpen ? 'open' : ''} ontoggle="togglePresStage('contract', this.open)">
+        <summary>
+          <span class="pres-stage-label contract">계약·시공 단계 · ${stageGroups.contract.length}건</span>
+        </summary>
+        <div class="pres-collapsible-body">${renderDealList(stageGroups.contract)}</div>
+      </details>
       ${stageGroups.won.length ? `
-      <details class="pres-stage-group pres-collapsible">
+      <details class="pres-stage-group pres-collapsible" ${wOpen ? 'open' : ''} ontoggle="togglePresStage('won', this.open)">
         <summary>
           <span class="pres-stage-label won">수주 성공 · ${stageGroups.won.length}건</span>
-          <span class="pres-collapsible-hint">클릭하여 펼치기</span>
+          ${wOpen ? '' : '<span class="pres-collapsible-hint">클릭하여 펼치기</span>'}
         </summary>
         <div class="pres-collapsible-body">${renderDealList(stageGroups.won)}</div>
       </details>` : ''}
