@@ -1028,6 +1028,18 @@
   .pres-stage-label.contract{ background:#e0e7ff; color:#3730a3; }
   .pres-stage-label.sales{ background:#fef3c7; color:#92400e; }
   .pres-stage-label.won{ background:#d1fae5; color:#065f46; }
+  .pres-collapsible > summary{
+    list-style:none; cursor:pointer; display:flex; align-items:center; gap:10px;
+    padding:2px 0; user-select:none;
+  }
+  .pres-collapsible > summary::-webkit-details-marker{ display:none; }
+  .pres-collapsible > summary::before{
+    content:'▸'; font-size:13px; color:#6b7280; transition:transform .15s; display:inline-block;
+  }
+  .pres-collapsible[open] > summary::before{ transform:rotate(90deg); }
+  .pres-collapsible-hint{ font-size:11px; color:#9ca3af; font-weight:650; }
+  .pres-collapsible[open] .pres-collapsible-hint{ display:none; }
+  .pres-collapsible-body{ margin-top:10px; }
   .pres-substage{ margin:10px 0 14px; }
   .pres-substage:first-child{ margin-top:0; }
   .pres-substage-label{
@@ -2587,10 +2599,13 @@ function renderPresentationView() {
         ${renderDealList(stageGroups.contract)}
       </div>
       ${stageGroups.won.length ? `
-      <div class="pres-stage-group">
-        <div class="pres-stage-label won">수주 성공 · ${stageGroups.won.length}건</div>
-        ${renderDealList(stageGroups.won)}
-      </div>` : ''}
+      <details class="pres-stage-group pres-collapsible">
+        <summary>
+          <span class="pres-stage-label won">수주 성공 · ${stageGroups.won.length}건</span>
+          <span class="pres-collapsible-hint">클릭하여 펼치기</span>
+        </summary>
+        <div class="pres-collapsible-body">${renderDealList(stageGroups.won)}</div>
+      </details>` : ''}
     </div>
   `;
 
