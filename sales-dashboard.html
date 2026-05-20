@@ -1008,6 +1008,52 @@
     background:#0a0e1a !important; color:#fff !important; border-color:#0a0e1a !important;
   }
 
+  /* 모든 섹션을 매출현황 톤으로 일괄 — 그라데이션·풀컬러 제거 */
+  #viewRelate .sc-acc,
+  #viewRelate .sc-grid-card,
+  #viewRelate .kpi-box,
+  #viewRelate .md-quad,
+  #viewRelate .md-card,
+  #viewRelate .md-tile,
+  #viewRelate .relate-insight,
+  #viewRelate .rl-card,
+  #viewRelate .panel{
+    background:#ffffff !important;
+    border:1px solid #e5e7eb !important;
+    border-radius:12px !important;
+    box-shadow:0 1px 2px rgba(15,23,42,0.04) !important;
+    color:#0a0e1a !important;
+  }
+  /* 데이터 강조 inline 클래스 모노크롬화 */
+  #viewRelate .danger, #viewRelate .red, #viewRelate .accent, #viewRelate .blue,
+  #viewRelate .amber, #viewRelate .orange, #viewRelate .green, #viewRelate .success{
+    color:#0a0e1a !important; font-weight:850 !important;
+  }
+  /* 단계 배지: 매출현황 sales/contract 톤 (영업·관계 노랑, 계약·시공 인디고) */
+  #viewRelate [class*="-stage"].contract,
+  #viewRelate .ent-stage.contract,
+  #viewRelate .md-ent-stage.contract{
+    background:#e0e7ff !important; color:#3730a3 !important; border-radius:6px !important;
+  }
+  #viewRelate [class*="-stage"].sales,
+  #viewRelate .ent-stage.sales,
+  #viewRelate .md-ent-stage.sales{
+    background:#fef3c7 !important; color:#92400e !important; border-radius:6px !important;
+  }
+  /* 좌측 색 sidebar bar(grade) — 그레이로 */
+  #viewRelate .sc-acc[data-grade="bad"]::before,
+  #viewRelate .sc-grid-card[data-grade="bad"]::before{ background:#dc2626 !important; }
+  #viewRelate .sc-acc[data-grade="mid"]::before,
+  #viewRelate .sc-grid-card[data-grade="mid"]::before{ background:#9ca3af !important; }
+  #viewRelate .sc-acc[data-grade="good"]::before,
+  #viewRelate .sc-grid-card[data-grade="good"]::before{ background:#0a0e1a !important; }
+  /* 인사이트 컬러 강조 라인도 단조 */
+  #viewRelate .relate-insight{ border-left:3px solid #e5e7eb !important; }
+  #viewRelate .relate-insight.info{ border-left-color:#9ca3af !important; }
+  #viewRelate .relate-insight.warn{ border-left-color:#374151 !important; }
+  #viewRelate .relate-insight.danger,
+  #viewRelate .relate-insight.crit{ border-left-color:#0a0e1a !important; }
+
   /* 담당자 탭 클릭 시 화면 길이가 출렁이지 않도록 detail 영역 고정 (한준엽 기준) */
   .sales-page #salesPersonDetail{
     height: 280px;
