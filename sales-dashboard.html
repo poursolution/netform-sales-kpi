@@ -4747,14 +4747,23 @@ function inferNexusInquiryStatus(item) {
 }
 function isInquiryConverted(siteName, inqDate) {
   if (!siteName || String(siteName).length < 3 || !inqDate) return false;
-  const norm = s => String(s || '').replace(/[\s\[\]()\-·]/g,'').toLowerCase();
+  // 매칭 정규화:
+  //  1) [지역명] 등 대괄호 prefix 제거 (시트 현장명에 자주 붙음)
+  //  2) 끝의 "아파트/빌딩/오피스텔/타워" suffix 제거 (CONTRACTS 표기 보정)
+  //  3) 공백·괄호·하이픈·중점 제거 + 소문자
+  const norm = s => String(s || '')
+    .replace(/\[[^\]]*\]/g, '')
+    .replace(/(아파트|빌딩|오피스텔|타워)$/, '')
+    .replace(/[\s\[\]()\-·]/g, '')
+    .toLowerCase();
   const nSite = norm(siteName);
   if (nSite.length < 3) return false;
   return CONTRACTS.some(c => {
     if (!c.aptName || !c.contractAmount) return false;
     const nApt = norm(c.aptName);
     if (nApt.length < 3) return false;
-    const match = (nApt === nSite) || (nApt.length >= 5 && nSite.length >= 5 && (nApt.includes(nSite) || nSite.includes(nApt)));
+    // 부분 매칭은 양쪽 7자 이상일 때만 (짧은 공통어로 잘못 매칭 방지: 예 "중앙하이츠")
+    const match = (nApt === nSite) || (nApt.length >= 7 && nSite.length >= 7 && (nApt.includes(nSite) || nSite.includes(nApt)));
     return match && c.signedDate >= inqDate;
   });
 }
