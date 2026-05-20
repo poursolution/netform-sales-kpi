@@ -1601,20 +1601,35 @@ function buildData(){
     if(conts.some(c => !c.contractAmount || c.contractAmount===0)) missing++;
     if(pipes.some(p => !p.stage || p.stage==='')) missing++;
 
-    // 릴레잇 활동 등급 (PT 비교 X — PT는 업체 지원 개념, 릴레잇은 영업 개념으로 별개)
-    // 기준: 진행 중 영업기회 건수(절대치) + 최근 업데이트 경과일
+    // 릴레잇 활동 = 노트 작성 + 단계 변경(lastUpdated) — 가장 최근 활동일 기준
     const today_ts = Date.now();
-    const daysSinceLastUpdate = lastPipeUpdate ? Math.floor((today_ts - new Date(lastPipeUpdate).getTime()) / 86400000) : 9999;
+    // 이 담당자가 다룬 organization 들의 노트 마지막 작성일
+    const orgIdSet = new Set(pipes.map(p => p.organizationId).filter(Boolean));
+    const noteDates = (typeof RELATE_NOTES !== 'undefined' && Array.isArray(RELATE_NOTES))
+      ? RELATE_NOTES.filter(n => orgIdSet.has(n.organizationId)).map(n => n.date).filter(Boolean)
+      : [];
+    const lastNoteDate = noteDates.length ? noteDates.slice().sort().slice(-1)[0] : null;
+    // 최종 활동일 = max(노트 마지막, 파이프라인 lastUpdated)
+    const candidates = [lastNoteDate, lastPipeUpdate].filter(Boolean);
+    const lastActivityDate = candidates.length ? candidates.sort().slice(-1)[0] : null;
+    const daysSinceLastActivity = lastActivityDate ? Math.floor((today_ts - new Date(lastActivityDate).getTime()) / 86400000) : 9999;
+    // 등급: 14일 이내 활동 = good, 30일 이내 = mid, 그 외 = bad
     let usageGrade;
-    if (pipes.length === 0) usageGrade = 'bad';
-    else if (pipes.length >= 4 && daysSinceLastUpdate <= 60) usageGrade = 'good';
-    else if (daysSinceLastUpdate > 90) usageGrade = 'bad';
-    else usageGrade = 'mid';
+    if (!lastActivityDate || pipes.length === 0) usageGrade = 'bad';
+    else if (daysSinceLastActivity <= 14) usageGrade = 'good';
+    else if (daysSinceLastActivity <= 30) usageGrade = 'mid';
+    else usageGrade = 'bad';
+    // 기존 필드명 유지 (호환성) — daysSinceLastUpdate / lastPipeUpdate 에 활동 기준 값 대입
+    const daysSinceLastUpdate = daysSinceLastActivity;
 
     return { name, cSum, pSum, pCnt:pipes.length, winRate: win+loss>0?Math.round(win/(win+loss)*100):0, win, loss, pending,
              cRate: eSum>0?Math.round(cntSum/eSum*100):0, eSum, cntSum, missing, warning, conts, pipes, pts, inqs,
-             pContractSum, pContractCnt, pSalesSum, pSalesCnt, pLostExcluded, pipesContract, pipesSales, lastPipeUpdate, daysSinceLastUpdate, usageGrade };
+             pContractSum, pContractCnt, pSalesSum, pSalesCnt, pLostExcluded, pipesContract, pipesSales,
+             lastPipeUpdate, lastNoteDate, lastActivityDate, daysSinceLastActivity, daysSinceLastUpdate, usageGrade,
+             noteCount: noteDates.length };
   });
+  // 활동 최근순 정렬 (lastActivityDate DESC)
+  rows.sort((a, b) => String(b.lastActivityDate || '').localeCompare(String(a.lastActivityDate || '')));
 
   return { rows, totals, hmData };
 }
