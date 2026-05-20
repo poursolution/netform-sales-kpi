@@ -967,6 +967,23 @@
   .sales-page .sv-stat-val{ font-size:14px !important; }
   .sales-page .sv-lists{ gap:6px !important; }
   .sales-page .sv-list{ padding:8px 10px !important; }
+  /* 릴레잇 현황 — 매출현황과 같은 컴팩트 톤 */
+  #viewRelate{ display:flex; flex-direction:column; gap:10px; }
+  #viewRelate .rl-brand-tabs-host{
+    margin-left:auto; padding-left:18px;
+    border-left:1px solid var(--border);
+    display:flex; align-items:center; gap:0; flex:0 1 auto;
+  }
+  #viewRelate > div:not(.period-row){
+    background:#ffffff;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    box-shadow:0 1px 2px rgba(15,23,42,0.04);
+    padding:14px 18px;
+  }
+  /* 내부 자체 카드(렌더링 HTML)가 다시 흰 배경을 가져 이중이 되지 않도록 background 만 통일 */
+  #viewRelate > div:empty{ display:none; }
+
   /* 담당자 탭 클릭 시 화면 길이가 출렁이지 않도록 detail 영역 고정 (한준엽 기준) */
   .sales-page #salesPersonDetail{
     height: 280px;
@@ -1343,18 +1360,18 @@
     <div id="inquiryQuality"></div>
   </div>
 
-  <div id="viewRelate" class="rl" style="display:none;">
-    <div class="period-row" style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:24px; background:white; padding:14px 20px; border:1px solid var(--border); border-radius:0;">
-      <span class="lbl" style="font-size:13px; color:var(--muted); font-weight:700;">조회 기간</span>
-      <select class="select" id="yearSelectRelate" style="padding:6px 12px; border-radius:6px; border:1px solid var(--border); background:#f8fafc; font-size:13px; font-weight:700; color:#0f172a; outline:none; cursor:pointer;"></select>
-      <div class="chip-row" id="quarterTabsRelate" style="display:flex; gap:6px;">
-        <button data-key="all" class="active" style="padding:6px 14px; border-radius:6px; border:1px solid var(--border); background:#eff6ff; border-color:#93c5fd; color:#1d4ed8; font-size:13px; font-weight:700; cursor:pointer;">전체</button>
-        <button data-key="1" style="padding:6px 14px; border-radius:6px; border:1px solid var(--border); background:#f8fafc; color:#64748b; font-size:13px; font-weight:700; cursor:pointer;">1Q</button>
-        <button data-key="2" style="padding:6px 14px; border-radius:6px; border:1px solid var(--border); background:#f8fafc; color:#64748b; font-size:13px; font-weight:700; cursor:pointer;">2Q</button>
-        <button data-key="3" style="padding:6px 14px; border-radius:6px; border:1px solid var(--border); background:#f8fafc; color:#64748b; font-size:13px; font-weight:700; cursor:pointer;">3Q</button>
-        <button data-key="4" style="padding:6px 14px; border-radius:6px; border:1px solid var(--border); background:#f8fafc; color:#64748b; font-size:13px; font-weight:700; cursor:pointer;">4Q</button>
+  <div id="viewRelate" class="rl sales-page-fit" style="display:none;">
+    <div class="period-row">
+      <span class="lbl">조회 기간</span>
+      <select class="select" id="yearSelectRelate"></select>
+      <div class="chip-row" id="quarterTabsRelate">
+        <button data-key="all" class="active">전체</button>
+        <button data-key="1">1Q</button>
+        <button data-key="2">2Q</button>
+        <button data-key="3">3Q</button>
+        <button data-key="4">4Q</button>
       </div>
-      <div style="margin-left:24px; padding-left:24px; border-left:1px solid var(--border); flex:1; display:flex; align-items:center; gap:0;" id="relateBrandTabsTop"></div>
+      <div class="rl-brand-tabs-host" id="relateBrandTabsTop"></div>
     </div>
     <!-- 핵심 메시지 (Hero) -->
     <div id="relateHero"></div>
