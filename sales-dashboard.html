@@ -967,6 +967,16 @@
   .sales-page .sv-stat-val{ font-size:14px !important; }
   .sales-page .sv-lists{ gap:6px !important; }
   .sales-page .sv-list{ padding:8px 10px !important; }
+  /* 담당자 탭 클릭 시 화면 길이가 출렁이지 않도록 detail 영역 고정 */
+  .sales-page #salesPersonDetail{
+    min-height: 360px;
+    display: block;
+  }
+  .sales-page .sv-list{
+    min-height: 168px;
+    overflow-y: auto;
+  }
+  .sales-page .sv-detail-card{ min-height: 168px; }
   .wrap{ padding-bottom:24px !important; }
   .period-row{ padding:8px 14px !important; margin-bottom:6px !important; }
 
