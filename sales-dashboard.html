@@ -4745,7 +4745,7 @@ function inferNexusInquiryStatus(item) {
   if (item['특이사항']) return '접수';
   return '접수';
 }
-function isInquiryConverted(siteName, inqDate) {
+function isInquiryConverted(siteName, inqDate, inqManagerName) {
   if (!siteName || String(siteName).length < 3 || !inqDate) return false;
   // 매칭 정규화:
   //  1) [지역명] 등 대괄호 prefix 제거 (시트 현장명에 자주 붙음)
@@ -4758,8 +4758,11 @@ function isInquiryConverted(siteName, inqDate) {
     .toLowerCase();
   const nSite = norm(siteName);
   if (nSite.length < 3) return false;
+  const mgr = String(inqManagerName || '').trim();
   return CONTRACTS.some(c => {
     if (!c.aptName || !c.contractAmount) return false;
+    // 담당자 일치 필수 — 응대만 한 inquiry 는 다른 사람의 계약을 자신의 전환으로 가져오면 안 됨
+    if (mgr && c.managerName && c.managerName !== mgr) return false;
     const nApt = norm(c.aptName);
     if (nApt.length < 3) return false;
     // 부분 매칭은 양쪽 7자 이상일 때만 (짧은 공통어로 잘못 매칭 방지: 예 "중앙하이츠")
@@ -4778,13 +4781,14 @@ async function syncInquiriesFromNexus(isAuto = true) {
     const mapped = payload.data.map(item => {
       const date = parseNexusInquiryDate(item['접수일시']);
       const siteName = item['현장명'] || '';
+      const managerName = (item['담당자'] || '').trim();  // 데이터에 " 이승우" 같이 공백 붙은 케이스 정규화
       return {
         date,
         siteName,
         type: (item['공사유형'] || '').trim(),
-        managerName: (item['담당자'] || '').trim(),  // 데이터에 " 이승우" 같이 공백 붙은 케이스 정규화
+        managerName,
         status: inferNexusInquiryStatus(item),
-        isConverted: isInquiryConverted(siteName, date),
+        isConverted: isInquiryConverted(siteName, date, managerName),
       };
     }).filter(x => x.date);
     mapped.sort((a, b) => b.date.localeCompare(a.date));
