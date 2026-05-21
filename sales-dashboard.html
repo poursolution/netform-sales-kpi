@@ -1872,7 +1872,7 @@ function renderFocusModal(){
       `<button class="focus-modal-tab ${tab === k ? 'active' : ''}" onclick="setFocusModalTab('${k}')">${l}<span class="cnt">${list.length}</span></button>`
     ).join('');
     const list = (order.find(([k]) => k === tab) || order[0])[2];
-    const sorted = [...list].sort((a,b) => (b.contractAmount||0) - (a.contractAmount||0));
+    const sorted = [...list].sort((a,b) => String(b.signedDate||'').localeCompare(String(a.signedDate||'')));
     const renderTypeBadge = (ct) => ct === '석민이앤씨'
       ? '<span style="background:#f3e8ff; color:#7c3aed; padding:2px 7px; border-radius:4px; font-size:11px; font-weight:700">석민이앤씨</span>'
       : '<span style="background:#dbeafe; color:#1d4ed8; padding:2px 7px; border-radius:4px; font-size:11px; font-weight:700">기술자문</span>';
@@ -1981,7 +1981,7 @@ function renderSalesPersonDetail(name){
   const ptRate = ptClosed ? `${row.winRate}%` : '-';
   const majorContracts = [...row.conts]
     .filter(c => c.contractAmount > 0)
-    .sort((a,b) => b.contractAmount - a.contractAmount);
+    .sort((a,b) => String(b.signedDate||'').localeCompare(String(a.signedDate||'')));
   const contractDisplay = majorContracts.slice(0, 5);
   const contractOverflow = majorContracts.length - contractDisplay.length;
   const contractLines = contractDisplay.length
@@ -2179,7 +2179,7 @@ function renderEvidenceLists(data){
     const group = revenueGroup(r.name);
     const majorContracts = [...r.conts]
       .filter(c => c.contractAmount > 0)
-      .sort((a,b) => b.contractAmount - a.contractAmount)
+      .sort((a,b) => String(b.signedDate||'').localeCompare(String(a.signedDate||'')))
       .slice(0, 3);
     const chips = majorContracts.length
       ? majorContracts.map(c => `<span class="evidence-chip">${escapeAttr(compactName(c.aptName, 22))} · ${fmtMoney(c.contractAmount)}</span>`).join('')
@@ -2403,7 +2403,7 @@ function renderAssigneeModal(){
 
   let tableHtml = '';
   if (tab === 'contract') {
-    const sorted = [...r.conts].sort((a,b)=>(b.contractAmount||0)-(a.contractAmount||0));
+    const sorted = [...r.conts].sort((a,b)=>String(b.signedDate||'').localeCompare(String(a.signedDate||'')));
     const advisorySum = sorted.filter(c=>c.contractType==='기술자문').reduce((s,c)=>s+(c.contractAmount||0),0);
     const seokminSum  = sorted.filter(c=>c.contractType==='석민이앤씨').reduce((s,c)=>s+(c.contractAmount||0),0);
     const renderTypeBadge = (ct) => ct === '석민이앤씨'
