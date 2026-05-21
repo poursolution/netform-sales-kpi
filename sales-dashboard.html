@@ -16,6 +16,15 @@
   .head-btn{padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:white; font-size:13px; font-weight:700; color:#334155; cursor:pointer; transition:0.2s;}
   .head-btn:hover{background:#f1f5f9} .head-btn.dark{background:#0f172a; color:white; border-color:#0f172a} .head-btn.dark:hover{background:#1e293b}
   .navrow{display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; gap:14px; flex-wrap:wrap}
+  .nav-presenter-hint{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:6px 12px; background:#0a0e1a; color:#fff;
+    border-radius:8px; font-size:11.5px; font-weight:700;
+    user-select:none; cursor:default;
+  }
+  .nav-presenter-hint .step{ background:rgba(255,255,255,0.15); padding:2px 8px; border-radius:999px; font-weight:850; }
+  .nav-presenter-hint .hint{ color:#cbd5e1; font-family:'JetBrains Mono', ui-monospace, monospace; font-size:10.5px; font-weight:600; letter-spacing:0.3px; }
+  .nav-presenter-hint .next{ color:#fff; font-weight:700; padding-left:10px; border-left:1px solid rgba(255,255,255,0.2); }
   .tabs{display:flex; gap:8px} .tabs button{padding:10px 22px; border-radius:999px; border:none; font-size:14px; font-weight:700; cursor:pointer; background:#e2e8f0; color:#475569; transition:0.2s}
   .tabs button.active{background:var(--nav-active); color:white}
   .period-row{display:flex; align-items:center; gap:12px; margin-bottom:24px; flex-wrap:wrap; background:white; padding:12px 20px; border-radius:12px; border:1px solid var(--border); box-shadow:0 1px 2px rgba(0,0,0,0.02)}
@@ -1245,6 +1254,11 @@
       <button id="tabTeamKpi" onclick="switchView('teamKpi')">3. 영업 KPI</button>
       <button id="tabPresentation" onclick="switchView('presentation')">4. 영업회의 발표</button>
     </div>
+    <div class="nav-presenter-hint" id="navPresenterHint" title="발표 모드: ← → 방향키, 1·2·3·4 직접, Space 다음">
+      <span class="step" id="navStep">1 / 4</span>
+      <span class="hint">← / → · Space · 1·2·3·4</span>
+      <span class="next" id="navNext">다음 → 릴레잇 현황</span>
+    </div>
   </div>
 
   <div id="viewMain">
@@ -2457,8 +2471,47 @@ function refresh(){
 
 // 화면 전환 (탭 클릭 시)
 let currentView = 'main';
+const PRES_TAB_ORDER = [
+  { view: 'main', label: '매출 현황' },
+  { view: 'relate', label: '릴레잇 현황' },
+  { view: 'teamKpi', label: '영업 KPI' },
+  { view: 'presentation', label: '영업회의 발표' },
+];
+function updatePresenterHint(view) {
+  const idx = PRES_TAB_ORDER.findIndex(t => t.view === view);
+  if (idx < 0) return;
+  const stepEl = document.getElementById('navStep');
+  const nextEl = document.getElementById('navNext');
+  if (stepEl) stepEl.textContent = `${idx + 1} / ${PRES_TAB_ORDER.length}`;
+  if (nextEl) {
+    const nxt = PRES_TAB_ORDER[idx + 1];
+    nextEl.textContent = nxt ? `다음 → ${nxt.label}` : '끝 ← 처음으로 (Space)';
+  }
+}
+// 발표용 단축키: ← → / Space / PageUp PageDown / 1·2·3·4
+document.addEventListener('keydown', (e) => {
+  const t = e.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable || t.tagName === 'SELECT')) return;
+  if (e.ctrlKey || e.altKey || e.metaKey) return;
+  const idx = PRES_TAB_ORDER.findIndex(t => t.view === currentView);
+  const cur = idx < 0 ? 0 : idx;
+  let target = null;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ' || e.key === 'Spacebar') {
+    target = (cur + 1) % PRES_TAB_ORDER.length;
+  } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    target = (cur - 1 + PRES_TAB_ORDER.length) % PRES_TAB_ORDER.length;
+  } else if (['1','2','3','4'].includes(e.key)) {
+    target = Number(e.key) - 1;
+  }
+  if (target !== null) {
+    e.preventDefault();
+    switchView(PRES_TAB_ORDER[target].view);
+  }
+});
+
 function switchView(view) {
   currentView = view;
+  updatePresenterHint(view);
   document.getElementById('viewMain').style.display = view === 'main' ? '' : 'none';
   document.getElementById('viewTeamKpi').style.display = view === 'teamKpi' ? '' : 'none';
   document.getElementById('viewRelate').style.display = view === 'relate' ? '' : 'none';
