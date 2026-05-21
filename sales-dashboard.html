@@ -1239,7 +1239,7 @@
 
 <div class="wrap">
   <div class="header">
-    <div class="brand">영업매출현황 데이터 <span class="tag">경영진 실시간 대시보드</span></div>
+    <div class="brand">영업 업무 트레커 <span class="tag">경영진 실시간 대시보드</span></div>
     <div class="head-actions">
       <button class="head-btn" onclick="openRelateSettings()" id="btnRelateKey">⚙️ Relate 공용 연동</button>
       <button class="head-btn" onclick="openInquirySettings()" id="btnInquirySheet">문의 시트 연결</button>
@@ -4938,9 +4938,12 @@ function parseNexusInquiryDate(s) {
   return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;
 }
 function inferNexusInquiryStatus(item) {
+  // 시트의 실제 '진행상태' 필드를 그대로 사용 (6단계: 전화응대 완료/종결/현장방문예정/견적서 발송예정/배정완료/종료)
+  const real = String(item['진행상태'] || '').trim();
+  if (real) return real;
+  // 비어있을 때만 추정 fallback
   if (item['배정일시']) return '배정완료';
   if (item['전화응대자']) return '전화응대 완료';
-  if (item['특이사항']) return '접수';
   return '접수';
 }
 function isInquiryConverted(siteName, inqDate, inqManagerName) {
