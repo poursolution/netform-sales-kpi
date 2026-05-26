@@ -948,6 +948,7 @@
   .sales-page .sv-detail-btn:hover{ background:#e5e7eb !important; }
   .sales-page .sv-detail-role.kpi  { background:#f3f4f6 !important; color:#0a0e1a !important; border:1px solid #d1d5db !important; }
   .sales-page .sv-detail-role.mgmt { background:#f3f4f6 !important; color:#374151 !important; border:1px solid #e5e7eb !important; }
+  .sales-page .sv-detail-role.director{ background:#eef2ff !important; color:#3730a3 !important; border:1px solid #c7d2fe !important; }
   .sales-page .sv-detail-role.other{ background:#f9fafb !important; color:#6b7280 !important; border:1px solid #e5e7eb !important; }
   /* Stat 값 컬러 */
   .sales-page .sv-stat-val.success,
@@ -1472,10 +1473,11 @@
 
 <div class="modal-backdrop hidden" id="modalBackdrop"><div class="modal" id="modal" onclick="event.stopPropagation()"></div></div>
 <script>
-const ASSIGNEES = ['황윤선','이필선','한준엽','한인규','정정훈','김성민','조재연','조성용','조민준']; 
+const ASSIGNEES = ['황윤선','이필선','한준엽','한인규','정정훈','김성민','조재연','조성용','전용성','조민준']; 
 const SALES_KPI_ASSIGNEES = ['이필선','한준엽','한인규','정정훈','김성민'];
 const MANAGER_REVENUE_ASSIGNEES = ['황윤선'];
-const SALES_PERSON_DISPLAY_ORDER = ['황윤선','이필선','한준엽','한인규','정정훈','김성민'];
+const DIRECTOR_REVENUE_ASSIGNEES = ['조성용','전용성'];  // 영업이사
+const SALES_PERSON_DISPLAY_ORDER = ['황윤선','이필선','한준엽','한인규','정정훈','김성민','조성용','전용성','조민준'];
 let STATE = { year: 2026, quarter: 'all', relateBrand: 'all' };
 function setRelateBrand(b) { STATE.relateBrand = b; if (LATEST_DATA) renderRelateAnalysis(LATEST_DATA); }
 
@@ -2082,7 +2084,8 @@ function salesPeriodMonths(){
 function revenueGroup(name){
   if (SALES_KPI_ASSIGNEES.includes(name)) return { key:'kpi', label:'KPI 담당자', order:0 };
   if (MANAGER_REVENUE_ASSIGNEES.includes(name)) return { key:'mgmt', label:'관리자 기여', order:1 };
-  return { key:'other', label:'기타/외부', order:2 };
+  if (DIRECTOR_REVENUE_ASSIGNEES.includes(name)) return { key:'director', label:'영업이사', order:2 };
+  return { key:'other', label:'기타/외부', order:3 };
 }
 
 function remainingMonthsForRunRate(){
