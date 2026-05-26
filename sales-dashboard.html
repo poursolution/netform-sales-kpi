@@ -412,6 +412,12 @@
   .focus-modal-table tbody tr:hover td{background:#fafbfc;}
   .focus-modal-table tbody td b{color:#0a0e1a; font-weight:800;}
   .focus-modal-empty{padding:48px 24px; text-align:center; color:#94a3b8; font-size:13px; font-weight:600;}
+  /* 계약 메모 (현장명 클릭으로 추가/수정, 호버로 내용 확인) */
+  .ct-note-trigger{ cursor:pointer; border-bottom:1px dashed transparent; transition:border-color .15s, color .15s; }
+  .ct-note-trigger:hover{ color:#1d4ed8; border-bottom-color:#1d4ed8; }
+  .ct-note-icon{ display:inline-block; font-size:11px; margin-left:4px; cursor:pointer; user-select:none; }
+  .ct-note-icon.empty{ color:#cbd5e1; font-size:14px; line-height:1; }
+  .ct-note-icon:hover{ filter:brightness(0.9); }
   .backdata-table{width:100%; border-collapse:collapse; font-size:12px; margin-bottom:12px;}
   .backdata-table th{background:#f8fafc; padding:10px 12px; text-align:left; color:var(--muted); font-weight:700; border-bottom:1px solid var(--border);}
   .backdata-table td{padding:10px 12px; border-bottom:1px solid var(--line); color:#334155; font-weight:600;}
@@ -1846,6 +1852,33 @@ function setFocusModalTab(tab){
   renderFocusModal();
 }
 
+// ─────────── 계약 메모 (localStorage) ───────────
+const CONTRACT_NOTES_KEY = 'netform_contract_notes_v1';
+let _contractNotes = (() => {
+  try { return JSON.parse(localStorage.getItem(CONTRACT_NOTES_KEY) || '{}') || {}; }
+  catch { return {}; }
+})();
+function contractNoteKey(c){
+  return [c.signedDate || '', c.aptName || '', c.managerName || '', (c.contractAmount || 0)].join('|');
+}
+function getContractNote(key){
+  return _contractNotes[key] || '';
+}
+function setContractNote(key, val){
+  if (val) _contractNotes[key] = val;
+  else delete _contractNotes[key];
+  try { localStorage.setItem(CONTRACT_NOTES_KEY, JSON.stringify(_contractNotes)); } catch {}
+}
+function openContractNoteEditor(key, aptName){
+  const cur = getContractNote(key);
+  const next = window.prompt(`[${aptName}] 메모 입력\n(왜 0원인지 / 진행 상황 / 사유 등)\n\n비우면 메모 삭제됩니다.`, cur);
+  if (next === null) return;  // 취소
+  setContractNote(key, next.trim());
+  // 현재 떠있는 모달 다시 그리기
+  if (_focusModalCtx) renderFocusModal();
+  else if (_assigneeModalCtx) renderAssigneeModal();
+}
+
 function renderFocusModal(){
   if (!_focusModalCtx) return;
   const { name, focus, tab } = _focusModalCtx;
@@ -1883,9 +1916,15 @@ function renderFocusModal(){
       const feeCell = (ct === '기술자문' && (c.feeAmount || 0) > 0)
         ? `<b style="color:#1d4ed8">${fmtFullMoney(c.feeAmount)}</b>`
         : '<span style="color:#94a3b8">-</span>';
+      const noteKey = contractNoteKey(c);
+      const noteText = getContractNote(noteKey);
+      const noteIcon = noteText
+        ? `<span class="ct-note-icon" title="${escapeAttr(noteText)}">📝</span>`
+        : `<span class="ct-note-icon empty">＋</span>`;
+      const aptHover = noteText || '클릭해서 메모 입력';
       return `<tr>
         <td>${c.signedDate || '-'}</td>
-        <td><b>${escapeHtml(c.aptName || '-')}</b></td>
+        <td><b class="ct-note-trigger" onclick="openContractNoteEditor('${escapeAttr(noteKey)}','${escapeAttr(c.aptName||'')}')" title="${escapeAttr(aptHover)}">${escapeHtml(c.aptName || '-')}</b> ${noteIcon}</td>
         <td class="center">${renderTypeBadge(ct)}</td>
         <td class="right"><b>${fmtFullMoney(c.contractAmount || 0)}</b></td>
         <td class="right">${feeCell}</td>
@@ -2427,7 +2466,13 @@ function renderAssigneeModal(){
         ? `<b style="color:#1d4ed8">${fmtFullMoney(c.feeAmount)}</b>`
         : '<span style="color:#94a3b8">-</span>';
       const work = c.workName ? escapeHtml(c.workName) : '<span style="color:#94a3b8">-</span>';
-      return `<tr><td>${c.signedDate||'-'}</td><td><b>${escapeHtml(c.aptName||'-')}</b></td><td style="color:#475569; font-size:12px; max-width:280px;">${work}</td><td class="center">${renderTypeBadge(ct)}</td><td class="right"><b>${fmtFullMoney(c.contractAmount||0)}</b></td><td class="right">${feeCell}</td></tr>`;
+      const noteKey = contractNoteKey(c);
+      const noteText = getContractNote(noteKey);
+      const noteIcon = noteText
+        ? `<span class="ct-note-icon" title="${escapeAttr(noteText)}">📝</span>`
+        : `<span class="ct-note-icon empty">＋</span>`;
+      const aptHover = noteText || '클릭해서 메모 입력';
+      return `<tr><td>${c.signedDate||'-'}</td><td><b class="ct-note-trigger" onclick="openContractNoteEditor('${escapeAttr(noteKey)}','${escapeAttr(c.aptName||'')}')" title="${escapeAttr(aptHover)}">${escapeHtml(c.aptName||'-')}</b> ${noteIcon}</td><td style="color:#475569; font-size:12px; max-width:280px;">${work}</td><td class="center">${renderTypeBadge(ct)}</td><td class="right"><b>${fmtFullMoney(c.contractAmount||0)}</b></td><td class="right">${feeCell}</td></tr>`;
     }).join('');
     tableHtml = sorted.length
       ? `${summary}<table class="focus-modal-table"><thead><tr><th>계약일</th><th>현장명(아파트)</th><th>공사명</th><th class="center">유형</th><th class="right">낙찰금액</th><th class="right">매출계약금<br><span style="font-size:10px; color:#94a3b8; font-weight:600;">(기술자문료)</span></th></tr></thead><tbody>${rows}</tbody></table>`
