@@ -25,20 +25,20 @@
     --border: #E5E7EB;
     --border-strong: #D1D5DB;
     
-    /* Primary Colors */
-    --blue: #2563EB;
-    --blue-soft: #DBEAFE;
-    --blue-tint: #EFF6FF;
-    --green: #059669;
-    --green-soft: #D1FAE5;
-    --green-tint: #ECFDF5;
-    --orange: #EA580C;
-    --orange-soft: #FFEDD5;
-    --orange-tint: #FFF7ED;
-    --purple: #7C3AED;
-    --purple-soft: #EDE9FE;
-    --purple-tint: #F5F3FF;
-    --danger: #DC2626;
+    /* Pastel palette — 원색 대신 유한 파스텔톤 */
+    --blue: #6E8BC0;
+    --blue-soft: #DEE7F4;
+    --blue-tint: #F0F4FA;
+    --green: #7BAE95;
+    --green-soft: #DCEBE3;
+    --green-tint: #F0F6F3;
+    --orange: #C9A06E;
+    --orange-soft: #F0E4D4;
+    --orange-tint: #F9F3EB;
+    --purple: #9D90C2;
+    --purple-soft: #E5E0F0;
+    --purple-tint: #F3F1F9;
+    --danger: #C77B7B;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -226,6 +226,18 @@
   .team-kpi.green .progress-fill { background: var(--green); }
   .team-kpi.purple .progress-fill { background: var(--purple); }
   .progress-pct { font-size: 13px; color: var(--ink-2); font-weight: 700; min-width: 40px; text-align: right; }
+
+  /* 성과 기반 상태색 — 달성 초록 / 주의 주황 / 위험 빨강 / 데이터없음 회색 (비율형 KPI에만) */
+  .progress-fill.pf-good { background: #8FC2A8 !important; }
+  .progress-fill.pf-warn { background: #E6C892 !important; }
+  .progress-fill.pf-bad  { background: #DDA1A1 !important; }
+  .progress-fill.pf-none { background: #E5E7EB !important; }
+  .pct-good { color: #5F9A7E !important; }
+  .pct-warn { color: #B58A47 !important; }
+  .pct-bad  { color: #C07A7A !important; }
+  .pct-none { color: var(--ink-4) !important; }
+  /* 진척 숫자를 더 크게 — '봐야 되는 내용'이 중심 */
+  .status-pct { font-size: 15px !important; font-weight: 800 !important; }
 
   .ops-rule {
     display: grid;
@@ -510,6 +522,37 @@
   .goal-kpi-fill { height: 100%; background: var(--blue); border-radius: 999px; }
   .goal-soon { font-size: 11px; font-weight: 800; color: var(--ink-4); background: var(--bg); border: 1px solid var(--border); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
   .goal-soon.wait { color: var(--orange); background: var(--orange-tint); border-color: var(--orange-soft); }
+
+  /* 팀 전환 토글 (영업팀 / 서비스1팀) */
+  #salesTeamView, #serviceTeamView { display: flex; flex-direction: column; gap: 20px; }
+  #salesTeamView[hidden], #serviceTeamView[hidden] { display: none; }
+  .kpi-team-toggle { display: inline-flex; gap: 4px; padding: 4px; background: #EEF1F6; border: 1px solid var(--border); border-radius: 12px; align-self: flex-start; }
+  .kt-btn { border: none; background: transparent; color: var(--ink-3); font-size: 13.5px; font-weight: 700; padding: 8px 18px; border-radius: 9px; cursor: pointer; transition: all .15s; }
+  .kt-btn:hover { color: var(--ink); }
+  .kt-btn.active { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+  /* 서비스1팀 핵심 KPI 카드 */
+  .s1-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+  .s1-no { font-size: 10px; font-weight: 800; color: var(--blue); letter-spacing: 0.03em; margin-bottom: 8px; }
+  .s1-val { display: flex; align-items: baseline; gap: 4px; margin-bottom: 12px; }
+  .s1-input { width: 64px; background: transparent; border: none; border-bottom: 2px solid var(--border); font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); padding: 2px 2px 4px; }
+  .team-kpi.blue .s1-input { color: var(--blue); }
+  .team-kpi.green .s1-input { color: var(--green); }
+  .team-kpi.purple .s1-input { color: var(--purple); }
+  .s1-input:focus { outline: none; border-bottom-color: var(--blue); }
+  .s1-slash { color: var(--ink-4); font-size: 18px; }
+  .s1-target { font-size: 18px; font-weight: 700; color: var(--ink-3); }
+  .s1-unit { font-size: 13px; font-weight: 600; color: var(--ink-3); }
+  .s1-desc { font-size: 11.5px; color: var(--ink-3); font-weight: 500; line-height: 1.45; margin-top: 10px; }
+
+  /* 서비스1팀 단계별 상세 표 */
+  .s1-table td { vertical-align: middle; }
+  .s1-stage-pill { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 11.5px; font-weight: 700; color: var(--ink-2); background: #EEF1F6; white-space: nowrap; }
+  .s1-d-name { font-size: 13.5px; font-weight: 800; color: var(--ink); }
+  .s1-d-formula { font-size: 11.5px; color: var(--ink-4); margin-top: 2px; }
+  .s1-d-target { font-size: 12.5px; font-weight: 700; color: var(--ink-2); }
+  .s1-d-input { width: 56px; border: 1px solid var(--border-strong); border-radius: 7px; padding: 6px 8px; font-size: 13px; font-weight: 700; color: var(--ink); }
+  .s1-d-input:focus { outline: 2px solid var(--blue-soft); border-color: var(--blue); }
 
   /* Tabs */
   .tabs-wrap {
@@ -1031,6 +1074,11 @@
   </div>
 
   <div class="app-view" id="view-member">
+    <div class="kpi-team-toggle">
+      <button class="kt-btn active" id="ktSales" type="button" onclick="switchKpiTeam('sales')">영업팀</button>
+      <button class="kt-btn" id="ktService" type="button" onclick="switchKpiTeam('service')">서비스1팀</button>
+    </div>
+    <div id="salesTeamView">
     <div class="section-card">
     <div class="section-head">
       <h2>팀 전체 핵심 지표 (Core KPI)</h2>
@@ -1062,6 +1110,8 @@
     </div>
     <div class="kpi-pool-body" id="kpiPoolBody"></div>
   </div>
+  </div>
+  <div id="serviceTeamView" hidden></div>
   </div>
 
 </div>
@@ -1498,6 +1548,15 @@ function kpiProgress(kpi) {
   return { pct, label: `${pct.toFixed(0)}%` };
 }
 function isInverse(unit) { return unit && unit.includes('↓'); }
+// 성과 기반 상태색 (비율형 KPI): 달성≥100 초록 / ≥70 주황 / >0 빨강 / 0·무데이터 회색
+function perfStatus(pct, hasData) {
+  if (hasData === false) return { fill: 'pf-none', text: 'pct-none' };
+  const p = Number(pct) || 0;
+  if (p >= 100) return { fill: 'pf-good', text: 'pct-good' };
+  if (p >= 70)  return { fill: 'pf-warn', text: 'pct-warn' };
+  if (p > 0)    return { fill: 'pf-bad',  text: 'pct-bad' };
+  return { fill: 'pf-none', text: 'pct-none' };
+}
 function getMember(id) { return state.members.find(m => m.id === id); }
 function toInteger(value, fallback = 0) {
   const num = Number(value);
@@ -2002,6 +2061,94 @@ function renderTeamRepKpiRow(k) {
   `;
 }
 
+// ===== 서비스1팀 KPI (영업 KPI 탭 내 팀 전환 · 수기 입력) =====
+const SERVICE1_CORE = [
+  { id:'s1', no:1, name:'현장전환 준비 완료율',     target:95, color:'blue',   desc:'영업기회가 착공 가능한 상태로 전환된 비율' },
+  { id:'s2', no:2, name:'PT 현장지원 완결률',       target:95, color:'purple', desc:'PT 승률을 높이기 위한 현장지원 완료율' },
+  { id:'s3', no:3, name:'착공 전 리스크 사전차단율', target:95, color:'green',  desc:'착공 후 문제로 번질 리스크를 사전 차단한 비율' },
+  { id:'s4', no:4, name:'공사중 감리 이행률',       target:90, color:'blue',   desc:'공사 진행 중 품질 리스크를 현장에서 확인한 비율' },
+  { id:'s5', no:5, name:'준공 품질검수 완료율',     target:95, color:'green',  desc:'준공 전 품질 리스크를 최종 확인한 비율' }
+];
+const SERVICE1_STAGE_COLOR = { '유입':'#2563EB','영업지원':'#7C3AED','공사준비':'#0891B2','착공':'#EA580C','공사중':'#059669','준공':'#475569' };
+const SERVICE1_DETAIL = [
+  { stage:'유입',     name:'신규업체 미팅 진행률',        formula:'완료 미팅 ÷ 계획 미팅 ×100',        target:'90% 이상' },
+  { stage:'유입',     name:'미팅 후 후속조치 완료율',     formula:'후속자료/협약안내 완료 ÷ 미팅 완료 ×100', target:'95% 이상' },
+  { stage:'영업지원', name:'영업문의 응대 완료율',        formula:'응대 완료 ÷ 문의 접수 ×100',         target:'95% 이상' },
+  { stage:'영업지원', name:'PT 지원 이행률',             formula:'PT 지원 완료 ÷ PT 지원 요청 ×100',   target:'95% 이상' },
+  { stage:'공사준비', name:'착공 1주 전 노임산출 완료율', formula:'D-7 전 산출 완료 ÷ 착공 예정 ×100',  target:'95% 이상' },
+  { stage:'착공',     name:'착공 전 특이사항 파악 완료율', formula:'특이사항 기록 완료 ÷ 착공 대상 ×100', target:'95% 이상' },
+  { stage:'공사중',   name:'감리 방문 이행률',           formula:'감리 방문 완료 ÷ 감리 대상 ×100',    target:'90% 이상' },
+  { stage:'공사중',   name:'감리 이슈 조치완료율',       formula:'조치완료 이슈 ÷ 발생 이슈 ×100',     target:'90% 이상' },
+  { stage:'준공',     name:'준공 품질검수 완료율',       formula:'품질검수 완료 ÷ 준공 대상 ×100',     target:'95% 이상' },
+  { stage:'준공',     name:'품질검수 지적률',           formula:'지적 발생 ÷ 품질검수 ×100',         target:'낮을수록 좋음' }
+];
+const SERVICE1_KEY = 'service1-kpi-values';
+function loadService1Values(){ try { return JSON.parse(localStorage.getItem(SERVICE1_KEY) || '{}'); } catch(e){ return {}; } }
+function saveService1Value(key, val){
+  const v = loadService1Values();
+  if (val === '' || val === null || val === undefined) delete v[key]; else v[key] = Number(val);
+  try { localStorage.setItem(SERVICE1_KEY, JSON.stringify(v)); } catch(e){}
+}
+function switchKpiTeam(team){
+  const sales = document.getElementById('salesTeamView');
+  const svc = document.getElementById('serviceTeamView');
+  const bs = document.getElementById('ktSales'), bv = document.getElementById('ktService');
+  if (!sales || !svc) return;
+  if (team === 'service'){
+    sales.hidden = true; svc.hidden = false;
+    if (bs) bs.classList.remove('active'); if (bv) bv.classList.add('active');
+    renderService1Team();
+  } else {
+    sales.hidden = false; svc.hidden = true;
+    if (bv) bv.classList.remove('active'); if (bs) bs.classList.add('active');
+  }
+  try { localStorage.setItem('kpi-active-team', team); } catch(e){}
+}
+function renderService1Team(){
+  const wrap = document.getElementById('serviceTeamView');
+  if (!wrap) return;
+  const vals = loadService1Values();
+  const cards = SERVICE1_CORE.map(k => {
+    const cur = vals[k.id];
+    const has = cur !== undefined && cur !== '' && cur !== null;
+    const pct = has ? Math.max(0, Math.min(100, Math.round(Number(cur) / k.target * 100))) : 0;
+    return `<div class="team-kpi ${k.color}">
+      <div class="s1-no">우선순위 ${k.no}</div>
+      <div class="team-kpi-name">${escapeHtml(k.name)}</div>
+      <div class="s1-val">
+        <input type="number" class="s1-input" value="${has ? Number(cur) : ''}" placeholder="—" min="0" max="100"
+          onchange="saveService1Value('${k.id}', this.value); renderService1Team();">
+        <span class="s1-slash">/</span><span class="s1-target">${k.target}</span><span class="s1-unit">%</span>
+      </div>
+      <div class="progress-row"><div class="progress-bar"><div class="progress-fill ${perfStatus(pct, has).fill}" style="width:${pct}%"></div></div><span class="progress-pct ${perfStatus(pct, has).text}">${has ? pct + '%' : '입력 예정'}</span></div>
+      <div class="s1-desc">${escapeHtml(k.desc)}</div>
+    </div>`;
+  }).join('');
+  const rows = SERVICE1_DETAIL.map((d, i) => {
+    const cur = vals['d' + i];
+    const has = cur !== undefined && cur !== '' && cur !== null;
+    return `<tr>
+      <td><span class="s1-stage-pill">${escapeHtml(d.stage)}</span></td>
+      <td><div class="s1-d-name">${escapeHtml(d.name)}</div><div class="s1-d-formula">${escapeHtml(d.formula)}</div></td>
+      <td class="s1-d-target">${escapeHtml(d.target)}</td>
+      <td><input type="number" class="s1-d-input" value="${has ? Number(cur) : ''}" placeholder="—" min="0" max="100" onchange="saveService1Value('d${i}', this.value);"> %</td>
+    </tr>`;
+  }).join('');
+  wrap.innerHTML = `
+    <div class="section-card">
+      <div class="section-head"><h2>서비스1팀 KPI</h2><div class="meta">영업 이후 공사 실행 · 단계별 완결률</div></div>
+      <div class="team-mission"><span class="label">팀 미션</span><span class="text">영업기회를 누락 없이 착공·준공까지 전환시키는 현장 실행 — '했다/안 했다'가 아니라 단계별 완결률로 관리합니다. (값은 수기 입력)</span></div>
+      <div class="s1-cards">${cards}</div>
+    </div>
+    <div class="section-card" style="padding-top:16px;">
+      <div class="section-head"><h2>단계별 상세 KPI</h2><div class="meta">유입 → 영업지원 → 공사준비 → 착공 → 공사중 → 준공</div></div>
+      <table class="team-rep-table s1-table">
+        <thead><tr><th style="width:90px;">단계</th><th>KPI / 산식</th><th style="width:120px;">목표</th><th style="width:110px;">현재(%)</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
 function updateTeamKpi(id, field, value, source) {
   const kpi = state.teamKpis.find(k => k.id === id);
   if (kpi) {
@@ -2229,8 +2376,8 @@ function renderSubKpi(memberId, sk) {
       <td><div class="ops-stack">${renderPill(EVIDENCE_LABELS[sk.evidenceLevel] || sk.evidenceLevel || '자기입력', evidenceClass(sk.evidenceLevel))}${renderPill(sk.status || '입력전', STATUS_CLASS[sk.status] || 'wait')}</div></td>
       <td>
         <div class="status-cell">
-          <div class="progress-bar"><div class="progress-fill" style="width:${progress.pct}%"></div></div>
-          <span class="status-pct">${progress.label}</span>
+          <div class="progress-bar"><div class="progress-fill ${perfStatus(progress.pct).fill}" style="width:${progress.pct}%"></div></div>
+          <span class="status-pct ${perfStatus(progress.pct).text}">${progress.label}</span>
         </div>
       </td>
       <td>
@@ -2913,6 +3060,8 @@ renderTeamKpis();
 renderTabs();
 renderMemberPanel();
 renderKpiPool();
+// 마지막으로 본 팀(영업팀/서비스1팀) 복원
+try { switchKpiTeam(localStorage.getItem('kpi-active-team') === 'service' ? 'service' : 'sales'); } catch (e) {}
 window.addEventListener('storage', event => {
   if (event.key === SALES_LIVE_KPI_KEY) syncSalesLiveKpis({ render: true });
 });
