@@ -42,29 +42,31 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  button, input, select, textarea { font-family: inherit; font-size: inherit; }
   html, body { height: 100%; }
   body {
     font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
     background: var(--bg);
     color: var(--ink);
     padding: 32px 24px;
+    font-size: 15px;
     line-height: 1.5;
     letter-spacing: -0.01em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
-  .page { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+  .page { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
 
-  /* Header */
+  /* Header — 가벼운 타이틀 줄 (이중 헤더 방지) */
   .head {
-    background: var(--surface);
-    border-radius: 16px;
-    padding: 22px 30px;
+    background: transparent;
+    border-radius: 0;
+    padding: 2px 4px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: none;
   }
   .head .title-area h1 { font-size: 24px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
   .head .title-area .sub { font-size: 13px; color: var(--ink-3); margin-top: 6px; font-weight: 500; }
@@ -103,7 +105,7 @@
     border-radius: 10px;
     background: transparent;
     color: var(--ink-3);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 850;
     padding: 12px 14px;
     cursor: pointer;
@@ -115,30 +117,30 @@
     color: var(--surface);
     box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
   }
-  .app-view { display: flex; flex-direction: column; gap: 20px; }
+  .app-view { display: flex; flex-direction: column; gap: 28px; }
   .app-view[hidden] { display: none; }
 
   /* Team KPI Section */
   .section-card {
     background: var(--surface);
-    border-radius: 16px;
-    padding: 24px 28px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    border-radius: 14px;
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.05), 0 10px 28px rgba(15,23,42,0.04);
   }
   .section-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
   .section-head h2 { font-size: 18px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; }
-  .section-head .meta { font-size: 12px; color: var(--ink-3); font-weight: 500; }
+  .section-head .meta { font-size: 13px; color: var(--ink-3); font-weight: 500; }
   .team-mission {
     display: flex; align-items: baseline; gap: 10px;
     padding: 0 2px 14px; margin-bottom: 18px;
     border-bottom: 1px solid var(--border);
   }
   .team-mission .label {
-    font-size: 10px; color: var(--blue); font-weight: 800; letter-spacing: 0.04em;
+    font-size: 11px; color: var(--blue); font-weight: 800; letter-spacing: 0.04em;
     text-transform: uppercase; white-space: nowrap; flex-shrink: 0;
     background: var(--blue-tint); padding: 3px 9px; border-radius: 999px;
   }
-  .team-mission .text { font-size: 12.5px; color: var(--ink-3); font-weight: 600; line-height: 1.5; }
+  .team-mission .text { font-size: 13px; color: var(--ink-3); font-weight: 600; line-height: 1.5; }
 
   .team-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   .team-kpi {
@@ -157,13 +159,13 @@
   .team-kpi.purple::before { background: var(--purple); }
 
   .team-kpi-name {
-    font-size: 14px; color: var(--ink-2); font-weight: 700; margin-bottom: 12px;
+    font-size: 15px; color: var(--ink-2); font-weight: 700; margin-bottom: 12px;
     width: 100%; padding: 4px 0; line-height: 1.4;
   }
   
   .team-kpi-values { display: flex; align-items: baseline; gap: 4px; margin-bottom: 12px; }
   .num-input {
-    background: transparent; border: none; font-weight: 800; font-size: 28px;
+    background: transparent; border: none; font-weight: 800; font-size: 30px;
     letter-spacing: -0.02em; width: 92px; padding: 2px 4px; border-radius: 6px;
   }
   .team-kpi.blue .num-input { color: var(--blue); }
@@ -171,10 +173,10 @@
   .team-kpi.purple .num-input { color: var(--purple); }
   .num-input:focus { outline: 2px solid var(--blue-soft); background: var(--bg); }
   
-  .slash { color: var(--ink-4); font-weight: 400; font-size: 20px; margin: 0 4px; }
-  .num-input.target { color: var(--ink-3); font-size: 20px; width: 78px; font-weight: 700; }
+  .slash { color: var(--ink-4); font-weight: 400; font-size: 18px; margin: 0 4px; }
+  .num-input.target { color: var(--ink-3); font-size: 18px; width: 78px; font-weight: 700; }
   .unit-input {
-    background: transparent; border: none; color: var(--ink-3); font-size: 14px; font-weight: 600; width: 40px;
+    background: transparent; border: none; color: var(--ink-3); font-size: 15px; font-weight: 600; width: 40px;
   }
   .metric-readonly {
     display: inline-flex;
@@ -196,7 +198,7 @@
     padding: 3px 7px;
     background: var(--green-tint);
     color: var(--green);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 800;
     white-space: nowrap;
   }
@@ -212,7 +214,7 @@
     border-radius: 10px;
     background: #F8FAFC;
     color: var(--ink-3);
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 700;
   }
   .live-sync-banner .state { color: var(--green); font-weight: 800; }
@@ -267,7 +269,7 @@
     background: var(--surface);
   }
   .ops-card .value { font-size: 30px; font-weight: 900; color: var(--ink); letter-spacing: -0.02em; }
-  .ops-card .label { margin-top: 4px; font-size: 12px; color: var(--ink-3); font-weight: 800; }
+  .ops-card .label { margin-top: 4px; font-size: 13px; color: var(--ink-3); font-weight: 800; }
   .ops-card .sub-label { margin-top: 8px; font-size: 11px; color: var(--ink-3); font-weight: 800; }
   .ops-card.blue .value { color: var(--blue); }
   .ops-card.orange .value { color: var(--orange); }
@@ -285,7 +287,7 @@
     background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
   }
   .ops-cycle-title { font-size: 18px; font-weight: 800; color: var(--ink); margin: 8px 0 4px; }
-  .ops-cycle-desc { font-size: 12px; font-weight: 750; color: var(--ink-3); line-height: 1.45; }
+  .ops-cycle-desc { font-size: 13px; font-weight: 750; color: var(--ink-3); line-height: 1.45; }
   .ops-stage-chip {
     display: inline-flex;
     align-items: center;
@@ -310,7 +312,7 @@
   }
   .ops-deadline .name { font-size: 11px; color: var(--ink-3); font-weight: 900; }
   .ops-deadline .date { margin-top: 6px; font-size: 13px; color: var(--ink); font-weight: 900; }
-  .ops-deadline .dday { margin-top: 5px; font-size: 12px; color: var(--blue); font-weight: 800; }
+  .ops-deadline .dday { margin-top: 5px; font-size: 13px; color: var(--blue); font-weight: 800; }
   .ops-deadline.overdue .dday { color: var(--danger); }
   .ops-toolbar {
     display: flex;
@@ -348,7 +350,7 @@
     align-items: center;
     background: #FAFBFF !important;
     color: var(--ink) !important;
-    font-size: 14px !important;
+    font-size: 15px !important;
   }
   .ops-group-row td {
     background: #F8FAFC;
@@ -417,7 +419,7 @@
     padding: 11px 10px;
     border-bottom: 1px solid var(--border);
     vertical-align: middle;
-    font-size: 12px;
+    font-size: 13px;
   }
   .ops-table th,
   .master-table th {
@@ -435,7 +437,7 @@
     justify-content: center;
     border-radius: 999px;
     padding: 4px 8px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 900;
     white-space: nowrap;
     background: var(--bg);
@@ -475,14 +477,15 @@
   }
   .team-rep-kpis-title { font-size: 18px; font-weight: 900; color: var(--ink); letter-spacing: -0.01em; }
   .team-rep-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-  .team-rep-table th, .team-rep-table td { padding: 13px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .team-rep-table th, .team-rep-table td { padding: 16px 12px; border-bottom: 1px solid #F1F3F7; vertical-align: middle; }
+  .team-rep-table th { padding-top: 6px; padding-bottom: 12px; }
   .team-rep-table tr:last-child td { border-bottom: none; }
-  .team-rep-table th { text-align: left; font-size: 12px; color: var(--ink-3); background: var(--bg); font-weight: 850; }
-  .team-rep-table .kpi-name-text { font-size: 14px; font-weight: 900; }
-  .team-rep-table .formula-text { font-size: 12px; line-height: 1.45; }
-  .team-rep-table .num-cell { width: 64px; font-size: 14px; padding: 7px 9px; }
+  .team-rep-table th { text-align: left; font-size: 11px; color: var(--ink-4); background: transparent; font-weight: 800; }
+  .team-rep-table .kpi-name-text { font-size: 15px; font-weight: 900; }
+  .team-rep-table .formula-text { font-size: 13px; line-height: 1.45; }
+  .team-rep-table .num-cell { width: 64px; font-size: 15px; padding: 7px 9px; }
   .team-rep-table .metric-inputs { grid-template-columns:64px 8px 64px 52px; }
-  .team-rep-table .status-pct { font-size: 14px; min-width: 40px; }
+  .team-rep-table .status-pct { font-size: 15px; min-width: 40px; }
   .team-rep-table .status-cell .progress-bar { width: 64px; height: 7px; }
   .team-rep-table .progress-fill { background: var(--blue); }
 
@@ -490,7 +493,7 @@
   .team-goals { margin-top: 22px; display: flex; flex-direction: column; gap: 12px; }
   .team-goals-head { margin-bottom: 2px; }
   .team-goals-title { font-size: 18px; font-weight: 900; color: var(--ink); letter-spacing: -0.01em; }
-  .team-goals-sub { font-size: 12px; color: var(--ink-3); margin-top: 3px; font-weight: 600; }
+  .team-goals-sub { font-size: 13px; color: var(--ink-3); margin-top: 3px; font-weight: 600; }
   .goal-card { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface); border-left: 4px solid var(--ink-4); }
   .goal-card.blue { border-left-color: var(--blue); }
   .goal-card.green { border-left-color: var(--green); }
@@ -502,40 +505,40 @@
   .goal-card.blue .goal-num { background: var(--blue); }
   .goal-card.green .goal-num { background: var(--green); }
   .goal-card.purple .goal-num { background: var(--purple); }
-  .goal-name { font-size: 16px; font-weight: 900; color: var(--ink); letter-spacing: -0.01em; }
-  .goal-target { font-size: 12px; color: var(--ink-3); font-weight: 600; margin-top: 1px; }
+  .goal-name { font-size: 15px; font-weight: 900; color: var(--ink); letter-spacing: -0.01em; }
+  .goal-target { font-size: 13px; color: var(--ink-3); font-weight: 600; margin-top: 1px; }
   .goal-head-metric { display: flex; align-items: baseline; gap: 6px; white-space: nowrap; }
-  .goal-head-metric .v { font-size: 22px; font-weight: 900; color: var(--ink); }
+  .goal-head-metric .v { font-size: 24px; font-weight: 900; color: var(--ink); }
   .goal-head-metric .t { font-size: 13px; color: var(--ink-3); font-weight: 700; }
   .goal-head-metric .goal-pct { font-size: 13px; font-weight: 900; color: var(--blue); margin-left: 6px; }
   .goal-kpis { padding: 4px 0; }
   .goal-kpi { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 11px 18px 11px 50px; border-bottom: 1px solid var(--border); }
   .goal-kpi:last-child { border-bottom: none; }
   .goal-kpi-info { min-width: 0; }
-  .goal-kpi-name { font-size: 13.5px; font-weight: 800; color: var(--ink-2); }
-  .goal-kpi-formula { font-size: 11.5px; color: var(--ink-4); margin-top: 2px; line-height: 1.4; }
+  .goal-kpi-name { font-size: 13px; font-weight: 800; color: var(--ink-2); }
+  .goal-kpi-formula { font-size: 11px; color: var(--ink-4); margin-top: 2px; line-height: 1.4; }
   .goal-kpi-val { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; min-width: 150px; }
   .goal-kpi-num { display: flex; align-items: baseline; gap: 5px; }
-  .goal-kpi-num .v { font-size: 17px; font-weight: 900; color: var(--blue); }
-  .goal-kpi-num .t { font-size: 12px; color: var(--ink-3); font-weight: 700; }
+  .goal-kpi-num .v { font-size: 18px; font-weight: 900; color: var(--blue); }
+  .goal-kpi-num .t { font-size: 13px; color: var(--ink-3); font-weight: 700; }
   .goal-kpi-bar { width: 150px; height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; }
   .goal-kpi-fill { height: 100%; background: var(--blue); border-radius: 999px; }
   .goal-soon { font-size: 11px; font-weight: 800; color: var(--ink-4); background: var(--bg); border: 1px solid var(--border); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
   .goal-soon.wait { color: var(--orange); background: var(--orange-tint); border-color: var(--orange-soft); }
 
   /* 팀 전환 토글 (영업팀 / 서비스1팀) */
-  #salesTeamView, #serviceTeamView { display: flex; flex-direction: column; gap: 20px; }
+  #salesTeamView, #serviceTeamView { display: flex; flex-direction: column; gap: 28px; }
   #salesTeamView[hidden], #serviceTeamView[hidden] { display: none; }
   .kpi-team-toggle { display: inline-flex; gap: 4px; padding: 4px; background: #EEF1F6; border: 1px solid var(--border); border-radius: 12px; align-self: flex-start; }
-  .kt-btn { border: none; background: transparent; color: var(--ink-3); font-size: 13.5px; font-weight: 700; padding: 8px 18px; border-radius: 9px; cursor: pointer; transition: all .15s; }
+  .kt-btn { border: none; background: transparent; color: var(--ink-3); font-size: 13px; font-weight: 700; padding: 8px 18px; border-radius: 9px; cursor: pointer; transition: all .15s; }
   .kt-btn:hover { color: var(--ink); }
   .kt-btn.active { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
 
   /* 서비스1팀 핵심 KPI 카드 */
   .s1-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
-  .s1-no { font-size: 10px; font-weight: 800; color: var(--blue); letter-spacing: 0.03em; margin-bottom: 8px; }
+  .s1-no { font-size: 11px; font-weight: 800; color: var(--blue); letter-spacing: 0.03em; margin-bottom: 8px; }
   .s1-val { display: flex; align-items: baseline; gap: 4px; margin-bottom: 12px; }
-  .s1-input { width: 64px; background: transparent; border: none; border-bottom: 2px solid var(--border); font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); padding: 2px 2px 4px; }
+  .s1-input { width: 64px; background: transparent; border: none; border-bottom: 2px solid var(--border); font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); padding: 2px 2px 4px; }
   .team-kpi.blue .s1-input { color: var(--blue); }
   .team-kpi.green .s1-input { color: var(--green); }
   .team-kpi.purple .s1-input { color: var(--purple); }
@@ -543,23 +546,51 @@
   .s1-slash { color: var(--ink-4); font-size: 18px; }
   .s1-target { font-size: 18px; font-weight: 700; color: var(--ink-3); }
   .s1-unit { font-size: 13px; font-weight: 600; color: var(--ink-3); }
-  .s1-desc { font-size: 11.5px; color: var(--ink-3); font-weight: 500; line-height: 1.45; margin-top: 10px; }
+  .s1-desc { font-size: 11px; color: var(--ink-3); font-weight: 500; line-height: 1.45; margin-top: 10px; }
 
   /* 서비스1팀 단계별 상세 표 */
   .s1-table td { vertical-align: middle; }
-  .s1-stage-pill { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 11.5px; font-weight: 700; color: var(--ink-2); background: #EEF1F6; white-space: nowrap; }
-  .s1-d-name { font-size: 13.5px; font-weight: 800; color: var(--ink); }
-  .s1-d-formula { font-size: 11.5px; color: var(--ink-4); margin-top: 2px; }
-  .s1-d-target { font-size: 12.5px; font-weight: 700; color: var(--ink-2); }
+  .s1-stage-pill { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 11px; font-weight: 700; color: var(--ink-2); background: #EEF1F6; white-space: nowrap; }
+  .s1-d-name { font-size: 13px; font-weight: 800; color: var(--ink); }
+  .s1-d-formula { font-size: 11px; color: var(--ink-4); margin-top: 2px; }
+  .s1-d-target { font-size: 13px; font-weight: 700; color: var(--ink-2); }
   .s1-d-input { width: 56px; border: 1px solid var(--border-strong); border-radius: 7px; padding: 6px 8px; font-size: 13px; font-weight: 700; color: var(--ink); }
   .s1-d-input:focus { outline: 2px solid var(--blue-soft); border-color: var(--blue); }
+
+  /* KPI 실행 업무 (루틴/프로젝트) */
+  .tasks-section { margin-top: 18px; border-top: 1px solid var(--border); padding-top: 16px; }
+  .tasks-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .tasks-title { font-size: 15px; font-weight: 800; color: var(--ink); }
+  .tasks-sub { font-size: 11px; font-weight: 600; color: var(--ink-4); margin-left: 6px; }
+  .tasks-count { font-size: 11px; font-weight: 700; color: var(--ink-3); background: var(--bg); padding: 4px 11px; border-radius: 999px; }
+  .tasks-list { display: flex; flex-direction: column; gap: 8px; }
+  .task-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+  .task-item.done { background: #FAFBFC; }
+  .task-item.done .task-title { text-decoration: line-through; color: var(--ink-4); }
+  .task-status { flex-shrink: 0; border: none; border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 800; cursor: pointer; min-width: 64px; text-align: center; transition: all .15s; }
+  .ts-todo { background: #EEF1F6; color: var(--ink-3); }
+  .ts-doing { background: var(--blue-tint); color: var(--blue); }
+  .ts-done { background: var(--green-tint); color: var(--green); }
+  .task-main { flex: 1; min-width: 0; }
+  .task-title { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.4; }
+  .task-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+  .task-type { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px; }
+  .tt-routine { background: var(--blue-tint); color: var(--blue); }
+  .tt-proj { background: var(--purple-tint); color: var(--purple); }
+  .task-cycle { font-size: 11px; font-weight: 700; color: var(--ink-3); }
+  .task-kpi { font-size: 11px; font-weight: 600; color: var(--ink-4); }
+  .task-del { flex-shrink: 0; border: none; background: transparent; color: var(--ink-4); font-size: 18px; cursor: pointer; line-height: 1; padding: 2px 7px; border-radius: 6px; }
+  .task-del:hover { background: #FBEAEA; color: var(--danger); }
+  .tasks-add { margin-top: 10px; width: 100%; border: 1px dashed var(--border-strong); background: transparent; color: var(--ink-3); border-radius: 10px; padding: 9px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s; }
+  .tasks-add:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-tint); }
+  .tasks-empty { font-size: 13px; color: var(--ink-4); padding: 8px 2px; }
 
   /* Tabs */
   .tabs-wrap {
     display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid var(--bg); overflow-x: auto; padding-bottom: 4px;
   }
   .tab {
-    background: transparent; border: none; padding: 10px 12px; font-size: 14px; font-weight: 600;
+    background: transparent; border: none; padding: 10px 12px; font-size: 15px; font-weight: 600;
     color: var(--ink-4); cursor: pointer; position: relative; transition: color 0.2s;
   }
   .tab:hover { color: var(--ink-2); }
@@ -585,7 +616,7 @@
     border: none;
     border-radius: 0;
     padding: 0;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 850;
     color: var(--ink);
     min-width: 160px;
@@ -593,24 +624,23 @@
     background: transparent;
   }
   .role-badge {
-    background: var(--ink); color: var(--surface); border: none; font-size: 12px; font-weight: 700;
+    background: var(--ink); color: var(--surface); border: none; font-size: 13px; font-weight: 700;
     padding: 6px 12px; border-radius: 20px; width: 90px; text-align: center; letter-spacing: 0.02em;
   }
 
   .member-summary {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 16px;
+    gap: 16px;
+    margin-bottom: 28px;
   }
   .member-summary-item {
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 14px;
-    background: #FAFBFF;
+    border-radius: 12px;
+    padding: 18px 20px;
+    background: #F7F9FC;
   }
   .member-summary-item .value {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 800;
     color: var(--ink);
     letter-spacing: -0.02em;
@@ -628,24 +658,24 @@
 
   /* Sub KPIs */
   .sub-kpis-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .sub-kpis-title { font-size: 16px; font-weight: 800; color: var(--ink); }
-  .sub-kpis-title .count { color: var(--blue); font-size: 14px; margin-left: 8px; background: var(--blue-tint); padding: 2px 8px; border-radius: 12px; }
+  .sub-kpis-title { font-size: 15px; font-weight: 800; color: var(--ink); }
+  .sub-kpis-title .count { color: var(--blue); font-size: 15px; margin-left: 8px; background: var(--blue-tint); padding: 2px 8px; border-radius: 12px; }
   
-  .sub-kpi-list { overflow-x: visible; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+  .sub-kpi-list { overflow-x: visible; border-radius: 12px; background: var(--surface); }
   .sub-kpi-table { width: 100%; border-collapse: collapse; min-width: 0; table-layout: fixed; }
   .sub-kpi-table th {
-    background: var(--bg);
-    color: var(--ink-3);
+    background: transparent;
+    color: var(--ink-4);
     font-size: 11px;
     font-weight: 800;
     text-align: left;
-    padding: 8px 10px;
+    padding: 6px 12px 12px;
     border-bottom: 1px solid var(--border);
     white-space: nowrap;
   }
   .sub-kpi-table td {
-    padding: 10px;
-    border-bottom: 1px solid var(--border);
+    padding: 16px 12px;
+    border-bottom: 1px solid #F1F3F7;
     vertical-align: middle;
   }
   .sub-kpi-table tr:last-child td { border-bottom: none; }
@@ -684,7 +714,7 @@
     justify-content: center;
     border-radius: 999px;
     padding: 4px 6px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 800;
     background: var(--blue-tint);
     color: var(--blue);
@@ -735,7 +765,7 @@
     gap: 5px;
   }
   .status-cell { display: flex; align-items: center; gap: 6px; justify-content: flex-end; min-width: 0; }
-  .status-pct { font-size: 12px; color: var(--blue); font-weight: 900; min-width: 34px; text-align: right; }
+  .status-pct { font-size: 13px; color: var(--blue); font-weight: 900; min-width: 34px; text-align: right; }
   .status-cell .progress-bar { width: 52px; flex: none; }
   .sub-kpi-row .progress-fill { background: var(--blue); }
   .sub-kpi-row.main-row .progress-fill { background: var(--ink); }
@@ -752,18 +782,18 @@
   .sub-kpi-row.evidence .progress-fill { background: var(--purple); }
   .sub-kpi-row.pt .progress-fill { background: var(--green); }
 
-  .kpi-name-text { display:block; font-size: 12px; color: var(--ink); font-weight: 850; line-height: 1.35; word-break: keep-all; overflow-wrap: anywhere; }
+  .kpi-name-text { display:block; font-size: 13px; color: var(--ink); font-weight: 850; line-height: 1.35; word-break: keep-all; overflow-wrap: anywhere; }
 
   .num-cell {
     border: 1px solid var(--border); background: var(--surface); border-radius: 6px; padding: 6px 8px;
-    font-size: 12px; font-weight: 750; text-align: right; color: var(--ink); width: 58px;
+    font-size: 13px; font-weight: 750; text-align: right; color: var(--ink); width: 58px;
   }
   .num-cell:focus { outline: 2px solid var(--blue); border-color: transparent; }
   .num-cell.target { color: var(--ink-3); background: var(--bg); }
   
   .metric-inputs { display:grid; grid-template-columns:58px 8px 58px 52px; gap:4px; align-items:center; }
   .slash-sep { text-align: center; color: var(--ink-4); font-weight: 400; font-size: 13px; }
-  .unit-input { border: none; background: transparent; font-size: 12px; color: var(--ink-3); text-align: center; font-weight: 650; width: 52px; }
+  .unit-input { border: none; background: transparent; font-size: 13px; color: var(--ink-3); text-align: center; font-weight: 650; width: 52px; }
   
   .row-actions {
     display: flex;
@@ -822,7 +852,7 @@
     display: flex; justify-content: space-between; align-items: center; gap: 16px;
     padding: 18px 22px; background: #FAFBFF;
   }
-  .kpi-pool-title { font-size: 17px; font-weight: 850; color: var(--ink); margin-bottom: 5px; letter-spacing: -0.01em; }
+  .kpi-pool-title { font-size: 18px; font-weight: 850; color: var(--ink); margin-bottom: 5px; letter-spacing: -0.01em; }
   .kpi-pool-desc { font-size: 13px; color: var(--ink-3); line-height: 1.55; }
   .kpi-pool-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
   .kpi-pool-body { padding: 16px 22px 20px; border-top: 1px solid var(--border); background: #FCFDFF; }
@@ -837,8 +867,8 @@
   }
   .pool-group:last-child { margin-bottom: 0; }
   .pool-group-label { font-size: 13px; font-weight: 900; color: var(--ink); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-  .pool-group-note { font-size: 12px; color: var(--ink-3); font-weight: 600; margin-bottom: 10px; line-height: 1.45; }
-  .badge { font-size: 10px; color: white; padding: 3px 8px; border-radius: 12px; font-weight: 700; }
+  .pool-group-note { font-size: 13px; color: var(--ink-3); font-weight: 600; margin-bottom: 10px; line-height: 1.45; }
+  .badge { font-size: 11px; color: white; padding: 3px 8px; border-radius: 12px; font-weight: 700; }
   .badge.orange { background: var(--orange); }
   .badge.blue { background: var(--blue); }
   .badge.green { background: var(--green); }
@@ -872,7 +902,7 @@
   }
   .pool-item {
     background: transparent; border: none; border-radius: 0; padding: 7px 10px 7px 7px;
-    font-size: 12px; color: var(--ink-2); font-weight: 600; cursor: pointer; transition: all 0.2s;
+    font-size: 13px; color: var(--ink-2); font-weight: 600; cursor: pointer; transition: all 0.2s;
   }
   .pool-item:hover { color: var(--blue); }
   .pool-chip.outdoor::before { background: var(--orange); }
@@ -948,7 +978,7 @@
     border-bottom: 1px solid var(--border);
     background: #FAFBFF;
   }
-  .kpi-editor-title { font-size: 20px; font-weight: 900; color: var(--ink); letter-spacing: -0.01em; }
+  .kpi-editor-title { font-size: 18px; font-weight: 900; color: var(--ink); letter-spacing: -0.01em; }
   .kpi-editor-sub { margin-top: 6px; font-size: 13px; color: var(--ink-3); font-weight: 600; line-height: 1.45; }
   .modal-close {
     border: none;
@@ -1004,7 +1034,7 @@
     padding-top: 14px;
     border-top: 1px dashed var(--border);
   }
-  .editor-label { font-size: 12px; font-weight: 850; color: var(--ink-2); }
+  .editor-label { font-size: 13px; font-weight: 850; color: var(--ink-2); }
   .editor-input,
   .editor-textarea,
   .editor-select {
@@ -1013,7 +1043,7 @@
     border-radius: 8px;
     background: var(--surface);
     color: var(--ink);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 650;
     padding: 10px 11px;
   }
@@ -1038,7 +1068,7 @@
     border-radius: 12px;
     background: var(--blue-tint);
     color: var(--ink-2);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 800;
   }
   .flow-step {
@@ -2146,7 +2176,95 @@ function renderService1Team(){
         <thead><tr><th style="width:90px;">단계</th><th>KPI / 산식</th><th style="width:120px;">목표</th><th style="width:110px;">현재(%)</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
+      ${renderTasksSection('service1')}
     </div>`;
+}
+
+// ===== KPI 실행 업무 (루틴/프로젝트) — 담당자별 개인 업무 + 서비스1팀 공통, localStorage =====
+const TASKS_KEY = 'kpi-tasks-v1';
+const TASK_STATUS = { todo:{label:'할 일', cls:'ts-todo'}, doing:{label:'진행 중', cls:'ts-doing'}, done:{label:'완료', cls:'ts-done'} };
+const TASK_STATUS_ORDER = ['todo','doing','done'];
+function seedTasksFor(ownerId){
+  if (ownerId === 'service1') {
+    return [
+      { title:'착공 D-7 답사·노임산출·특이사항 정리', type:'routine', cycle:'건별', kpi:'현장전환 준비' },
+      { title:'PT 현장지원: 현장확인·공법설명·자료 보완', type:'routine', cycle:'요청 시', kpi:'PT 현장지원' },
+      { title:'착공 전 리스크 체크리스트(추가범위·공정·노임·조건)', type:'routine', cycle:'건별', kpi:'리스크 사전차단' },
+      { title:'공사중 정기 현장방문·이슈 기록·조치', type:'routine', cycle:'주', kpi:'감리 이행' },
+      { title:'준공 전 품질검수·마감·보완 체크', type:'routine', cycle:'건별', kpi:'준공 품질검수' }
+    ];
+  }
+  return [
+    { title:'신규 문의 24h 내 1차 상담', type:'routine', cycle:'일', kpi:'진성 전환율' },
+    { title:'진성/배드핏 재분류·정리', type:'routine', cycle:'주', kpi:'진성 전환율' },
+    { title:'파이프라인 단계·금액 점검', type:'routine', cycle:'주', kpi:'매출' },
+    { title:'견적 D+7 / D+14 팔로업', type:'routine', cycle:'주', kpi:'후속확인율' },
+    { title:'릴레잇 스테이지·메모 업데이트', type:'routine', cycle:'주', kpi:'릴레잇 활동' },
+    { title:'PT 전 전략회의·경쟁사 분석', type:'routine', cycle:'건별', kpi:'PT 승률' }
+  ];
+}
+function loadAllTasks(){ try { return JSON.parse(localStorage.getItem(TASKS_KEY) || '{}'); } catch(e){ return {}; } }
+function saveAllTasks(all){ try { localStorage.setItem(TASKS_KEY, JSON.stringify(all)); } catch(e){} }
+function getTasks(ownerId){
+  const all = loadAllTasks();
+  if (!all[ownerId]) {
+    all[ownerId] = seedTasksFor(ownerId).map((t,i) => ({ id: ownerId+'-s'+i, status:'todo', ...t }));
+    saveAllTasks(all);
+  }
+  return all[ownerId];
+}
+function setTasks(ownerId, list){ const all = loadAllTasks(); all[ownerId] = list; saveAllTasks(all); }
+function rerenderTasks(ownerId){ if (ownerId === 'service1') renderService1Team(); else renderMemberPanel(); }
+function cycleTaskStatus(ownerId, taskId){
+  const list = getTasks(ownerId);
+  const t = list.find(x => x.id === taskId); if (!t) return;
+  const idx = TASK_STATUS_ORDER.indexOf(t.status || 'todo');
+  t.status = TASK_STATUS_ORDER[(idx+1) % TASK_STATUS_ORDER.length];
+  setTasks(ownerId, list); rerenderTasks(ownerId);
+}
+function addTask(ownerId){
+  const title = prompt('업무 제목을 입력하세요');
+  if (!title || !title.trim()) return;
+  const list = getTasks(ownerId);
+  list.push({ id: ownerId+'-n'+list.length+'-'+title.trim().length, title:title.trim(), type:'routine', cycle:'주', kpi:'', status:'todo' });
+  setTasks(ownerId, list); rerenderTasks(ownerId);
+}
+function toggleTaskType(ownerId, taskId){
+  const list = getTasks(ownerId); const t = list.find(x => x.id === taskId); if (!t) return;
+  t.type = (t.type === 'project') ? 'routine' : 'project';
+  setTasks(ownerId, list); rerenderTasks(ownerId);
+}
+function deleteTask(ownerId, taskId){
+  setTasks(ownerId, getTasks(ownerId).filter(x => x.id !== taskId));
+  rerenderTasks(ownerId);
+}
+function renderTasksSection(ownerId){
+  const list = getTasks(ownerId);
+  const rows = list.map(t => {
+    const st = TASK_STATUS[t.status || 'todo'] || TASK_STATUS.todo;
+    const isProj = t.type === 'project';
+    return `<div class="task-item ${t.status==='done'?'done':''}">
+      <button class="task-status ${st.cls}" onclick="cycleTaskStatus('${ownerId}','${t.id}')" title="클릭하면 상태 변경 (할 일→진행 중→완료)">${st.label}</button>
+      <div class="task-main">
+        <div class="task-title">${escapeHtml(t.title)}</div>
+        <div class="task-meta">
+          <span class="task-type ${isProj?'tt-proj':'tt-routine'}" onclick="toggleTaskType('${ownerId}','${t.id}')" style="cursor:pointer" title="루틴/프로젝트 전환">${isProj?'프로젝트':'루틴'}</span>
+          ${t.cycle?`<span class="task-cycle">${escapeHtml(t.cycle)}</span>`:''}
+          ${t.kpi?`<span class="task-kpi">▸ ${escapeHtml(t.kpi)}</span>`:''}
+        </div>
+      </div>
+      <button class="task-del" onclick="deleteTask('${ownerId}','${t.id}')" title="삭제">×</button>
+    </div>`;
+  }).join('');
+  const done = list.filter(t => t.status === 'done').length;
+  return `<div class="tasks-section">
+    <div class="tasks-head">
+      <div><span class="tasks-title">실행 업무</span><span class="tasks-sub">루틴/프로젝트 · KPI 달성 행동</span></div>
+      <div class="tasks-count">${done}/${list.length} 완료</div>
+    </div>
+    <div class="tasks-list">${rows || '<div class="tasks-empty">등록된 업무가 없습니다.</div>'}</div>
+    <button class="tasks-add" onclick="addTask('${ownerId}')">+ 업무 추가</button>
+  </div>`;
 }
 
 function updateTeamKpi(id, field, value, source) {
@@ -2260,7 +2378,7 @@ function renderMemberPanel() {
           <div class="role-badge">${escapeHtml(m.role || '담당')}</div>
           <div class="member-name-static">${escapeHtml(m.name)}</div>
         </div>
-        <button class="btn danger" style="padding: 6px 12px; font-size:12px;" onclick="deleteMember('${m.id}')">삭제</button>
+        <button class="btn danger" style="padding: 6px 12px; font-size:13px;" onclick="deleteMember('${m.id}')">삭제</button>
       </div>
 
       <div class="member-summary">
@@ -2294,6 +2412,8 @@ function renderMemberPanel() {
       </div>
 
       <button class="add-sub-kpi" onclick="addSubKpi('${m.id}')">+ 개인 KPI 직접 추가</button>
+
+      ${renderTasksSection(m.id)}
     </div>
   `;
 }
