@@ -12,6 +12,7 @@
     location.replace('./sales-dashboard.html');
   }
 </script>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
   :root {
@@ -43,11 +44,15 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body {
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
     background: var(--bg);
     color: var(--ink);
     padding: 32px 24px;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   .page { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
 
@@ -124,14 +129,16 @@
   .section-head h2 { font-size: 18px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; }
   .section-head .meta { font-size: 12px; color: var(--ink-3); font-weight: 500; }
   .team-mission {
-    background: var(--blue-tint);
-    border-left: 4px solid var(--blue);
-    border-radius: 12px;
-    padding: 16px 20px;
-    margin-bottom: 20px;
+    display: flex; align-items: baseline; gap: 10px;
+    padding: 0 2px 14px; margin-bottom: 18px;
+    border-bottom: 1px solid var(--border);
   }
-  .team-mission .label { font-size: 12px; color: var(--blue); font-weight: 800; margin-bottom: 8px; }
-  .team-mission .text { font-size: 15px; color: var(--ink); font-weight: 800; line-height: 1.55; }
+  .team-mission .label {
+    font-size: 10px; color: var(--blue); font-weight: 800; letter-spacing: 0.04em;
+    text-transform: uppercase; white-space: nowrap; flex-shrink: 0;
+    background: var(--blue-tint); padding: 3px 9px; border-radius: 999px;
+  }
+  .team-mission .text { font-size: 12.5px; color: var(--ink-3); font-weight: 600; line-height: 1.5; }
 
   .team-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   .team-kpi {
@@ -190,7 +197,7 @@
     background: var(--green-tint);
     color: var(--green);
     font-size: 10px;
-    font-weight: 950;
+    font-weight: 800;
     white-space: nowrap;
   }
   .live-sync-banner {
@@ -199,16 +206,16 @@
     align-items: center;
     justify-content: space-between;
     gap: 14px;
-    margin-bottom: 14px;
-    padding: 12px 14px;
+    margin-bottom: 16px;
+    padding: 8px 14px;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 10px;
     background: #F8FAFC;
-    color: var(--ink-2);
-    font-size: 12px;
-    font-weight: 800;
+    color: var(--ink-3);
+    font-size: 11.5px;
+    font-weight: 700;
   }
-  .live-sync-banner .state { color: var(--green); font-weight: 950; }
+  .live-sync-banner .state { color: var(--green); font-weight: 800; }
   .live-sync-banner.wait .state { color: var(--orange); }
   .live-sync-banner .sub { color: var(--ink-3); font-weight: 700; }
 
@@ -265,7 +272,7 @@
     border-radius: 14px;
     background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
   }
-  .ops-cycle-title { font-size: 18px; font-weight: 950; color: var(--ink); margin: 8px 0 4px; }
+  .ops-cycle-title { font-size: 18px; font-weight: 800; color: var(--ink); margin: 8px 0 4px; }
   .ops-cycle-desc { font-size: 12px; font-weight: 750; color: var(--ink-3); line-height: 1.45; }
   .ops-stage-chip {
     display: inline-flex;
@@ -275,7 +282,7 @@
     background: var(--ink);
     color: white;
     font-size: 11px;
-    font-weight: 950;
+    font-weight: 800;
   }
   .ops-stage-chip.overdue { background: var(--danger); }
   .ops-deadlines {
@@ -291,7 +298,7 @@
   }
   .ops-deadline .name { font-size: 11px; color: var(--ink-3); font-weight: 900; }
   .ops-deadline .date { margin-top: 6px; font-size: 13px; color: var(--ink); font-weight: 900; }
-  .ops-deadline .dday { margin-top: 5px; font-size: 12px; color: var(--blue); font-weight: 950; }
+  .ops-deadline .dday { margin-top: 5px; font-size: 12px; color: var(--blue); font-weight: 800; }
   .ops-deadline.overdue .dday { color: var(--danger); }
   .ops-toolbar {
     display: flex;
@@ -334,18 +341,18 @@
   .ops-group-row td {
     background: #F8FAFC;
     color: var(--ink);
-    font-weight: 950;
+    font-weight: 800;
     border-top: 1px solid var(--border);
   }
   .ops-row-check { width: 16px; height: 16px; accent-color: var(--blue); }
-  .ops-kpi-name { font-weight: 950; color: var(--ink); line-height: 1.35; }
+  .ops-kpi-name { font-weight: 800; color: var(--ink); line-height: 1.35; }
   .ops-kpi-proof { margin-top: 4px; color: var(--ink-3); font-size: 11px; font-weight: 700; line-height: 1.45; }
   .reason-stack { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
   .reason-primary {
     border-radius: 999px;
     padding: 5px 9px;
     font-size: 11px;
-    font-weight: 950;
+    font-weight: 800;
     color: white;
     background: var(--danger);
     white-space: nowrap;
@@ -467,6 +474,43 @@
   .team-rep-table .status-cell .progress-bar { width: 64px; height: 7px; }
   .team-rep-table .progress-fill { background: var(--blue); }
 
+  /* 2026 목표 → KPI 그룹 */
+  .team-goals { margin-top: 22px; display: flex; flex-direction: column; gap: 12px; }
+  .team-goals-head { margin-bottom: 2px; }
+  .team-goals-title { font-size: 18px; font-weight: 900; color: var(--ink); letter-spacing: -0.01em; }
+  .team-goals-sub { font-size: 12px; color: var(--ink-3); margin-top: 3px; font-weight: 600; }
+  .goal-card { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface); border-left: 4px solid var(--ink-4); }
+  .goal-card.blue { border-left-color: var(--blue); }
+  .goal-card.green { border-left-color: var(--green); }
+  .goal-card.purple { border-left-color: var(--purple); }
+  .goal-card.slate { border-left-color: var(--ink-4); }
+  .goal-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: #FAFBFF; border-bottom: 1px solid var(--border); gap: 12px; }
+  .goal-head-left { display: flex; align-items: center; gap: 12px; }
+  .goal-num { width: 26px; height: 26px; border-radius: 8px; background: var(--ink); color: #fff; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .goal-card.blue .goal-num { background: var(--blue); }
+  .goal-card.green .goal-num { background: var(--green); }
+  .goal-card.purple .goal-num { background: var(--purple); }
+  .goal-name { font-size: 16px; font-weight: 900; color: var(--ink); letter-spacing: -0.01em; }
+  .goal-target { font-size: 12px; color: var(--ink-3); font-weight: 600; margin-top: 1px; }
+  .goal-head-metric { display: flex; align-items: baseline; gap: 6px; white-space: nowrap; }
+  .goal-head-metric .v { font-size: 22px; font-weight: 900; color: var(--ink); }
+  .goal-head-metric .t { font-size: 13px; color: var(--ink-3); font-weight: 700; }
+  .goal-head-metric .goal-pct { font-size: 13px; font-weight: 900; color: var(--blue); margin-left: 6px; }
+  .goal-kpis { padding: 4px 0; }
+  .goal-kpi { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 11px 18px 11px 50px; border-bottom: 1px solid var(--border); }
+  .goal-kpi:last-child { border-bottom: none; }
+  .goal-kpi-info { min-width: 0; }
+  .goal-kpi-name { font-size: 13.5px; font-weight: 800; color: var(--ink-2); }
+  .goal-kpi-formula { font-size: 11.5px; color: var(--ink-4); margin-top: 2px; line-height: 1.4; }
+  .goal-kpi-val { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; min-width: 150px; }
+  .goal-kpi-num { display: flex; align-items: baseline; gap: 5px; }
+  .goal-kpi-num .v { font-size: 17px; font-weight: 900; color: var(--blue); }
+  .goal-kpi-num .t { font-size: 12px; color: var(--ink-3); font-weight: 700; }
+  .goal-kpi-bar { width: 150px; height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; }
+  .goal-kpi-fill { height: 100%; background: var(--blue); border-radius: 999px; }
+  .goal-soon { font-size: 11px; font-weight: 800; color: var(--ink-4); background: var(--bg); border: 1px solid var(--border); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .goal-soon.wait { color: var(--orange); background: var(--orange-tint); border-color: var(--orange-soft); }
+
   /* Tabs */
   .tabs-wrap {
     display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid var(--bg); overflow-x: auto; padding-bottom: 4px;
@@ -524,7 +568,7 @@
   }
   .member-summary-item .value {
     font-size: 22px;
-    font-weight: 950;
+    font-weight: 800;
     color: var(--ink);
     letter-spacing: -0.02em;
   }
@@ -994,7 +1038,7 @@
     </div>
     <div class="team-mission">
       <div class="label">팀 미션</div>
-      <div class="text">영업대행사 로써 담당 고객사의 마이크로한 영업관리&지원을 통한 매출 230억 달성 [실행공사 120억, 자재판매 100억, 기타 10억]</div>
+      <div class="text">영업대행사 로써 담당 고객사의 마이크로한 영업관리&지원을 통한 영업팀 매출 150억 달성 (매출 2배 성장) · 전사 매출 230억 [실행공사 120억, 자재판매 100억, 기타 10억]</div>
     </div>
     <div class="team-kpis" id="teamKpis"></div>
     <div id="teamRepKpis"></div>
@@ -1163,12 +1207,12 @@
 const STORAGE_KEY = 'netform-sales-kpi-v4';
 const SALES_LIVE_KPI_KEY = 'netform-sales-live-kpi-v1';
 const SALES_DASHBOARD_FILE_URL = './sales-dashboard.html';
-const DATA_SCHEMA_VERSION = 16;
+const DATA_SCHEMA_VERSION = 17;
 
 const INITIAL_DATA = {
   schemaVersion: DATA_SCHEMA_VERSION,
   teamKpis: [
-    { id: 'tk1', name: '매출 230억 달성률', current: 45, target: 230, unit: '억', color: 'blue' },
+    { id: 'tk1', name: '영업팀 매출 150억 달성률', current: 0, target: 150, unit: '억', color: 'blue' },
     { id: 'tk2', name: '실행공사 매출관리', current: 0, target: 120, unit: '억', color: 'green' },
     { id: 'tk3', name: '자재판매 매출관리', current: 0, target: 100, unit: '억', color: 'purple' }
   ],
@@ -1219,8 +1263,8 @@ const INITIAL_DATA = {
       ]
     },
     {
-      id: 'closing', badge: '매출', badgeClass: 'slate', title: '230억 목표와 담당자별 수주 기여',
-      note: '회의록 기준: 담당자별 계약 전환 금액과 성공 패턴을 230억 목표에 연결해 팀 기준으로 재사용합니다.',
+      id: 'closing', badge: '매출', badgeClass: 'slate', title: '영업팀 150억 목표와 담당자별 수주 기여',
+      note: '회의록 기준: 담당자별 계약 전환 금액과 성공 패턴을 영업팀 150억 목표에 연결해 팀 기준으로 재사용합니다.',
       items: [
         { id: 'pool-closing-1', cat: 'closing', name: '계약 전환 금액', target: 38, unit: '억', star: true },
         { id: 'pool-closing-2', cat: 'closing', name: '계약 전환 건수', target: 2, unit: '건/월' },
@@ -1366,7 +1410,8 @@ function normalizeState(data) {
       return {
         ...defaultKpi,
         current: toInteger(typeof saved.current === 'number' ? saved.current : defaultKpi.current, defaultKpi.current),
-        target: toInteger(typeof saved.target === 'number' ? saved.target : defaultKpi.target, defaultKpi.target),
+        // 버전 업그레이드 시 팀 매출 목표(150/120/100)는 새 기본값으로 리셋, 이후에는 사용자 편집 유지
+        target: toInteger((!legacyMemberKpis && typeof saved.target === 'number') ? saved.target : defaultKpi.target, defaultKpi.target),
         unit: saved.unit || defaultKpi.unit
       };
     }),
@@ -1525,7 +1570,7 @@ function renderLiveSyncBanner() {
 function getTeamLiveMetric(kpi) {
   const team = salesLiveSnapshot?.team;
   if (!team) return null;
-  if (kpi.id === 'tk1' || /매출\s*230억|총 매출|매출 목표/.test(kpi.name || '')) return team.totalRevenue;
+  if (kpi.id === 'tk1' || /매출\s*\d+억|총 매출|매출 목표|영업팀 매출/.test(kpi.name || '')) return team.totalRevenue;
   if (kpi.id === 'tk2' || /실행공사/.test(kpi.name || '')) return team.executionRevenue;
   if (kpi.id === 'tk3' || /자재판매/.test(kpi.name || '')) return team.materialRevenue;
   return null;
@@ -1884,7 +1929,9 @@ function renderTeamKpis() {
     `;
   }).join('');
   wrap.innerHTML = renderLiveSyncBanner() + cards;
-  renderTeamRepKpis();
+  // 매출 목표 달성 KPI(팀 대표 KPI)는 개인 KPI에 이미 모두 포함되어 중복 — 섹션 제거
+  const rep = document.getElementById('teamRepKpis');
+  if (rep) rep.innerHTML = '';
 }
 
 function renderTeamRepKpis() {
@@ -1893,7 +1940,7 @@ function renderTeamRepKpis() {
   wrap.innerHTML = `
     <div class="team-rep-kpis">
       <div class="team-rep-kpis-head">
-        <div class="team-rep-kpis-title">영업팀 대표 KPI</div>
+        <div class="team-rep-kpis-title">매출 목표 달성 KPI</div>
         <button class="mini-btn" onclick="addTeamRepKpi()">+ KPI 추가</button>
       </div>
       <table class="team-rep-table">

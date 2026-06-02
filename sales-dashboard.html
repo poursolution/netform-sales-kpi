@@ -4177,7 +4177,8 @@ function saveAndSync() {
 // - 객관 데이터가 있는 지표는 자동 계산, 없는 지표는 연결 필요로 명시
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const TEAM_KPI_TARGETS = {
-  totalRevenue: 23000000000,
+  totalRevenue: 23000000000,       // 전사 매출 목표 (탭1 매출현황 hero)
+  salesTeamRevenue: 15000000000,   // 영업팀(KPI 5명) 매출 목표 150억 (탭3 영업 KPI)
   executionRevenue: 12000000000,
   materialRevenue: 10000000000,
   otherRevenue: 1000000000,
@@ -4192,9 +4193,10 @@ const TEAM_KPI_SALES_ASSIGNEES = SALES_KPI_ASSIGNEES;
 const SALES_LIVE_KPI_KEY = 'netform-sales-live-kpi-v1';
 
 function getTeamKpiConfig() {
-  const baseAssigneeTarget = TEAM_KPI_TARGETS.totalRevenue / TEAM_KPI_SALES_ASSIGNEES.length;
+  const baseAssigneeTarget = TEAM_KPI_TARGETS.salesTeamRevenue / TEAM_KPI_SALES_ASSIGNEES.length;
   const defaults = {
     totalRevenue: TEAM_KPI_TARGETS.totalRevenue,
+    salesTeamRevenue: TEAM_KPI_TARGETS.salesTeamRevenue,
     executionRevenue: TEAM_KPI_TARGETS.executionRevenue,
     materialRevenue: TEAM_KPI_TARGETS.materialRevenue,
     otherRevenue: TEAM_KPI_TARGETS.otherRevenue,
@@ -4331,6 +4333,10 @@ function buildSalesLiveKpiSnapshot() {
   const periodTarget = totalTarget / 12 * months.length;
   const executionPeriodTarget = executionTarget / 12 * months.length;
   const materialPeriodTarget = materialTarget / 12 * months.length;
+  // 영업팀(KPI 5명) 매출 — 탭3 영업 KPI headline은 전사 230억이 아닌 영업팀 150억 기준
+  const salesTeamTarget = Number(cfg.salesTeamRevenue) || TEAM_KPI_TARGETS.salesTeamRevenue;
+  const salesTeamPeriodTarget = salesTeamTarget / 12 * months.length;
+  const salesTeamActual = m.contracts.filter(c => SALES_KPI_ASSIGNEES.includes(c.managerName)).reduce((s,c)=>s+c.contractAmount, 0);
   const activePts = filterByPeriod(PTS, STATE.year, STATE.quarter, 'date');
   const teamInquiryRows = inquiryRowsForView().filter(r => !/송보람|서비스운영팀|주현진/.test(r.managerName || ''));
   const teamSerious = teamInquiryRows.filter(r => r.quality === '진성문의').length;
@@ -4344,7 +4350,7 @@ function buildSalesLiveKpiSnapshot() {
   const members = {};
 
   TEAM_KPI_SALES_ASSIGNEES.forEach(name => {
-    const assigneeAnnualTarget = Number(cfg.assigneeTargets?.[name]) || totalTarget / TEAM_KPI_SALES_ASSIGNEES.length;
+    const assigneeAnnualTarget = Number(cfg.assigneeTargets?.[name]) || salesTeamTarget / TEAM_KPI_SALES_ASSIGNEES.length;
     const assigneePeriodTarget = assigneeAnnualTarget / 12 * months.length;
     const actual = m.contracts.filter(c => c.managerName === name).reduce((s,c)=>s+c.contractAmount, 0);
     const pipes = m.activePipeline.filter(p => p.assigneeName === name);
@@ -4375,7 +4381,8 @@ function buildSalesLiveKpiSnapshot() {
     periodLabel: periodLabel(),
     state: { year: STATE.year, quarter: STATE.quarter },
     team: {
-      totalRevenue: makeLiveMetric(m.totalRevenue / 100000000, periodTarget / 100000000, '억', `${fmtMoney(m.totalRevenue)} / ${fmtMoney(periodTarget)}`, '계약 데이터'),
+      totalRevenue: makeLiveMetric(salesTeamActual / 100000000, salesTeamPeriodTarget / 100000000, '억', `${fmtMoney(salesTeamActual)} / ${fmtMoney(salesTeamPeriodTarget)}`, '계약 데이터 · 영업팀 5명'),
+      companyRevenue: makeLiveMetric(m.totalRevenue / 100000000, periodTarget / 100000000, '억', `${fmtMoney(m.totalRevenue)} / ${fmtMoney(periodTarget)}`, '계약 데이터 · 전사'),
       executionRevenue: makeLiveMetric(m.executionRevenue / 100000000, executionPeriodTarget / 100000000, '억', `${fmtMoney(m.executionRevenue)} / ${fmtMoney(executionPeriodTarget)}`, '계약 데이터'),
       materialRevenue: makeLiveMetric(m.materialRevenue / 100000000, materialPeriodTarget / 100000000, '억', `${fmtMoney(m.materialRevenue)} / ${fmtMoney(materialPeriodTarget)}`, '계약 데이터'),
       ptWinRate: makeLiveMetric(m.ptWinRate, Number(cfg.ptWinRate) || TEAM_KPI_TARGETS.ptWinRate, '%', `${m.ptWins}/${m.closedPts.length}건`, 'PT 데이터'),
@@ -5045,6 +5052,8 @@ function isInquiryConverted(siteName, inqDate, inqManagerName) {
   });
 }
 async function syncInquiriesFromNexus(isAuto = true) {
+  // 견적문의 정본은 구글시트 CSV(syncInquirySheet) — CSV가 연결돼 있으면 Nexus가 KPI 데이터를 덮어쓰지 않음
+  if (isAuto && (INQUIRY_SHEET_ROWS.length || getInquiryConfig().csvUrl)) return;
   const loader = document.getElementById('loader');
   try {
     if (!isAuto) { loader.style.display = 'flex'; loader.textContent = 'S3-Nexus 견적문의 동기화 중...'; }
