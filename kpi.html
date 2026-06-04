@@ -2132,6 +2132,19 @@ function saveService1Value(key, val){
   if (val === '' || val === null || val === undefined) delete v[key]; else v[key] = Number(val);
   try { localStorage.setItem(SERVICE1_KEY, JSON.stringify(v)); } catch(e){}
 }
+// 입력 즉시 해당 카드만 갱신 (전체 재렌더 X → 포커스 유지, 타이핑 중에도 바가 올라감)
+function s1LiveUpdate(id, val, inputEl, target){
+  saveService1Value(id, val);
+  const card = inputEl.closest('.team-kpi');
+  if (!card) return;
+  const has = val !== '' && val !== null && !isNaN(Number(val));
+  const pct = has ? Math.max(0, Math.min(100, Math.round(Number(val) / target * 100))) : 0;
+  const ps = perfStatus(pct, has);
+  const fill = card.querySelector('.progress-fill');
+  const pctEl = card.querySelector('.progress-pct');
+  if (fill) { fill.style.width = pct + '%'; fill.className = 'progress-fill ' + ps.fill; }
+  if (pctEl) { pctEl.textContent = has ? pct + '%' : '입력 예정'; pctEl.className = 'progress-pct ' + ps.text; }
+}
 function switchKpiTeam(team){
   const sales = document.getElementById('salesTeamView');
   const svc = document.getElementById('serviceTeamView');
@@ -2160,7 +2173,7 @@ function renderService1Team(){
       <div class="team-kpi-name">${escapeHtml(k.name)}</div>
       <div class="s1-val">
         <input type="number" class="s1-input" value="${has ? Number(cur) : ''}" placeholder="—" min="0" max="100"
-          onchange="saveService1Value('${k.id}', this.value); renderService1Team();">
+          oninput="s1LiveUpdate('${k.id}', this.value, this, ${k.target})">
         <span class="s1-slash">/</span><span class="s1-target">${k.target}</span><span class="s1-unit">%</span>
       </div>
       <div class="progress-row"><div class="progress-bar"><div class="progress-fill ${perfStatus(pct, has).fill}" style="width:${pct}%"></div></div><span class="progress-pct ${perfStatus(pct, has).text}">${has ? pct + '%' : '입력 예정'}</span></div>
@@ -2174,7 +2187,7 @@ function renderService1Team(){
       <td><span class="s1-stage-pill">${escapeHtml(d.stage)}</span></td>
       <td><div class="s1-d-name">${escapeHtml(d.name)}</div><div class="s1-d-formula">${escapeHtml(d.formula)}</div></td>
       <td class="s1-d-target">${escapeHtml(d.target)}</td>
-      <td><input type="number" class="s1-d-input" value="${has ? Number(cur) : ''}" placeholder="—" min="0" max="100" onchange="saveService1Value('d${i}', this.value);"> %</td>
+      <td><input type="number" class="s1-d-input" value="${has ? Number(cur) : ''}" placeholder="—" min="0" max="100" oninput="saveService1Value('d${i}', this.value)"> %</td>
     </tr>`;
   }).join('');
   wrap.innerHTML = `
