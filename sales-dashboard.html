@@ -2612,8 +2612,9 @@ function initKpiFrameResize() {
     try {
       const doc = f.contentDocument;
       if (!doc || !doc.body) return;
-      const h = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
-      if (h > 200) f.style.height = (h + 8) + 'px';
+      const h = doc.body.scrollHeight;  // body만 측정 (documentElement는 iframe 높이에 묶여 루프 유발)
+      const cur = parseInt(f.style.height) || 0;
+      if (h > 200 && Math.abs(h - cur) > 6) f.style.height = h + 'px';  // 무한 증가 방지: 6px 이내 변화는 무시, +패딩 없음
     } catch (e) {}
   };
   resize();

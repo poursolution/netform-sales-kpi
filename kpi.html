@@ -43,7 +43,8 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   button, input, select, textarea { font-family: inherit; font-size: inherit; }
-  html, body { height: 100%; }
+  html { height: 100%; }
+  body { min-height: 100%; }  /* height:100% 제거 — iframe 자동높이 무한증가 루프 방지 */
   body {
     font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
     background: var(--bg);
