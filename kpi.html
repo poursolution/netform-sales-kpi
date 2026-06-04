@@ -544,6 +544,9 @@
   .team-kpi.green .s1-input { color: var(--green); }
   .team-kpi.purple .s1-input { color: var(--purple); }
   .s1-input:focus { outline: none; border-bottom-color: var(--blue); }
+  .s1-avg-val { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); }
+  .tab.s1-addmember { color: var(--ink-4); font-weight: 700; }
+  .tab.s1-addmember:hover { color: var(--blue); }
   .s1-slash { color: var(--ink-4); font-size: 18px; }
   .s1-target { font-size: 18px; font-weight: 700; color: var(--ink-3); }
   .s1-unit { font-size: 13px; font-weight: 600; color: var(--ink-3); }
@@ -2160,49 +2163,98 @@ function switchKpiTeam(team){
   }
   try { localStorage.setItem('kpi-active-team', team); } catch(e){}
 }
+// ===== 서비스1팀 담당자 =====
+const S1_MEMBERS_KEY = 'service1-members-v1';
+let s1ActiveMember = null;
+function loadS1Members(){
+  try { const v = JSON.parse(localStorage.getItem(S1_MEMBERS_KEY) || 'null'); if (Array.isArray(v) && v.length) return v; } catch(e){}
+  const seed = [{id:'sm1',name:'김현장'},{id:'sm2',name:'박현장'},{id:'sm3',name:'이현장'}];
+  saveS1Members(seed); return seed;
+}
+function saveS1Members(list){ try{ localStorage.setItem(S1_MEMBERS_KEY, JSON.stringify(list)); }catch(e){} }
+function selectS1Member(id){ s1ActiveMember = id; renderService1Team(); }
+function addS1Member(){ const n = prompt('담당자 이름을 입력하세요'); if(!n||!n.trim()) return; const l=loadS1Members(); const id='sm'+Date.now(); l.push({id,name:n.trim()}); saveS1Members(l); s1ActiveMember=id; renderService1Team(); }
+function deleteS1Member(id){ const l=loadS1Members().filter(m=>m.id!==id); saveS1Members(l); if(s1ActiveMember===id) s1ActiveMember = l[0] ? l[0].id : null; renderService1Team(); }
+function s1MKey(memberId, kpiId){ return 'm_' + memberId + '_' + kpiId; }
+function s1MemberAvg(kpiId){
+  const members = loadS1Members(); const vals = loadService1Values();
+  const nums = members.map(m=>vals[s1MKey(m.id,kpiId)]).filter(v=>v!==undefined&&v!==null&&v!=='').map(Number);
+  if (!nums.length) return null;
+  return Math.round(nums.reduce((a,b)=>a+b,0)/nums.length);
+}
+// 담당자 입력 즉시 반영: 해당 행 + 팀 평균 카드 갱신 (전체 재렌더 X)
+function s1MemberLiveUpdate(memberId, kpiId, val, inputEl, target){
+  saveService1Value(s1MKey(memberId,kpiId), val);
+  const has = val!=='' && val!==null && !isNaN(Number(val));
+  const pct = has ? Math.max(0,Math.min(100,Math.round(Number(val)/target*100))) : 0;
+  const ps = perfStatus(pct, has);
+  const row = inputEl.closest('tr');
+  if (row){ const f=row.querySelector('.progress-fill'), p=row.querySelector('.status-pct'); if(f){f.style.width=pct+'%';f.className='progress-fill '+ps.fill;} if(p){p.textContent=has?pct+'%':'-';p.className='status-pct '+ps.text;} }
+  const idx = SERVICE1_CORE.findIndex(k=>k.id===kpiId); const core = SERVICE1_CORE[idx];
+  const card = document.querySelectorAll('#serviceTeamView .s1-cards .team-kpi')[idx];
+  if (card && core){
+    const avg = s1MemberAvg(kpiId); const has2 = avg!==null;
+    const pct2 = has2 ? Math.max(0,Math.min(100,Math.round(avg/core.target*100))) : 0; const ps2 = perfStatus(pct2, has2);
+    const av=card.querySelector('.s1-avg-val'), f2=card.querySelector('.progress-fill'), p2=card.querySelector('.progress-pct');
+    if(av){av.textContent=has2?avg:'—';av.className='s1-avg-val '+ps2.text;}
+    if(f2){f2.style.width=pct2+'%';f2.className='progress-fill '+ps2.fill;}
+    if(p2){p2.textContent=has2?pct2+'%':'입력 대기';p2.className='progress-pct '+ps2.text;}
+  }
+}
 function renderService1Team(){
   const wrap = document.getElementById('serviceTeamView');
   if (!wrap) return;
+  const members = loadS1Members();
+  if (!s1ActiveMember || !members.find(m=>m.id===s1ActiveMember)) s1ActiveMember = members[0] ? members[0].id : null;
   const vals = loadService1Values();
-  const cards = SERVICE1_CORE.map(k => {
-    const cur = vals[k.id];
-    const has = cur !== undefined && cur !== '' && cur !== null;
-    const pct = has ? Math.max(0, Math.min(100, Math.round(Number(cur) / k.target * 100))) : 0;
+  // 팀 평균 카드 (담당자 평균 자동)
+  const teamCards = SERVICE1_CORE.map(k => {
+    const avg = s1MemberAvg(k.id); const has = avg!==null;
+    const pct = has ? Math.max(0,Math.min(100,Math.round(avg/k.target*100))) : 0; const ps = perfStatus(pct, has);
     return `<div class="team-kpi ${k.color}">
-      <div class="s1-no">우선순위 ${k.no}</div>
       <div class="team-kpi-name">${escapeHtml(k.name)}</div>
-      <div class="s1-val">
-        <input type="number" class="s1-input" value="${has ? Number(cur) : ''}" placeholder="—" min="0" max="100"
-          oninput="s1LiveUpdate('${k.id}', this.value, this, ${k.target})">
-        <span class="s1-slash">/</span><span class="s1-target">${k.target}</span><span class="s1-unit">%</span>
-      </div>
-      <div class="progress-row"><div class="progress-bar"><div class="progress-fill ${perfStatus(pct, has).fill}" style="width:${pct}%"></div></div><span class="progress-pct ${perfStatus(pct, has).text}">${has ? pct + '%' : '입력 예정'}</span></div>
-      <div class="s1-desc">${escapeHtml(k.desc)}</div>
+      <div class="s1-val"><span class="s1-avg-val ${ps.text}">${has?avg:'—'}</span><span class="s1-slash">/</span><span class="s1-target">${k.target}</span><span class="s1-unit">%</span></div>
+      <div class="progress-row"><div class="progress-bar"><div class="progress-fill ${ps.fill}" style="width:${pct}%"></div></div><span class="progress-pct ${ps.text}">${has?pct+'%':'입력 대기'}</span></div>
+      <div class="s1-desc">담당자 평균 · ${escapeHtml(k.desc)}</div>
     </div>`;
   }).join('');
-  const rows = SERVICE1_DETAIL.map((d, i) => {
-    const cur = vals['d' + i];
-    const has = cur !== undefined && cur !== '' && cur !== null;
-    return `<tr>
-      <td><span class="s1-stage-pill">${escapeHtml(d.stage)}</span></td>
-      <td><div class="s1-d-name">${escapeHtml(d.name)}</div><div class="s1-d-formula">${escapeHtml(d.formula)}</div></td>
-      <td class="s1-d-target">${escapeHtml(d.target)}</td>
-      <td><input type="number" class="s1-d-input" value="${has ? Number(cur) : ''}" placeholder="—" min="0" max="100" oninput="saveService1Value('d${i}', this.value)"> %</td>
-    </tr>`;
-  }).join('');
+  // 담당자 탭
+  const tabs = members.map(m=>`<button class="tab ${m.id===s1ActiveMember?'active':''}" onclick="selectS1Member('${m.id}')">${escapeHtml(m.name)}</button>`).join('')
+    + `<button class="tab s1-addmember" onclick="addS1Member()">+ 담당자</button>`;
+  // 선택 담당자 KPI 입력표
+  const am = members.find(m=>m.id===s1ActiveMember);
+  let panel = '<div class="tasks-empty">담당자를 추가하세요.</div>';
+  if (am){
+    const rows = SERVICE1_CORE.map(k=>{
+      const cur = vals[s1MKey(am.id,k.id)]; const has = cur!==undefined&&cur!==''&&cur!==null;
+      const pct = has ? Math.max(0,Math.min(100,Math.round(Number(cur)/k.target*100))) : 0; const ps = perfStatus(pct, has);
+      return `<tr>
+        <td><div class="s1-d-name">${escapeHtml(k.name)}</div><div class="s1-d-formula">${escapeHtml(k.desc)}</div></td>
+        <td class="s1-d-target">목표 ${k.target}%</td>
+        <td><input type="number" class="s1-d-input" value="${has?Number(cur):''}" placeholder="—" min="0" max="100" oninput="s1MemberLiveUpdate('${am.id}','${k.id}',this.value,this,${k.target})"> %</td>
+        <td><div class="status-cell"><div class="progress-bar"><div class="progress-fill ${ps.fill}" style="width:${pct}%"></div></div><span class="status-pct ${ps.text}">${has?pct+'%':'-'}</span></div></td>
+      </tr>`;
+    }).join('');
+    panel = `
+      <div class="member-header" style="margin-bottom:16px;">
+        <div class="member-identity"><div class="role-badge">현장담당</div><div class="member-name-static">${escapeHtml(am.name)}</div></div>
+        <button class="btn danger" style="padding:6px 12px;font-size:13px;" onclick="deleteS1Member('${am.id}')">삭제</button>
+      </div>
+      <table class="team-rep-table">
+        <thead><tr><th>KPI</th><th style="width:90px;">목표</th><th style="width:120px;">현재(%)</th><th style="width:180px;">진척</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
   wrap.innerHTML = `
     <div class="section-card">
-      <div class="section-head"><h2>서비스1팀 KPI</h2><div class="meta">영업 이후 공사 실행 · 단계별 완결률</div></div>
-      <div class="team-mission"><span class="label">팀 미션</span><span class="text">영업기회를 누락 없이 착공·준공까지 전환시키는 현장 실행 — '했다/안 했다'가 아니라 단계별 완결률로 관리합니다. (값은 수기 입력)</span></div>
-      <div class="s1-cards">${cards}</div>
+      <div class="section-head"><h2>서비스1팀 KPI</h2><div class="meta">담당자 평균 · 영업 이후 공사 실행</div></div>
+      <div class="team-mission"><span class="label">팀 미션</span><span class="text">영업기회를 누락 없이 착공·준공까지 전환시키는 현장 실행 — 담당자별로 입력하면 팀 평균이 자동 계산됩니다.</span></div>
+      <div class="s1-cards">${teamCards}</div>
     </div>
-    <div class="section-card" style="padding-top:16px;">
-      <div class="section-head"><h2>단계별 상세 KPI</h2><div class="meta">유입 → 영업지원 → 공사준비 → 착공 → 공사중 → 준공</div></div>
-      <table class="team-rep-table s1-table">
-        <thead><tr><th style="width:90px;">단계</th><th>KPI / 산식</th><th style="width:120px;">목표</th><th style="width:110px;">현재(%)</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-      ${renderTasksSection('service1')}
+    <div class="section-card" style="padding-top:24px;">
+      <div class="section-head"><h2>담당자별 KPI</h2><div class="meta">담당자를 선택해 현장 실행 KPI를 입력합니다</div></div>
+      <div class="tabs-wrap">${tabs}</div>
+      ${panel}
     </div>`;
 }
 
