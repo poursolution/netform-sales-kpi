@@ -43,8 +43,8 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   button, input, select, textarea { font-family: inherit; font-size: inherit; }
-  html { height: auto; }
-  body { height: auto; min-height: 0; }  /* iframe 자동높이가 내용만큼 늘고 줄게 (루프·고정 둘 다 방지) */
+  html { height: 100%; }
+  body { min-height: 100%; }  /* height:100% 제거 — iframe 자동높이 무한증가 루프 방지 */
   body {
     font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
     background: var(--bg);
@@ -588,23 +588,6 @@
   .s1-act.fixed:hover { background: var(--blue-tint); color: var(--blue); border-color: var(--blue-soft); }
   .s1-act.del { color: var(--ink-4); padding: 6px 9px; }
   .s1-act.del:hover { background: #FBEAEA; color: var(--danger); }
-  /* 현장 리스트 접기(C안: 핵심 요약 먼저, 상세는 펼침) */
-  .s1-details { overflow: hidden; }
-  .s1-details > .s1-summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 22px 32px; }
-  .s1-details > .s1-summary::-webkit-details-marker { display: none; }
-  .s1-summary-ttl { font-size: 18px; font-weight: 800; color: var(--ink); }
-  .s1-summary-cnt { font-size: 13px; color: var(--blue); background: var(--blue-tint); padding: 2px 10px; border-radius: 999px; margin-left: 6px; font-weight: 800; }
-  .s1-summary-hint { font-size: 13px; color: var(--ink-3); font-weight: 700; }
-  .s1-details[open] > .s1-summary { border-bottom: 1px solid var(--border); }
-  .s1-details[open] > .s1-summary .s1-summary-hint { color: var(--blue); }
-  .s1-details-body { padding: 22px 32px 28px; }
-
-  /* A안 담당자 성과 랭킹 (영업팀) */
-  .rank-table td { vertical-align: middle; }
-  .rank-no { font-size: 18px; font-weight: 800; color: var(--ink-3); text-align: center; }
-  .rank-no.rank-1 { color: #C9A24B; } .rank-no.rank-2 { color: #9AA3AD; } .rank-no.rank-3 { color: #C08A5E; }
-  .rank-name { font-size: 15px; font-weight: 800; color: var(--ink); }
-  .rank-sub { font-size: 12px; color: var(--ink-4); font-weight: 600; }
 
   /* KPI 실행 업무 (루틴/프로젝트) */
   .tasks-section { margin-top: 18px; border-top: 1px solid var(--border); padding-top: 16px; }
@@ -1160,8 +1143,8 @@
     <div id="salesTeamView">
     <div class="section-card">
     <div class="section-head">
-      <h2>영업팀 성과 스코어보드</h2>
-      <div class="meta">매출·전환·PT 결과 중심 · 자동 집계</div>
+      <h2>팀 전체 핵심 지표 (Core KPI)</h2>
+      <div class="meta">회의록 기준 2026년 현황</div>
     </div>
     <div class="team-mission">
       <div class="label">팀 미션</div>
@@ -2078,62 +2061,10 @@ function renderTeamKpis() {
       </div>
     `;
   }).join('');
-  // A안 성과 스코어보드: 매출 카드 + 진성 전환율 + PT 승률 (결과 지표)
-  const team = salesLiveSnapshot?.team;
-  const extraCard = (m, name, color) => {
-    if (!m) return '';
-    const pct = calcProgress(m.current, m.target);
-    return `<div class="team-kpi ${color}">
-      <div class="team-kpi-name">${name}</div>
-      <div class="metric-readonly"><span class="value">${toInteger(m.current,0)}</span><span class="target">/ ${toInteger(m.target,0)}</span><span class="unit">${escapeHtml(m.unit||'')}</span><span class="auto-lock">자동</span></div>
-      <div class="progress-row"><div class="progress-bar"><div class="progress-fill ${perfStatus(pct,true).fill}" style="width:${pct}%"></div></div><span class="progress-pct ${perfStatus(pct,true).text}">${pct.toFixed(0)}%</span></div>
-    </div>`;
-  };
-  wrap.innerHTML = renderLiveSyncBanner() + cards
-    + extraCard(team && team.inquiryConversion, '진성 계약 전환율', 'green')
-    + extraCard(team && team.ptWinRate, 'PT 승률', 'purple');
-  renderSalesRanking();
-  // A안: 개인 행동 KPI 탭/풀은 스코어보드에 불필요 → 숨김
-  try {
-    const tabsCard = document.getElementById('tabs') && document.getElementById('tabs').closest('.section-card');
-    if (tabsCard) tabsCard.style.display = 'none';
-    const pool = document.getElementById('kpiPool'); if (pool) pool.style.display = 'none';
-  } catch(e){}
-}
-
-// A안 담당자별 성과 랭킹 (매출 기준 자동 집계)
-function renderSalesRanking() {
-  const wrap = document.getElementById('teamRepKpis');
-  if (!wrap) return;
-  const members = salesLiveSnapshot && salesLiveSnapshot.members;
-  if (!members || !Object.keys(members).length) { wrap.innerHTML = ''; return; }
-  const rows = Object.keys(members).map(n => {
-    const m = members[n];
-    const rev = (m.revenue && m.revenue.current) || 0;
-    const revTgt = (m.revenue && m.revenue.target) || 0;
-    return {
-      name: n, rev, revTgt,
-      revPct: calcProgress(rev, revTgt),
-      conv: m.inquiryConversion ? m.inquiryConversion.current : null,
-      pt: m.ptWinRate ? m.ptWinRate.current : null
-    };
-  }).sort((a, b) => b.rev - a.rev);
-  const body = rows.map((r, i) => `<tr>
-    <td class="rank-no rank-${i < 3 ? i + 1 : 'x'}">${i + 1}</td>
-    <td class="rank-name">${escapeHtml(r.name)}</td>
-    <td><b>${r.rev}억</b> <span class="rank-sub">/ ${r.revTgt}억</span></td>
-    <td><div class="status-cell"><div class="progress-bar"><div class="progress-fill ${perfStatus(r.revPct,true).fill}" style="width:${Math.min(r.revPct,100)}%"></div></div><span class="status-pct ${perfStatus(r.revPct,true).text}">${r.revPct}%</span></div></td>
-    <td>${r.conv === null ? '-' : r.conv + '%'}</td>
-    <td>${r.pt === null ? '-' : r.pt + '%'}</td>
-  </tr>`).join('');
-  wrap.innerHTML = `
-    <div class="rank-wrap">
-      <div class="section-head" style="margin-bottom:14px;"><h2>담당자별 성과 랭킹</h2><div class="meta">매출 기준 · 자동 집계</div></div>
-      <table class="team-rep-table rank-table">
-        <thead><tr><th style="width:48px;">순위</th><th>담당자</th><th style="width:150px;">매출</th><th style="width:170px;">달성률</th><th style="width:84px;">전환율</th><th style="width:84px;">PT승률</th></tr></thead>
-        <tbody>${body}</tbody>
-      </table>
-    </div>`;
+  wrap.innerHTML = renderLiveSyncBanner() + cards;
+  // 매출 목표 달성 KPI(팀 대표 KPI)는 개인 KPI에 이미 모두 포함되어 중복 — 섹션 제거
+  const rep = document.getElementById('teamRepKpis');
+  if (rep) rep.innerHTML = '';
 }
 
 function renderTeamRepKpis() {
@@ -2278,7 +2209,6 @@ function switchKpiTeam(team){
   } else {
     sales.hidden = false; svc.hidden = true;
     if (bv) bv.classList.remove('active'); if (bs) bs.classList.add('active');
-    renderTeamKpis();
   }
   try { localStorage.setItem('kpi-active-team', team); } catch(e){}
 }
@@ -2331,20 +2261,14 @@ function renderService1Team(){
       <div class="s1k-grid">${cards}</div>
       ${queueHtml}
     </div>
-    <details class="section-card s1-details" style="padding:0;">
-      <summary class="s1-summary">
-        <span class="s1-summary-ttl">현장 리스트 <span class="s1-summary-cnt">${list.length}곳</span></span>
-        <span class="s1-summary-hint">펼쳐서 상태 입력 ▾</span>
-      </summary>
-      <div class="s1-details-body">
-        <div class="section-head" style="margin-bottom:14px;"><div class="meta">상태 버튼을 누르면 자동 기록 · 단계는 클릭해 변경</div></div>
-        <table class="team-rep-table s1-site-table">
-          <thead><tr><th>현장 / 담당자</th><th style="width:92px;">단계</th><th style="width:92px;">상태</th><th style="width:80px;">최근확인</th><th style="width:300px;">액션</th></tr></thead>
-          <tbody>${rows || '<tr><td colspan="5" class="tasks-empty">등록된 현장이 없습니다.</td></tr>'}</tbody>
-        </table>
-        <button class="tasks-add" onclick="addService1Site()">+ 현장 추가</button>
-      </div>
-    </details>`;
+    <div class="section-card" style="padding-top:24px;">
+      <div class="section-head"><h2>현장 리스트</h2><div class="meta">상태 버튼을 누르면 자동 기록 · 단계는 클릭해 변경</div></div>
+      <table class="team-rep-table s1-site-table">
+        <thead><tr><th>현장 / 담당자</th><th style="width:92px;">단계</th><th style="width:92px;">상태</th><th style="width:80px;">최근확인</th><th style="width:300px;">액션</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="5" class="tasks-empty">등록된 현장이 없습니다.</td></tr>'}</tbody>
+      </table>
+      <button class="tasks-add" onclick="addService1Site()">+ 현장 추가</button>
+    </div>`;
 }
 
 // ===== KPI 실행 업무 (루틴/프로젝트) — 담당자별 개인 업무 + 서비스1팀 공통, localStorage =====
