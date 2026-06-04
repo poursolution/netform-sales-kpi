@@ -1377,6 +1377,11 @@ const INITIAL_DATA = {
       id: 'm6', name: '이필선', role: '담당',
       repKpi: { name: '매출 목표 달성률', current: 7, target: 38, unit: '억' },
       subKpis: createDefaultSubKpis({ pipelineCurrent: 7, pipelineTarget: 38, ptCurrent: 67, ptTarget: 70 })
+    },
+    {
+      id: 'm7', name: '황윤선', role: '관리자(참고)',
+      repKpi: { name: '매출 목표 달성률', current: 0, target: 38, unit: '억' },
+      subKpis: createDefaultSubKpis({ pipelineCurrent: 0, pipelineTarget: 38, ptCurrent: 0, ptTarget: 70 })
     }
   ]
 };
@@ -1503,30 +1508,37 @@ function normalizeState(data) {
       unit: k.unit || '%'
     }, k.cat || 'team', { kpiKind: 'required', cycle: '월간' })),
     kpiPoolGroups: normalizePoolGroups(data.kpiPoolGroups && data.kpiPoolGroups.length ? data.kpiPoolGroups : base.kpiPoolGroups),
-    members: (data.members && data.members.length ? data.members : base.members).map((member, idx) => {
-      const baseMember = base.members[idx] || member;
-      const rep = member.repKpi || baseMember.repKpi;
-      return {
-        ...baseMember,
-        ...member,
-        role: member.role || baseMember.role || '담당',
-        repKpi: withKpiMeta({
-          ...baseMember.repKpi,
-          ...rep,
-          name: rep.name || baseMember.repKpi?.name || '매출 목표 달성률',
-          formula: rep.formula || baseMember.repKpi?.formula || '담당자 실제 계약매출 / 담당자 목표매출',
-          current: toInteger(rep.current, baseMember.repKpi?.current || 0),
-          target: toInteger(rep.target, baseMember.repKpi?.target || 38)
-        }, 'closing', { kpiKind: 'required', cycle: '누적', source: '복합', evidenceLevel: 'system' }),
-        subKpis: (legacyMemberKpis ? (baseMember.subKpis || []) : (member.subKpis || baseMember.subKpis || [])).map(sk => ({
-          ...withKpiMeta(sk, sk.cat, { kpiKind: sk.kpiKind || (sk.type === 'main' ? 'focus' : 'choice') }),
-          type: sk.type || 'action',
-          current: toInteger(sk.current, 0),
-          target: toInteger(sk.target, 100),
-          formula: sk.formula || defaultFormula(sk.name, sk.cat)
-        }))
-      };
-    })
+    members: (function(){
+      const savedList = (data.members && data.members.length ? data.members : base.members);
+      const mapped = savedList.map((member, idx) => {
+        const baseMember = base.members[idx] || member;
+        const rep = member.repKpi || baseMember.repKpi;
+        return {
+          ...baseMember,
+          ...member,
+          role: member.role || baseMember.role || '담당',
+          repKpi: withKpiMeta({
+            ...baseMember.repKpi,
+            ...rep,
+            name: rep.name || baseMember.repKpi?.name || '매출 목표 달성률',
+            formula: rep.formula || baseMember.repKpi?.formula || '담당자 실제 계약매출 / 담당자 목표매출',
+            current: toInteger(rep.current, baseMember.repKpi?.current || 0),
+            target: toInteger(rep.target, baseMember.repKpi?.target || 38)
+          }, 'closing', { kpiKind: 'required', cycle: '누적', source: '복합', evidenceLevel: 'system' }),
+          subKpis: (legacyMemberKpis ? (baseMember.subKpis || []) : (member.subKpis || baseMember.subKpis || [])).map(sk => ({
+            ...withKpiMeta(sk, sk.cat, { kpiKind: sk.kpiKind || (sk.type === 'main' ? 'focus' : 'choice') }),
+            type: sk.type || 'action',
+            current: toInteger(sk.current, 0),
+            target: toInteger(sk.target, 100),
+            formula: sk.formula || defaultFormula(sk.name, sk.cat)
+          }))
+        };
+      });
+      // 저장본에 없는 기본 멤버(예: 황윤선 참고용)는 뒤에 추가
+      const have = new Set(mapped.map(m => m.name));
+      base.members.forEach(bm => { if (!have.has(bm.name)) mapped.push(JSON.parse(JSON.stringify(bm))); });
+      return mapped;
+    })()
   };
   return normalized;
 }
