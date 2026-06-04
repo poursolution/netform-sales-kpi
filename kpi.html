@@ -558,37 +558,6 @@
   .s1-d-input { width: 56px; border: 1px solid var(--border-strong); border-radius: 7px; padding: 6px 8px; font-size: 13px; font-weight: 700; color: var(--ink); }
   .s1-d-input:focus { outline: 2px solid var(--blue-soft); border-color: var(--blue); }
 
-  /* 서비스1팀 — 현장 상태 기반 KPI 자동계산 화면 */
-  .s1k-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
-  .s1k-card { background: #F7F9FC; border-radius: 12px; padding: 18px 20px; }
-  .s1k-name { font-size: 13px; font-weight: 700; color: var(--ink-3); }
-  .s1k-val { font-size: 30px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; margin: 8px 0 4px; line-height: 1.1; }
-  .s1k-sub { font-size: 11px; font-weight: 600; color: var(--ink-4); }
-  .s1q { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
-  .s1q-chip { display: flex; align-items: baseline; gap: 8px; padding: 12px 18px; border-radius: 12px; background: #F7F9FC; }
-  .s1q-chip b { font-size: 24px; font-weight: 800; color: var(--ink); }
-  .s1q-chip span { font-size: 13px; font-weight: 700; color: var(--ink-3); }
-  .s1q-chip.warn { background: var(--orange-tint); } .s1q-chip.warn b { color: #B58A47; }
-  .s1q-chip.risk { background: #F8ECEC; } .s1q-chip.risk b { color: #C07A7A; }
-  .s1-site-table td { vertical-align: middle; }
-  .s1-site-name { font-size: 15px; font-weight: 800; color: var(--ink); }
-  .s1-site-owner { font-size: 11px; color: var(--ink-4); margin-top: 2px; }
-  .s1-lastcheck { font-size: 13px; color: var(--ink-3); }
-  .s1-stage-btn { border: 1px solid var(--border); background: #fff; color: var(--ink-2); font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
-  .s1-stage-btn:hover { border-color: var(--blue); color: var(--blue); }
-  .s1-status-badge { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 11px; font-weight: 800; white-space: nowrap; }
-  .s1s-none { background: #EEF1F6; color: var(--ink-3); }
-  .s1s-ok { background: var(--green-tint); color: var(--green); }
-  .s1s-risk { background: #F8ECEC; color: #C07A7A; }
-  .s1s-fixed { background: var(--blue-tint); color: var(--blue); }
-  .s1-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-  .s1-act { border: 1px solid var(--border); background: #fff; font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer; color: var(--ink-2); transition: all .12s; }
-  .s1-act.ok:hover { background: var(--green-tint); color: var(--green); border-color: var(--green-soft); }
-  .s1-act.risk:hover { background: #F8ECEC; color: #C07A7A; border-color: #E8D0D0; }
-  .s1-act.fixed:hover { background: var(--blue-tint); color: var(--blue); border-color: var(--blue-soft); }
-  .s1-act.del { color: var(--ink-4); padding: 6px 9px; }
-  .s1-act.del:hover { background: #FBEAEA; color: var(--danger); }
-
   /* KPI 실행 업무 (루틴/프로젝트) */
   .tasks-section { margin-top: 18px; border-top: 1px solid var(--border); padding-top: 16px; }
   .tasks-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -2136,66 +2105,32 @@ function renderTeamRepKpiRow(k) {
 }
 
 // ===== 서비스1팀 KPI (영업 KPI 탭 내 팀 전환 · 수기 입력) =====
-// ===== 서비스1팀 — 현장 상태 버튼 → KPI 자동 계산 (현장 직원은 숫자 입력 없음) =====
-const SERVICE1_SITES_KEY = 'service1-sites-v1';
-const S1_STAGES = ['착공 전','공사중','준공 전'];
-const S1_STATUS = {
-  '미확인':   { label:'미확인',   cls:'s1s-none' },
-  '확인완료': { label:'확인 완료', cls:'s1s-ok' },
-  '문제있음': { label:'문제 있음', cls:'s1s-risk' },
-  '조치완료': { label:'조치 완료', cls:'s1s-fixed' }
-};
-function seedService1Sites(){
-  return [
-    { id:'site1', name:'신한1차아파트',       stage:'착공 전', owner:'김현장', status:'확인완료', lastCheck:'6/3' },
-    { id:'site2', name:'해가든더클래식아파트', stage:'착공 전', owner:'김현장', status:'미확인',   lastCheck:'' },
-    { id:'site3', name:'서울역센트럴자이',     stage:'공사중',  owner:'박현장', status:'문제있음', lastCheck:'6/4' },
-    { id:'site4', name:'해운대 대동타운',       stage:'공사중',  owner:'박현장', status:'조치완료', lastCheck:'6/4' },
-    { id:'site5', name:'옥수풍림아파트',       stage:'준공 전', owner:'이현장', status:'확인완료', lastCheck:'6/2' },
-    { id:'site6', name:'대도아파트',           stage:'준공 전', owner:'이현장', status:'미확인',   lastCheck:'' }
-  ];
-}
-function loadService1Sites(){
-  try { const v = JSON.parse(localStorage.getItem(SERVICE1_SITES_KEY) || 'null'); if (Array.isArray(v)) return v; } catch(e){}
-  const seed = seedService1Sites(); saveService1Sites(seed); return seed;
-}
-function saveService1Sites(list){ try{ localStorage.setItem(SERVICE1_SITES_KEY, JSON.stringify(list)); }catch(e){} }
-function s1TodayMD(){ const d = new Date(); return (d.getMonth()+1) + '/' + d.getDate(); }
-function setSiteStatus(id, status){
-  const list = loadService1Sites(); const s = list.find(x=>x.id===id); if(!s) return;
-  s.status = status; s.lastCheck = s1TodayMD();
-  saveService1Sites(list); renderService1Team();
-}
-function cycleSiteStage(id){
-  const list = loadService1Sites(); const s = list.find(x=>x.id===id); if(!s) return;
-  const i = S1_STAGES.indexOf(s.stage); s.stage = S1_STAGES[(i+1) % S1_STAGES.length];
-  saveService1Sites(list); renderService1Team();
-}
-function addService1Site(){
-  const name = prompt('현장명을 입력하세요'); if(!name || !name.trim()) return;
-  const list = loadService1Sites();
-  list.push({ id:'site'+Date.now(), name:name.trim(), stage:'착공 전', owner:'', status:'미확인', lastCheck:'' });
-  saveService1Sites(list); renderService1Team();
-}
-function deleteService1Site(id){ saveService1Sites(loadService1Sites().filter(x=>x.id!==id)); renderService1Team(); }
-function service1Kpis(list){
-  const checked = s => s.status !== '미확인';
-  const preStart = list.filter(s=>s.stage==='착공 전');
-  const preEnd   = list.filter(s=>s.stage==='준공 전');
-  const problem  = list.filter(s=>s.status==='문제있음').length;
-  const fixed    = list.filter(s=>s.status==='조치완료').length;
-  const risks    = problem + fixed;
-  return {
-    preStartRate: preStart.length ? Math.round(preStart.filter(checked).length/preStart.length*100) : null,
-    riskTotal: risks, riskOpen: problem,
-    fixRate: risks ? Math.round(fixed/risks*100) : null,
-    preEndRate: preEnd.length ? Math.round(preEnd.filter(checked).length/preEnd.length*100) : null,
-    queue: {
-      preStartNeed: preStart.filter(s=>s.status==='미확인').length,
-      problem: problem,
-      preEndNeed: preEnd.filter(s=>s.status==='미확인').length
-    }
-  };
+const SERVICE1_CORE = [
+  { id:'s1', no:1, name:'현장전환 준비 완료율',     target:95, color:'blue',   desc:'영업기회가 착공 가능한 상태로 전환된 비율' },
+  { id:'s2', no:2, name:'PT 현장지원 완결률',       target:95, color:'purple', desc:'PT 승률을 높이기 위한 현장지원 완료율' },
+  { id:'s3', no:3, name:'착공 전 리스크 사전차단율', target:95, color:'green',  desc:'착공 후 문제로 번질 리스크를 사전 차단한 비율' },
+  { id:'s4', no:4, name:'공사중 감리 이행률',       target:90, color:'blue',   desc:'공사 진행 중 품질 리스크를 현장에서 확인한 비율' },
+  { id:'s5', no:5, name:'준공 품질검수 완료율',     target:95, color:'green',  desc:'준공 전 품질 리스크를 최종 확인한 비율' }
+];
+const SERVICE1_STAGE_COLOR = { '유입':'#2563EB','영업지원':'#7C3AED','공사준비':'#0891B2','착공':'#EA580C','공사중':'#059669','준공':'#475569' };
+const SERVICE1_DETAIL = [
+  { stage:'유입',     name:'신규업체 미팅 진행률',        formula:'완료 미팅 ÷ 계획 미팅 ×100',        target:'90% 이상' },
+  { stage:'유입',     name:'미팅 후 후속조치 완료율',     formula:'후속자료/협약안내 완료 ÷ 미팅 완료 ×100', target:'95% 이상' },
+  { stage:'영업지원', name:'영업문의 응대 완료율',        formula:'응대 완료 ÷ 문의 접수 ×100',         target:'95% 이상' },
+  { stage:'영업지원', name:'PT 지원 이행률',             formula:'PT 지원 완료 ÷ PT 지원 요청 ×100',   target:'95% 이상' },
+  { stage:'공사준비', name:'착공 1주 전 노임산출 완료율', formula:'D-7 전 산출 완료 ÷ 착공 예정 ×100',  target:'95% 이상' },
+  { stage:'착공',     name:'착공 전 특이사항 파악 완료율', formula:'특이사항 기록 완료 ÷ 착공 대상 ×100', target:'95% 이상' },
+  { stage:'공사중',   name:'감리 방문 이행률',           formula:'감리 방문 완료 ÷ 감리 대상 ×100',    target:'90% 이상' },
+  { stage:'공사중',   name:'감리 이슈 조치완료율',       formula:'조치완료 이슈 ÷ 발생 이슈 ×100',     target:'90% 이상' },
+  { stage:'준공',     name:'준공 품질검수 완료율',       formula:'품질검수 완료 ÷ 준공 대상 ×100',     target:'95% 이상' },
+  { stage:'준공',     name:'품질검수 지적률',           formula:'지적 발생 ÷ 품질검수 ×100',         target:'낮을수록 좋음' }
+];
+const SERVICE1_KEY = 'service1-kpi-values';
+function loadService1Values(){ try { return JSON.parse(localStorage.getItem(SERVICE1_KEY) || '{}'); } catch(e){ return {}; } }
+function saveService1Value(key, val){
+  const v = loadService1Values();
+  if (val === '' || val === null || val === undefined) delete v[key]; else v[key] = Number(val);
+  try { localStorage.setItem(SERVICE1_KEY, JSON.stringify(v)); } catch(e){}
 }
 function switchKpiTeam(team){
   const sales = document.getElementById('salesTeamView');
@@ -2215,59 +2150,46 @@ function switchKpiTeam(team){
 function renderService1Team(){
   const wrap = document.getElementById('serviceTeamView');
   if (!wrap) return;
-  const list = loadService1Sites();
-  const k = service1Kpis(list);
-  const rate = v => v === null ? '—' : v + '%';
-  const ratePct = (v, t) => v === null ? 'pct-none' : perfStatus(Math.round(v / t * 100), true).text;
-  const kpiCard = (name, valHtml, sub, pctCls) => `
-    <div class="s1k-card">
-      <div class="s1k-name">${name}</div>
-      <div class="s1k-val ${pctCls || ''}">${valHtml}</div>
-      <div class="s1k-sub">${sub}</div>
+  const vals = loadService1Values();
+  const cards = SERVICE1_CORE.map(k => {
+    const cur = vals[k.id];
+    const has = cur !== undefined && cur !== '' && cur !== null;
+    const pct = has ? Math.max(0, Math.min(100, Math.round(Number(cur) / k.target * 100))) : 0;
+    return `<div class="team-kpi ${k.color}">
+      <div class="s1-no">우선순위 ${k.no}</div>
+      <div class="team-kpi-name">${escapeHtml(k.name)}</div>
+      <div class="s1-val">
+        <input type="number" class="s1-input" value="${has ? Number(cur) : ''}" placeholder="—" min="0" max="100"
+          onchange="saveService1Value('${k.id}', this.value); renderService1Team();">
+        <span class="s1-slash">/</span><span class="s1-target">${k.target}</span><span class="s1-unit">%</span>
+      </div>
+      <div class="progress-row"><div class="progress-bar"><div class="progress-fill ${perfStatus(pct, has).fill}" style="width:${pct}%"></div></div><span class="progress-pct ${perfStatus(pct, has).text}">${has ? pct + '%' : '입력 예정'}</span></div>
+      <div class="s1-desc">${escapeHtml(k.desc)}</div>
     </div>`;
-  const cards = [
-    kpiCard('착공 전 확인 완료율', rate(k.preStartRate), '목표 95%', ratePct(k.preStartRate, 95)),
-    kpiCard('리스크 발생 건수', k.riskTotal + '건', '참고 지표', 'pct-none'),
-    kpiCard('미조치 리스크', k.riskOpen + '건', '목표 0건', k.riskOpen === 0 ? 'pct-good' : 'pct-bad'),
-    kpiCard('리스크 조치 완료율', rate(k.fixRate), '목표 90%', ratePct(k.fixRate, 90)),
-    kpiCard('준공 전 확인 완료율', rate(k.preEndRate), '목표 95%', ratePct(k.preEndRate, 95))
-  ].join('');
-  const q = k.queue;
-  const queueHtml = `
-    <div class="s1q">
-      <div class="s1q-chip ${q.preStartNeed ? 'warn' : ''}"><b>${q.preStartNeed}</b><span>착공 전 확인 필요</span></div>
-      <div class="s1q-chip ${q.problem ? 'risk' : ''}"><b>${q.problem}</b><span>문제 있음</span></div>
-      <div class="s1q-chip ${q.preEndNeed ? 'warn' : ''}"><b>${q.preEndNeed}</b><span>준공 전 확인 필요</span></div>
-    </div>`;
-  const rows = list.map(s => {
-    const st = S1_STATUS[s.status] || S1_STATUS['미확인'];
+  }).join('');
+  const rows = SERVICE1_DETAIL.map((d, i) => {
+    const cur = vals['d' + i];
+    const has = cur !== undefined && cur !== '' && cur !== null;
     return `<tr>
-      <td><div class="s1-site-name">${escapeHtml(s.name)}</div><div class="s1-site-owner">${escapeHtml(s.owner || '담당 미지정')}</div></td>
-      <td><button class="s1-stage-btn" onclick="cycleSiteStage('${s.id}')" title="클릭하면 단계 변경">${escapeHtml(s.stage)}</button></td>
-      <td><span class="s1-status-badge ${st.cls}">${st.label}</span></td>
-      <td class="s1-lastcheck">${escapeHtml(s.lastCheck || '-')}</td>
-      <td class="s1-actions">
-        <button class="s1-act ok" onclick="setSiteStatus('${s.id}','확인완료')">확인 완료</button>
-        <button class="s1-act risk" onclick="setSiteStatus('${s.id}','문제있음')">문제 있음</button>
-        <button class="s1-act fixed" onclick="setSiteStatus('${s.id}','조치완료')">조치 완료</button>
-        <button class="s1-act del" onclick="deleteService1Site('${s.id}')" title="현장 삭제">×</button>
-      </td>
+      <td><span class="s1-stage-pill">${escapeHtml(d.stage)}</span></td>
+      <td><div class="s1-d-name">${escapeHtml(d.name)}</div><div class="s1-d-formula">${escapeHtml(d.formula)}</div></td>
+      <td class="s1-d-target">${escapeHtml(d.target)}</td>
+      <td><input type="number" class="s1-d-input" value="${has ? Number(cur) : ''}" placeholder="—" min="0" max="100" onchange="saveService1Value('d${i}', this.value);"> %</td>
     </tr>`;
   }).join('');
   wrap.innerHTML = `
     <div class="section-card">
-      <div class="section-head"><h2>서비스1팀 — 현장 실행 KPI</h2><div class="meta">현장 상태를 누르면 KPI가 자동 계산됩니다 · 숫자 직접 입력 없음</div></div>
-      <div class="team-mission"><span class="label">팀 미션</span><span class="text">계약·영업기회가 현장에서 문제 없이 착공·진행·준공되도록 관리 — 현장 직원은 상태만 누르고, 관리자는 KPI 숫자로 봅니다.</span></div>
-      <div class="s1k-grid">${cards}</div>
-      ${queueHtml}
+      <div class="section-head"><h2>서비스1팀 KPI</h2><div class="meta">영업 이후 공사 실행 · 단계별 완결률</div></div>
+      <div class="team-mission"><span class="label">팀 미션</span><span class="text">영업기회를 누락 없이 착공·준공까지 전환시키는 현장 실행 — '했다/안 했다'가 아니라 단계별 완결률로 관리합니다. (값은 수기 입력)</span></div>
+      <div class="s1-cards">${cards}</div>
     </div>
-    <div class="section-card" style="padding-top:24px;">
-      <div class="section-head"><h2>현장 리스트</h2><div class="meta">상태 버튼을 누르면 자동 기록 · 단계는 클릭해 변경</div></div>
-      <table class="team-rep-table s1-site-table">
-        <thead><tr><th>현장 / 담당자</th><th style="width:92px;">단계</th><th style="width:92px;">상태</th><th style="width:80px;">최근확인</th><th style="width:300px;">액션</th></tr></thead>
-        <tbody>${rows || '<tr><td colspan="5" class="tasks-empty">등록된 현장이 없습니다.</td></tr>'}</tbody>
+    <div class="section-card" style="padding-top:16px;">
+      <div class="section-head"><h2>단계별 상세 KPI</h2><div class="meta">유입 → 영업지원 → 공사준비 → 착공 → 공사중 → 준공</div></div>
+      <table class="team-rep-table s1-table">
+        <thead><tr><th style="width:90px;">단계</th><th>KPI / 산식</th><th style="width:120px;">목표</th><th style="width:110px;">현재(%)</th></tr></thead>
+        <tbody>${rows}</tbody>
       </table>
-      <button class="tasks-add" onclick="addService1Site()">+ 현장 추가</button>
+      ${renderTasksSection('service1')}
     </div>`;
 }
 
