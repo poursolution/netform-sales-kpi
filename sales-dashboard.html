@@ -1273,6 +1273,7 @@
     <div class="head-actions">
       <button class="head-btn" onclick="openRelateSettings()" id="btnRelateKey">⚙️ Relate 공용 연동</button>
       <button class="head-btn" onclick="openInquirySettings()" id="btnInquirySheet">문의 시트 연결</button>
+      <button class="head-btn" onclick="openContractSettings()" id="btnContractSheet">계약 시트 연결</button>
       <button class="head-btn dark" onclick="openExecutiveReport()">📄 경영진 보고서 보기 / 인쇄</button>
     </div>
   </div>
@@ -5299,6 +5300,75 @@ async function syncInquirySheet(isAuto = false) {
     renderInquiryDashboard();
   }
 }
+// ━━━ 계약(현장) 구글시트 연동 — 문의 시트와 동일 방식(공개 CSV) ━━━
+function getContractConfig(){ return { csvUrl: localStorage.getItem('contract_sheet_csv_url') || '' }; }
+function saveContractConfig(csvUrl){ if(csvUrl !== null) localStorage.setItem('contract_sheet_csv_url', csvUrl); }
+function clearContractConfig(){ localStorage.removeItem('contract_sheet_csv_url'); }
+function ctNum(v){ return Number(String(v==null?'':v).replace(/[^0-9.\-]/g,'')) || 0; }
+function ctPick(o, keys){ for(const k of keys){ if(o[k]!=null && String(o[k]).trim()!=='') return String(o[k]).trim(); } return ''; }
+function mapContractRow(o){
+  const company = ctPick(o, ['계약업체','시공사','업체']);
+  let type = ctPick(o, ['유형','계약유형','구분']);
+  if(type) type = /석민|본사/.test(type) ? '석민이앤씨' : '기술자문';
+  else type = /석민/.test(company) ? '석민이앤씨' : '기술자문';
+  const c = {
+    signedDate: ctPick(o, ['계약일','날짜','일자']),
+    aptName: ctPick(o, ['아파트명','현장명','단지명','아파트']),
+    managerName: ctPick(o, ['담당자','담당']),
+    contractAmount: ctNum(ctPick(o, ['낙찰금액','아파트계약금액','계약금액'])),
+    executionAmount: 0,
+    status: ctPick(o, ['진행사항','진행상태','상태']),
+    contractType: type,
+    feeAmount: ctNum(ctPick(o, ['기술자문료','기술자문','자문료','수수료'])),
+    workName: ctPick(o, ['공사명','공사내용','공종']),
+    pourAmount: ctNum(ctPick(o, ['POUR계약금액','POUR컨설팅금액','POUR','pour계약금액'])),
+  };
+  c.advisoryAmount = c.feeAmount;
+  return c;
+}
+async function syncContractSheet(isAuto = false){
+  const cfg = getContractConfig();
+  if(!cfg.csvUrl){ if(!isAuto) alert('계약 구글시트 CSV URL이 없습니다. "계약 시트 연결"에서 URL을 입력해주세요.'); return; }
+  const loader = document.getElementById('loader');
+  try{
+    if(loader){ loader.style.display='flex'; loader.textContent='계약 구글시트 동기화 중...'; }
+    const res = await fetch(cfg.csvUrl, { cache:'no-store' });
+    if(!res.ok) throw new Error(`Google Sheet CSV ${res.status}`);
+    const mapped = parseCsv(await res.text()).map(mapContractRow).filter(c => c.aptName);
+    if(mapped.length){ CONTRACTS = mapped.sort((a,b)=>String(b.signedDate||'').localeCompare(String(a.signedDate||''))); }
+    if(loader) loader.style.display='none';
+    refresh();
+    if(!isAuto) alert(`계약 동기화 완료: ${mapped.length}건`);
+  }catch(e){
+    if(loader) loader.style.display='none';
+    console.error('Contract sheet sync failed:', e);
+    if(!isAuto) alert(`계약 시트 동기화 오류: ${e.message}\n공개 CSV URL(파일→공유→웹에 게시→CSV) 권한을 확인해주세요.`);
+  }
+}
+function openContractSettings(){
+  const cfg = getContractConfig();
+  const m = document.getElementById('modal');
+  m.innerHTML = `
+    <div class="modal-head">
+      <div><div class="modal-title">계약(현장) 구글시트 연동 설정</div><div style="font-size:13px; color:var(--muted); margin-top:4px;">계약 리스트·금액(낙찰/POUR/기술자문료)을 구글시트 공개 CSV에서 자동으로 읽어옵니다.</div></div>
+      <button class="close-btn" onclick="document.getElementById('modalBackdrop').classList.add('hidden')">닫기</button>
+    </div>
+    <div style="padding:8px 0;">
+      <label style="display:block; font-size:13px; font-weight:800; color:#0f172a; margin-bottom:6px;">구글시트 CSV URL</label>
+      <input type="text" id="contractCsvUrl" value="${(cfg.csvUrl||'').replace(/"/g,'&quot;')}" placeholder="https://docs.google.com/spreadsheets/d/e/.../pub?gid=0&single=true&output=csv" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px; font-size:13px; margin-bottom:10px;">
+      <div style="padding:14px 18px; background:#eff6ff; border-left:4px solid var(--pri); border-radius:8px; font-size:12px; color:#1e3a8a; line-height:1.7; margin-bottom:20px;">
+        <b>필요 컬럼(헤더명 기준, 순서 무관)</b><br>
+        계약일 · 아파트명 · 담당자 · 낙찰금액 · 진행사항 · 공사명 · POUR계약금액 · 기술자문료 · (유형 또는 계약업체)<br>
+        <b>유형</b> 컬럼이 없으면 <b>계약업체</b>로 자동판정: 석민이앤씨 → 본사 건설, 그 외 → 기술자문. POUR계약금액이 있으면 자동으로 POUR컨설팅 분류.<br>
+        구글시트에서 <b>파일 → 공유 → 웹에 게시 → 쉼표로 구분된 값(.csv)</b> 의 URL을 붙여넣으세요. (연결 전까진 내장 데이터 사용)
+      </div>
+      <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <button onclick="clearContractConfig(); document.getElementById('modalBackdrop').classList.add('hidden'); alert('계약 시트 연결 해제됨 (새로고침 시 내장 데이터 사용)');" style="padding:10px 16px; background:#fee2e2; color:#991b1b; border:none; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer;">연결 해제</button>
+        <button onclick="saveContractConfig(document.getElementById('contractCsvUrl').value.trim()); document.getElementById('modalBackdrop').classList.add('hidden'); syncContractSheet(false);" style="padding:10px 20px; background:#0f172a; color:white; border:none; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer;">저장 + 동기화</button>
+      </div>
+    </div>`;
+  document.getElementById('modalBackdrop').classList.remove('hidden');
+}
 function inquiryRowsForView() {
   if (INQUIRY_SHEET_ROWS.length) return filterByPeriod(INQUIRY_SHEET_ROWS, STATE.year, STATE.quarter, 'date');
   return [];
@@ -5454,6 +5524,7 @@ window.onload = () => {
   fetchRelateDeals(true);
   syncPtSchedulesFromSystem();
   syncInquirySheet(true);
+  syncContractSheet(true);  // 계약 구글시트 자동 동기화 (URL 설정 시에만, 미설정이면 내장 RAW_C 유지)
   syncInquiriesFromNexus(true);  // S3-Nexus n8n webhook 실시간 견적문의 동기화 (페이지 로드 시 자동)
   // 릴레잇 뷰 자체 period-row wiring
   const ysRl = document.getElementById('yearSelectRelate');
