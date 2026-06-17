@@ -1524,6 +1524,7 @@ let CONTRACTS = RAW_C.map(x => ({signedDate:x[0], aptName:x[1], managerName:x[2]
 
 // ── 계약 3분류: 석민(본사 건설) · POUR컨설팅 · 기술자문 + 검토 플래그 ──
 function contractCat(c){
+  if(c.managerName === '조민준') return 'advisory';     // 경남지사(조민준) = 기술자문 처리 (POUR금액 있어도)
   if((c.pourAmount||0) > 0) return 'pour';            // POUR계약금액 있으면 POUR컨설팅
   if(c.contractType === '석민이앤씨') return 'seokmin'; // 석민이앤씨 = 본사 건설
   return 'advisory';                                   // 석민 외 = 기술자문
