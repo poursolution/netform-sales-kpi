@@ -1284,6 +1284,7 @@
       <button id="tabRelate" onclick="switchView('relate')">2. 릴레잇 현황</button>
       <button id="tabTeamKpi" onclick="switchView('teamKpi')">3. 영업 KPI</button>
       <button id="tabPresentation" onclick="switchView('presentation')">4. 영업회의 발표</button>
+      <button id="tabMeeting" onclick="switchView('meeting')">5. 주간회의록</button>
     </div>
     <div class="nav-presenter-hint" id="navPresenterHint" title="발표 모드: ← → 방향키, 1·2·3·4 직접, Space 다음">
       <span class="step" id="navStep">1 / 4</span>
@@ -1291,6 +1292,8 @@
       <span class="next" id="navNext">다음 → 릴레잇 현황</span>
     </div>
   </div>
+
+  <div id="viewMeeting" style="display:none;"></div>
 
   <div id="viewMain">
     <div class="period-row">
@@ -2769,16 +2772,20 @@ function switchView(view) {
   document.getElementById('viewInquiry').style.display = view === 'inquiry' ? '' : 'none';
   const vp = document.getElementById('viewPresentation');
   if (vp) vp.style.display = view === 'presentation' ? '' : 'none';
+  const vmt = document.getElementById('viewMeeting');
+  if (vmt) vmt.style.display = view === 'meeting' ? '' : 'none';
   document.getElementById('tabMain').classList.toggle('active', view === 'main');
   document.getElementById('tabTeamKpi').classList.toggle('active', view === 'teamKpi');
   document.getElementById('tabRelate').classList.toggle('active', view === 'relate');
   document.getElementById('tabInquiry')?.classList.toggle('active', view === 'inquiry');
   document.getElementById('tabPresentation')?.classList.toggle('active', view === 'presentation');
+  document.getElementById('tabMeeting')?.classList.toggle('active', view === 'meeting');
   // 릴레잇 뷰로 전환 시 데이터 렌더링
   if (view === 'teamKpi') { renderTeamKpiDashboard(); initKpiFrameResize(); }
   if (view === 'relate' && LATEST_DATA) renderRelateAnalysis(LATEST_DATA);
   if (view === 'inquiry') renderInquiryDashboard();
   if (view === 'presentation') renderPresentationView();
+  if (view === 'meeting') renderMeetingMinutes();
   // 메인 뷰로 돌아갈 때 차트 강제 재렌더 (캔버스 크기 깨짐 방지)
   if (view === 'main') renderChart();
   // 페이지 상단으로 스크롤
@@ -2788,6 +2795,63 @@ function switchView(view) {
 // ════════════════════════════════════════════════════════════
 // 4. 영업회의 발표 뷰
 // ════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════
+// 5. 주간회의록 (영업팀 주간회의록 — 사전 작성 폼, 자동 저장)
+// ════════════════════════════════════════════════════════════
+const MM_KEY = 'meeting_minutes_v1';
+function mmLoad(){ try { return JSON.parse(localStorage.getItem(MM_KEY) || '{}') || {}; } catch { return {}; } }
+function mmSave(){
+  const o = {};
+  document.querySelectorAll('#viewMeeting [data-mm]').forEach(el => { o[el.getAttribute('data-mm')] = el.value; });
+  localStorage.setItem(MM_KEY, JSON.stringify(o));
+}
+function renderMeetingMinutes(){
+  const d = mmLoad();
+  const A = k => escapeAttr(d[k] || '');
+  const H = k => escapeHtml(d[k] || '');
+  const inp = (k,ph) => `<input data-mm="${k}" value="${A(k)}" placeholder="${ph||''}" oninput="mmSave()" style="width:100%;border:none;background:transparent;font:inherit;padding:5px 4px;outline:none;">`;
+  const ta = (k,ph,h) => `<textarea data-mm="${k}" placeholder="${ph||''}" oninput="mmSave()" style="width:100%;border:none;background:transparent;font:inherit;resize:vertical;min-height:${h||60}px;padding:8px;outline:none;line-height:1.7;">${H(k)}</textarea>`;
+  const LB = 'background:#1f3864;color:#fff;font-weight:700;font-size:12.5px;text-align:center;padding:9px 6px;white-space:nowrap;';
+  const CL = 'border:1px solid #cfd6e4;vertical-align:top;';
+  document.getElementById('viewMeeting').innerHTML = `
+  <div id="mmDoc" style="max-width:1000px;margin:18px auto;background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:26px 30px;box-shadow:0 1px 5px rgba(0,0,0,.06);">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px;">
+      <div>
+        <div style="font-size:25px;font-weight:800;letter-spacing:3px;">영업팀 주간회의록</div>
+        <div style="font-size:12px;color:#64748b;margin-top:5px;">회의 전 사전 작성 · 입력 즉시 자동 저장</div>
+      </div>
+      <table style="border-collapse:collapse;font-size:11px;text-align:center;">
+        <tr><td style="border:1px solid #94a3b8;background:#f1f5f9;padding:4px 10px;font-weight:700;">담당</td><td style="border:1px solid #94a3b8;background:#f1f5f9;padding:4px 10px;font-weight:700;">팀장</td><td style="border:1px solid #94a3b8;background:#f1f5f9;padding:4px 10px;font-weight:700;">대표</td></tr>
+        <tr><td style="border:1px solid #94a3b8;width:58px;height:46px;"></td><td style="border:1px solid #94a3b8;width:58px;"></td><td style="border:1px solid #94a3b8;width:58px;"></td></tr>
+      </table>
+    </div>
+    <table style="width:100%;border-collapse:collapse;">
+      <tr><td style="${LB}${CL}width:92px;">회의일자</td><td style="${CL}width:33%;">${inp('date','예) 2026년 6월 17일')}</td><td style="${LB}${CL}width:92px;">회의시간</td><td style="${CL}">${inp('time','예) 오전 10시')}</td></tr>
+      <tr><td style="${LB}${CL}">회의장소</td><td style="${CL}">${inp('place','예) 본사 2층 회의실')}</td><td style="${LB}${CL}">주관자</td><td style="${CL}">${inp('host','예) 영업팀장')}</td></tr>
+      <tr><td style="${LB}${CL}">참석자</td><td colspan="3" style="${CL}">${inp('attendees','예) 황윤선, 이필선, 한준엽 …')}</td></tr>
+      <tr><td style="${LB}${CL}">회의제목</td><td colspan="3" style="${CL}">${inp('title','예) 주간 영업 전략 및 실적 향상 방안 논의')}</td></tr>
+    </table>
+    <table style="width:100%;border-collapse:collapse;margin-top:14px;">
+      <tr><td style="${LB}${CL}width:50%;">지난주 영업실적</td><td style="${LB}${CL}width:50%;">금주 영업목표</td></tr>
+      <tr><td style="${CL}">${ta('lastResult','- 총 매출\n- 주요 고객 / 계약\n- 성공 건',120)}</td><td style="${CL}">${ta('weekGoal','- 총 매출 목표\n- 신규 고객 확보\n- 주요 타겟',120)}</td></tr>
+    </table>
+    <table style="width:100%;border-collapse:collapse;margin-top:14px;">
+      <tr><td style="${LB}${CL}">회의내용 및 회의결과</td></tr>
+      <tr><td style="${CL}">${ta('content','1.\n2.\n3.',210)}</td></tr>
+    </table>
+    <table style="width:100%;border-collapse:collapse;margin-top:14px;">
+      <tr><td style="${LB}${CL}">향후계획</td></tr><tr><td style="${CL}">${ta('plan','',80)}</td></tr>
+    </table>
+    <table style="width:100%;border-collapse:collapse;margin-top:14px;">
+      <tr><td style="${LB}${CL}">영업활동 애로사항</td></tr><tr><td style="${CL}">${ta('issues','',80)}</td></tr>
+    </table>
+    <div style="margin-top:18px;display:flex;gap:8px;justify-content:flex-end;">
+      <button onclick="if(confirm('주간회의록 내용을 초기화할까요?')){localStorage.removeItem(MM_KEY);renderMeetingMinutes();}" style="padding:9px 15px;background:#fee2e2;color:#991b1b;border:none;border-radius:6px;font-weight:700;font-size:13px;cursor:pointer;">초기화</button>
+      <button onclick="window.print()" style="padding:9px 18px;background:#1f3864;color:#fff;border:none;border-radius:6px;font-weight:700;font-size:13px;cursor:pointer;">🖨 인쇄</button>
+    </div>
+  </div>`;
+}
+
 const PRES_PRESENTERS = ['한준엽', '이필선', '한인규', '정정훈', '김성민', '김땡땡', '황윤선'];  // '김땡땡' = 발표용 가상 인물
 const PRES_STAGE_OPEN_KEY = 'pres_stage_open_v1';
 let PRES_STAGE_OPEN = (() => {
