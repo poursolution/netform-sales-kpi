@@ -660,6 +660,9 @@
   #salesPersonTabs .sv-perf-more .more-close{display:none;}
   #salesPersonTabs .sv-perf-more.open .more-open{display:none;}
   #salesPersonTabs .sv-perf-more.open .more-close{display:inline;}
+  .amt-edit{ outline:none; cursor:text; border-bottom:1px dashed #cbd5e1; padding:0 2px; border-radius:2px; }
+  .amt-edit:hover{ background:#fef9c3; }
+  .amt-edit:focus{ background:#fff7cc; border-bottom:1px solid #f59e0b; }
 
   /* PERSON DETAIL PANEL */
   .sales-page .sv-detail{display:grid; grid-template-columns:240px 1fr; gap:12px;}
@@ -1193,6 +1196,11 @@
   .pres-collapsible-hint{ font-size: 11px; color:#9ca3af; font-weight:650; }
   .pres-collapsible[open] .pres-collapsible-hint{ display:none; }
   .pres-collapsible-body{ margin-top:10px; }
+  .pres-stage-cols{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; align-items:start; }
+  .pres-stage-col{ background:#fafbfc; border:1px solid var(--sv-border); border-radius:10px; padding:10px; max-height:74vh; overflow-y:auto; }
+  .pres-stage-col .pres-stage-label{ display:block; text-align:center; margin-bottom:4px; }
+  .pres-col-body{ margin-top:6px; }
+  @media (max-width:900px){ .pres-stage-cols{ grid-template-columns:1fr; } .pres-stage-col{ max-height:none; } }
   .pres-substage{ margin:10px 0 14px; }
   .pres-substage:first-child{ margin-top:0; }
   .pres-substage-label{
@@ -1943,6 +1951,42 @@ function openContractNoteEditor(key, aptName){
   else if (_assigneeModalCtx) renderAssigneeModal();
 }
 
+// ─────────── 계약 금액 직접 수정 (localStorage, 실시간 반영) ───────────
+const CONTRACT_AMT_KEY = 'netform_contract_amounts_v1';
+let _contractAmts = (() => { try { return JSON.parse(localStorage.getItem(CONTRACT_AMT_KEY) || '{}') || {}; } catch { return {}; } })();
+function contractAmtKey(c){ return [c.signedDate || '', c.aptName || '', c.managerName || '', c.workName || ''].join('|'); }
+function applyContractAmtOverrides(){
+  if (!Array.isArray(CONTRACTS)) return;
+  CONTRACTS.forEach(c => {
+    const o = _contractAmts[contractAmtKey(c)];
+    if (!o) return;
+    if (o.bid != null) c.contractAmount = o.bid;
+    if (o.pour != null) c.pourAmount = o.pour;
+    if (o.fee != null) { c.advisoryAmount = o.fee; c.feeAmount = o.fee; }
+  });
+}
+function editAmtCell(c, field, val, color){
+  const k = contractAmtKey(c);
+  const has = (val || 0) > 0;
+  return `<b contenteditable="true" class="amt-edit" data-k="${escapeAttr(k)}" data-f="${field}" title="클릭해서 금액 수정 (Enter 저장)" onfocus="amtEditFocus(this)" onblur="amtEditSave(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}" style="color:${has ? color : '#94a3b8'}">${has ? fmtFullMoney(val) : '0'}</b>`;
+}
+function amtEditFocus(el){
+  el.textContent = (el.textContent || '').replace(/[^0-9]/g, '');
+  const r = document.createRange(); r.selectNodeContents(el);
+  const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+}
+function amtEditSave(el){
+  const k = el.getAttribute('data-k'), f = el.getAttribute('data-f');
+  const val = Number((el.textContent || '').replace(/[^0-9]/g, '')) || 0;
+  if (!_contractAmts[k]) _contractAmts[k] = {};
+  _contractAmts[k][f] = val;
+  try { localStorage.setItem(CONTRACT_AMT_KEY, JSON.stringify(_contractAmts)); } catch {}
+  applyContractAmtOverrides();
+  refresh();  // 전체 재계산 → 요약·합계 실시간 반영
+  if (_focusModalCtx) renderFocusModal();
+  else if (_assigneeModalCtx) renderAssigneeModal();
+}
+
 function renderFocusModal(){
   if (!_focusModalCtx) return;
   const { name, focus, tab } = _focusModalCtx;
@@ -1981,12 +2025,8 @@ function renderFocusModal(){
       : '<span style="background:#dbeafe; color:#1d4ed8; padding:2px 7px; border-radius:4px; font-size:11px; font-weight:700">기술자문</span>';
     const rows = sorted.map(c => {
       const ct = c.contractType || '기술자문';
-      const pourCell = (c.pourAmount || 0) > 0
-        ? `<b style="color:#7c3aed">${fmtFullMoney(c.pourAmount)}</b>`
-        : '<span style="color:#94a3b8">-</span>';
-      const advisoryCell = (c.advisoryAmount || 0) > 0
-        ? `<b style="color:#1d4ed8">${fmtFullMoney(c.advisoryAmount)}</b>`
-        : '<span style="color:#94a3b8">-</span>';
+      const pourCell = editAmtCell(c, 'pour', c.pourAmount, '#7c3aed');
+      const advisoryCell = editAmtCell(c, 'fee', c.advisoryAmount, '#1d4ed8');
       const noteKey = contractNoteKey(c);
       const noteText = getContractNote(noteKey);
       const noteIcon = noteText
@@ -1997,7 +2037,7 @@ function renderFocusModal(){
         <td>${c.signedDate || '-'}</td>
         <td><b class="ct-note-trigger" onclick="openContractNoteEditor('${escapeAttr(noteKey)}','${escapeAttr(c.aptName||'')}')" title="${escapeAttr(aptHover)}">${escapeHtml(c.aptName || '-')}</b> ${noteIcon}</td>
         <td class="center">${catBadge(c)}</td>
-        <td class="right"><b>${fmtFullMoney(c.contractAmount || 0)}</b></td>
+        <td class="right">${editAmtCell(c, 'bid', c.contractAmount, '#0a0e1a')}</td>
         <td class="right">${pourCell}</td>
         <td class="right">${advisoryCell}</td>
       </tr>`;
@@ -2548,12 +2588,8 @@ function renderAssigneeModal(){
     const summary = `<div style="padding:10px 14px; background:#f8fafc; border-bottom:1px solid #e5e7eb; font-size:12.5px; font-weight:700; color:#374151;">🟣 본사 건설 <b>${seokminArr.length}건 · 낙찰 ${fmtFullMoney(seokminSum)}</b> · 🟢 POUR컨설팅 <b>${pourArr.length}건 · ${fmtFullMoney(pourSum)}</b> · 🔵 기술자문 <b>${advisoryArr.length}건 · 낙찰 ${fmtFullMoney(advisoryBidSum)}${advisoryFeeSum>0?` → 기술자문료 ${fmtFullMoney(advisoryFeeSum)}`:''}</b>${reviewCnt?` · <span style="color:#a16207;">⚠ 확인필요 ${reviewCnt}건</span>`:''}</div>`;
     const rows = sorted.map(c => {
       const ct = c.contractType || '기술자문';
-      const pourCell = (c.pourAmount || 0) > 0
-        ? `<b style="color:#7c3aed">${fmtFullMoney(c.pourAmount)}</b>`
-        : '<span style="color:#94a3b8">-</span>';
-      const advisoryCell = (c.advisoryAmount || 0) > 0
-        ? `<b style="color:#1d4ed8">${fmtFullMoney(c.advisoryAmount)}</b>`
-        : '<span style="color:#94a3b8">-</span>';
+      const pourCell = editAmtCell(c, 'pour', c.pourAmount, '#7c3aed');
+      const advisoryCell = editAmtCell(c, 'fee', c.advisoryAmount, '#1d4ed8');
       const work = c.workName ? escapeHtml(c.workName) : '<span style="color:#94a3b8">-</span>';
       const noteKey = contractNoteKey(c);
       const noteText = getContractNote(noteKey);
@@ -2561,7 +2597,7 @@ function renderAssigneeModal(){
         ? `<span class="ct-note-icon" title="${escapeAttr(noteText)}">📝</span>`
         : `<span class="ct-note-icon empty">＋</span>`;
       const aptHover = noteText || '클릭해서 메모 입력';
-      return `<tr><td>${c.signedDate||'-'}</td><td><b class="ct-note-trigger" onclick="openContractNoteEditor('${escapeAttr(noteKey)}','${escapeAttr(c.aptName||'')}')" title="${escapeAttr(aptHover)}">${escapeHtml(c.aptName||'-')}</b> ${noteIcon}</td><td style="color:#475569; font-size:12px; max-width:280px;">${work}</td><td class="center">${catBadge(c)}</td><td class="right"><b>${fmtFullMoney(c.contractAmount||0)}</b></td><td class="right">${pourCell}</td><td class="right">${advisoryCell}</td></tr>`;
+      return `<tr><td>${c.signedDate||'-'}</td><td><b class="ct-note-trigger" onclick="openContractNoteEditor('${escapeAttr(noteKey)}','${escapeAttr(c.aptName||'')}')" title="${escapeAttr(aptHover)}">${escapeHtml(c.aptName||'-')}</b> ${noteIcon}</td><td style="color:#475569; font-size:12px; max-width:280px;">${work}</td><td class="center">${catBadge(c)}</td><td class="right">${editAmtCell(c, 'bid', c.contractAmount, '#0a0e1a')}</td><td class="right">${pourCell}</td><td class="right">${advisoryCell}</td></tr>`;
     }).join('');
     tableHtml = sorted.length
       ? `${summary}<table class="focus-modal-table"><thead><tr><th>계약일</th><th>현장명(아파트)</th><th>공사명</th><th class="center">유형</th><th class="right">낙찰금액</th><th class="right">POUR계약금</th><th class="right">기술자문료</th></tr></thead><tbody>${rows}</tbody></table>`
@@ -2711,6 +2747,7 @@ function injectDemoPersonKDD() {
 
 function refresh(){
   // injectDemoPersonKDD();  // [제거] 김땡땡(발표용 가상 인물) 비활성화
+  applyContractAmtOverrides();  // 수정된 계약 금액(localStorage) 실시간 반영
   const data = buildData();
   LATEST_DATA = data;
   publishSalesLiveKpiSnapshot();
@@ -3138,32 +3175,23 @@ function renderPresentationView() {
       })()
     : '<div class="pres-empty">해당 단계의 영업기회가 없습니다.</div>';
 
-  const sOpen = PRES_STAGE_OPEN.sales !== false;
-  const cOpen = PRES_STAGE_OPEN.contract !== false;
-  const wOpen = PRES_STAGE_OPEN.won === true;
   flowEl.innerHTML = `
     <div class="pres-flow-section">
       <div class="pres-section-title">진행 중 영업 흐름 — 카드 클릭 시 노트·활동 펼치기 <span class="ct">${shownPipes.length}건 (수주실패 제외)</span></div>
-      <details class="pres-stage-group pres-collapsible" ${sOpen ? 'open' : ''} ontoggle="togglePresStage('sales', this.open)">
-        <summary>
-          <span class="pres-stage-label sales">영업·관계 단계 · ${stageGroups.sales.length}건</span>
-        </summary>
-        <div class="pres-collapsible-body">${renderDealList(stageGroups.sales)}</div>
-      </details>
-      <details class="pres-stage-group pres-collapsible" ${cOpen ? 'open' : ''} ontoggle="togglePresStage('contract', this.open)">
-        <summary>
-          <span class="pres-stage-label contract">계약·시공 단계 · ${stageGroups.contract.length}건</span>
-        </summary>
-        <div class="pres-collapsible-body">${renderDealList(stageGroups.contract)}</div>
-      </details>
-      ${stageGroups.won.length ? `
-      <details class="pres-stage-group pres-collapsible" ${wOpen ? 'open' : ''} ontoggle="togglePresStage('won', this.open)">
-        <summary>
-          <span class="pres-stage-label won">수주 성공 · ${stageGroups.won.length}건</span>
-          ${wOpen ? '' : '<span class="pres-collapsible-hint">클릭하여 펼치기</span>'}
-        </summary>
-        <div class="pres-collapsible-body">${renderDealList(stageGroups.won)}</div>
-      </details>` : ''}
+      <div class="pres-stage-cols">
+        <div class="pres-stage-col">
+          <div class="pres-stage-label sales">영업·관계 단계 · ${stageGroups.sales.length}건</div>
+          <div class="pres-col-body">${renderDealList(stageGroups.sales)}</div>
+        </div>
+        <div class="pres-stage-col">
+          <div class="pres-stage-label contract">계약·시공 단계 · ${stageGroups.contract.length}건</div>
+          <div class="pres-col-body">${renderDealList(stageGroups.contract)}</div>
+        </div>
+        <div class="pres-stage-col">
+          <div class="pres-stage-label won">수주 성공 · ${stageGroups.won.length}건</div>
+          <div class="pres-col-body">${renderDealList(stageGroups.won)}</div>
+        </div>
+      </div>
     </div>
   `;
 
