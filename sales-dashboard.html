@@ -663,6 +663,11 @@
   .amt-edit{ outline:none; cursor:text; border-bottom:1px dashed #cbd5e1; padding:0 2px; border-radius:2px; }
   .amt-edit:hover{ background:#fef9c3; }
   .amt-edit:focus{ background:#fff7cc; border-bottom:1px solid #f59e0b; }
+  @media print {
+    body.mm-printing *{ visibility:hidden !important; }
+    body.mm-printing #mmDoc, body.mm-printing #mmDoc *{ visibility:visible !important; }
+    body.mm-printing #mmDoc{ position:absolute; left:0; top:0; width:100%; margin:0; border:none; box-shadow:none; padding:10mm; }
+  }
 
   /* PERSON DETAIL PANEL */
   .sales-page .sv-detail{display:grid; grid-template-columns:240px 1fr; gap:12px;}
@@ -2860,13 +2865,18 @@ function switchView(view) {
 // ════════════════════════════════════════════════════════════
 // 5. 주간회의록 (영업팀 주간회의록 — 사전 작성 폼, 자동 저장)
 // ════════════════════════════════════════════════════════════
-const MM_KEY = 'meeting_minutes_v1';
-function mmLoad(){ try { return JSON.parse(localStorage.getItem(MM_KEY) || '{}') || {}; } catch { return {}; } }
+const MM_PEOPLE = ['황윤선','이필선','한준엽'];
+let _mmPerson = MM_PEOPLE[0];
+function mmKey(){ return 'meeting_minutes_v1_' + _mmPerson; }
+function mmLoad(){ try { return JSON.parse(localStorage.getItem(mmKey()) || '{}') || {}; } catch { return {}; } }
 function mmSave(){
   const o = {};
-  document.querySelectorAll('#viewMeeting [data-mm]').forEach(el => { o[el.getAttribute('data-mm')] = el.value; });
-  localStorage.setItem(MM_KEY, JSON.stringify(o));
+  document.querySelectorAll('#mmDoc [data-mm]').forEach(el => { o[el.getAttribute('data-mm')] = el.value; });
+  localStorage.setItem(mmKey(), JSON.stringify(o));
 }
+function mmSelectPerson(p){ _mmPerson = p; renderMeetingMinutes(); }
+function mmReset(){ if (confirm('[' + _mmPerson + '] 주간회의록 내용을 초기화할까요?')) { localStorage.removeItem(mmKey()); renderMeetingMinutes(); } }
+function mmExportPDF(){ document.body.classList.add('mm-printing'); window.print(); setTimeout(() => document.body.classList.remove('mm-printing'), 400); }
 function renderMeetingMinutes(){
   const d = mmLoad();
   const A = k => escapeAttr(d[k] || '');
@@ -2875,12 +2885,20 @@ function renderMeetingMinutes(){
   const ta = (k,ph,h) => `<textarea data-mm="${k}" placeholder="${ph||''}" oninput="mmSave()" style="width:100%;border:none;background:transparent;font:inherit;resize:vertical;min-height:${h||60}px;padding:8px;outline:none;line-height:1.7;">${H(k)}</textarea>`;
   const LB = 'background:#1f3864;color:#fff;font-weight:700;font-size:12.5px;text-align:center;padding:9px 6px;white-space:nowrap;';
   const CL = 'border:1px solid #cfd6e4;vertical-align:top;';
+  const tabs = MM_PEOPLE.map(p => `<button onclick="mmSelectPerson('${p}')" style="padding:8px 18px;border-radius:8px;border:1px solid ${p===_mmPerson?'#1f3864':'#cbd5e1'};background:${p===_mmPerson?'#1f3864':'#fff'};color:${p===_mmPerson?'#fff':'#475569'};font-weight:800;font-size:13px;cursor:pointer;">${p}</button>`).join('');
   document.getElementById('viewMeeting').innerHTML = `
-  <div id="mmDoc" style="max-width:1000px;margin:18px auto;background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:26px 30px;box-shadow:0 1px 5px rgba(0,0,0,.06);">
+  <div class="mm-toolbar no-print" style="max-width:1000px;margin:14px auto 0;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+    <div style="display:flex;gap:6px;">${tabs}</div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="mmReset()" style="padding:9px 15px;background:#fee2e2;color:#991b1b;border:none;border-radius:6px;font-weight:700;font-size:13px;cursor:pointer;">초기화</button>
+      <button onclick="mmExportPDF()" style="padding:9px 18px;background:#1f3864;color:#fff;border:none;border-radius:6px;font-weight:800;font-size:13px;cursor:pointer;">🖨 PDF 내보내기</button>
+    </div>
+  </div>
+  <div id="mmDoc" style="max-width:1000px;margin:12px auto 18px;background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:26px 30px;box-shadow:0 1px 5px rgba(0,0,0,.06);">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px;">
       <div>
-        <div style="font-size:25px;font-weight:800;letter-spacing:3px;">영업팀 주간회의록</div>
-        <div style="font-size:12px;color:#64748b;margin-top:5px;">회의 전 사전 작성 · 입력 즉시 자동 저장</div>
+        <div style="font-size:25px;font-weight:800;letter-spacing:2px;">영업팀 주간회의록 <span style="font-size:16px;color:#1f3864;font-weight:800;">— ${_mmPerson}</span></div>
+        <div style="font-size:12px;color:#64748b;margin-top:5px;">담당자별 작성 · 입력 즉시 자동 저장</div>
       </div>
       <table style="border-collapse:collapse;font-size:11px;text-align:center;">
         <tr><td style="border:1px solid #94a3b8;background:#f1f5f9;padding:4px 10px;font-weight:700;">담당</td><td style="border:1px solid #94a3b8;background:#f1f5f9;padding:4px 10px;font-weight:700;">팀장</td><td style="border:1px solid #94a3b8;background:#f1f5f9;padding:4px 10px;font-weight:700;">대표</td></tr>
@@ -2907,10 +2925,6 @@ function renderMeetingMinutes(){
     <table style="width:100%;border-collapse:collapse;margin-top:14px;">
       <tr><td style="${LB}${CL}">영업활동 애로사항</td></tr><tr><td style="${CL}">${ta('issues','',80)}</td></tr>
     </table>
-    <div style="margin-top:18px;display:flex;gap:8px;justify-content:flex-end;">
-      <button onclick="if(confirm('주간회의록 내용을 초기화할까요?')){localStorage.removeItem(MM_KEY);renderMeetingMinutes();}" style="padding:9px 15px;background:#fee2e2;color:#991b1b;border:none;border-radius:6px;font-weight:700;font-size:13px;cursor:pointer;">초기화</button>
-      <button onclick="window.print()" style="padding:9px 18px;background:#1f3864;color:#fff;border:none;border-radius:6px;font-weight:700;font-size:13px;cursor:pointer;">🖨 인쇄</button>
-    </div>
   </div>`;
 }
 
