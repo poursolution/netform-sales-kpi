@@ -1104,6 +1104,12 @@
     margin-top:2px; letter-spacing:-0.3px; line-height:1.1;
   }
   .sales-page .sv-qr-cnt{ font-size: 11px; font-weight:700; color:#94a3b8; margin-top:1px; line-height:1.1; }
+  .sales-page .sv-qr-rest{ display:none; }
+  .sales-page .sv-quickrev.show-rest .sv-qr-rest{ display:block; }
+  .sales-page .sv-qr-item.sv-qr-more{ display:flex; align-items:center; justify-content:center; border-style:dashed; color:#475569; font-weight:800; font-size:12px; }
+  .sales-page .sv-qr-more .more-close{ display:none; }
+  .sales-page .sv-qr-more.open .more-open{ display:none; }
+  .sales-page .sv-qr-more.open .more-close{ display:inline; }
   @media (max-width:900px){
     .sales-page .sv-quickrev{ grid-template-columns:repeat(3, 1fr); }
   }
@@ -2349,17 +2355,24 @@ function render(data){
   // 담당자별 매출 한눈에 (Hero 도넛 아래 컴팩트 strip)
   const qrEl = document.getElementById('svQuickRev');
   if (qrEl) {
-    qrEl.innerHTML = SALES_PERSON_DISPLAY_ORDER.map(name => {
+    const PRIMARY_SALES = ['황윤선','이필선','한준엽'];  // 영업사원 측정 대상(기본 노출), 나머지는 + 펼침
+    const _qrCard = (name) => {
       const conts = filterByPeriod(CONTRACTS, STATE.year, STATE.quarter, 'signedDate')
         .filter(c => c.managerName === name && c.contractAmount > 0);
       const sum = conts.reduce((s, c) => s + c.contractAmount, 0);
       const isMgmt = MANAGER_REVENUE_ASSIGNEES.includes(name);
-      return `<div class="sv-qr-item" onclick="window._SALES_PERSON_SELECTED='${escapeAttr(name)}'; renderSalesPersonTabs(); renderSalesPersonDetail('${escapeAttr(name)}'); document.getElementById('salesPersonDetail')?.scrollIntoView({behavior:'smooth', block:'center'});">
+      const isRest = !PRIMARY_SALES.includes(name);
+      return `<div class="sv-qr-item${isRest ? ' sv-qr-rest' : ''}" onclick="window._SALES_PERSON_SELECTED='${escapeAttr(name)}'; renderSalesPersonTabs(); renderSalesPersonDetail('${escapeAttr(name)}'); document.getElementById('salesPersonDetail')?.scrollIntoView({behavior:'smooth', block:'center'});">
         <div class="sv-qr-name">${escapeAttr(name)}${isMgmt ? '<span class="role">관리자</span>' : ''}</div>
         <div class="sv-qr-val">${fmtMoney(sum)}</div>
         <div class="sv-qr-cnt">${conts.length}건</div>
       </div>`;
-    }).join('');
+    };
+    const _primary = PRIMARY_SALES.filter(n => SALES_PERSON_DISPLAY_ORDER.includes(n));
+    const _others = SALES_PERSON_DISPLAY_ORDER.filter(n => !PRIMARY_SALES.includes(n));
+    qrEl.innerHTML = _primary.map(_qrCard).join('')
+      + `<div class="sv-qr-item sv-qr-more" onclick="document.getElementById('svQuickRev').classList.toggle('show-rest'); this.classList.toggle('open');"><span class="more-open">＋ ${_others.length}명</span><span class="more-close">− 접기</span></div>`
+      + _others.map(_qrCard).join('');
   }
 
   const inqsAll = [];
